@@ -1,6 +1,6 @@
 export function Home() {
     // TODO: Add routing to home page
     return (
-        <div>Home page</div>
+        <div className="text-center">Home page</div>
     )
 }

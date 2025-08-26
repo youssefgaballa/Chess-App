@@ -1,6 +1,6 @@
 export default function Notes() {
     return (
-        <div>TODO: Add Notes</div>
+        <div className="text-center">TODO: Add Notes</div>
     )
 
 }

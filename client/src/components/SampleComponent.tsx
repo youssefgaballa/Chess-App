@@ -1,7 +1,7 @@
 
 export function SampleComponent() {
     return (
-        <div>Sample Component</div>
+        <div className="text-center">Sample Component</div>
         
     )
 
