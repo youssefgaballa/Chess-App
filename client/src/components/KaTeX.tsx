@@ -12,5 +12,5 @@ export function KaTeX({ katexExpression, url}: { katexExpression: string, url: (
     });
   }, [katexExpressionWithLink]);
 
-  return <div ref={containerRef}/>;
+  return <div ref={containerRef} className={url ? "text-blue-600 visited:text-purple-600" : ""}/>;
 }
