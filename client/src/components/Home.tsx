@@ -3,12 +3,12 @@ import { useRef, useEffect } from "react";
 
 export function Home() {
     // TODO: Add routing to home page
-    const divRef:any = useRef(0);
+    const divRef:any = useRef<HTMLInputElement>(null);
     const rightArrowTex = "\rightarrow";
     //console.log(divRef.current);
 
     useEffect(() => {
-        //katex.render(rightArrowTex, divRef.current)
+        //katex.render(rightArrowTex, divRef.current as HTMLInputElement); 
     },[])
 
     return (
@@ -16,7 +16,7 @@ export function Home() {
         <div className="text-center">
             Home page
         </div>
-        <div ref={divRef}></div>
+        <div ref={divRef} defaultValue = "3"></div>
         </>
     )
 }
