@@ -3,7 +3,9 @@
 import { KaTeX } from "./KaTeX";
 const katexfcts: string[] = [String.raw`\forall`, String.raw`\exist`, 
     String.raw`\land`,String.raw`\lor`,String.raw`\lnot`,
-    String.raw`\in`, String.raw`\notin`, String.raw`\empty`, String.raw`\rightarrow`]
+    String.raw`\in`, String.raw`\notin`, String.raw`\empty`, String.raw`\rightarrow`];
+
+export let katexNotes: string[] = [];
 
 export function Home() {
     // TODO: Add routing to home page
