@@ -1,6 +1,6 @@
 import katex from "katex";
 import { useRef, useEffect } from "react";
-import { KaTeXComponent } from "./KatexComponent";
+import { KaTeX } from "./KaTeX";
 
 export function Home() {
     // TODO: Add routing to home page
@@ -10,7 +10,7 @@ export function Home() {
         <div className="text-center">
             Home page
         </div>
-        <KaTeXComponent texExpression={rightArrowTex} />
+        <KaTeX texExpression={rightArrowTex} />
         </>
     )
 }
