@@ -2,16 +2,20 @@ import { Link } from "react-router"
 
 export default function NavBar() {
     return (
-        <nav className= "flex justify-center items-stretch bg-gray-400 py-3 ">
-            <Link to = "/" className = "">Home</Link>
-            <ul className = "flex justify-around"> 
-                <li className = "flex justify-around">
-                    <Link to = "/Notes" className ="pl-1">Notes</Link>
+        <nav className= "bg-gray-400 w-full">
+            
+            <ul className = "flex justify-end items-center w-full h-full"> 
+                <li className = "mr-auto">
+                    <Link to = "/" className="flex items-center h-full p-10 hover:bg-green-500 ">Home</Link>
                 </li>
-                <li className = "flex justify-around">
-                    <Link to = "/SampleComponent" className ="pl-1">Sample Component</Link>
+                <li className = "">
+                    <Link to = "/Notes" className ="flex items-center h-full p-10 hover:bg-green-500 ">Notes</Link>
+                </li>
+                <li className = "">
+                    <Link to = "/SampleComponent" className ="flex items-center h-full p-10 hover:bg-green-500 " >Sample Component</Link>
                 </li>
             </ul>
+
         </nav>
     )
 }
