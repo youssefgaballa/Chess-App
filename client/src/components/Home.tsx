@@ -9,7 +9,7 @@ export let katexNotes: string[] = [];
 
 export function Home() {
     // TODO: Add routing to home page
-
+    console.log(katexNotes[0]);
     return (
         <>
         <div className="text-center">
