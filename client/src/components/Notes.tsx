@@ -1,13 +1,12 @@
-import { katexNotes } from "./Home";
 import { useState } from 'react'
 
-
 export default function Notes() {
-    let [notes, setNotes] = useState("")
+    const [notes, setNotes] = useState("")
 
-    let onChange = (e : React.ChangeEvent<HTMLTextAreaElement>) => {
+    const onChange = (e : React.ChangeEvent<HTMLTextAreaElement>) => {
         setNotes(e.target.value);
     };
+    console.log("Render notes: " + notes);
     return (
         <>
         <div className="text-center">Editor: <br/>
