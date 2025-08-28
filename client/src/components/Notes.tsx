@@ -11,6 +11,10 @@ export default function Notes() {
         <>
         <div className="text-center">Editor: <br/>
         <textarea className="w-1/2 h-3/4 border border-black-500" onChange={onChange}/>
+        <br/>
+        <select>
+            <option>Sample value</option>
+        </select>
         </div>
         </>
     )
