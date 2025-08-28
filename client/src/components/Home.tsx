@@ -1,9 +1,7 @@
 //import katex from "katex";
 //import { useRef, useEffect } from "react";
 import { KaTeX } from "./KaTeX";
-const katexFcts: string[] = [String.raw`\forall`, String.raw`\exist`, 
-    String.raw`\land`,String.raw`\lor`,String.raw`\lnot`,
-    String.raw`\in`, String.raw`\notin`, String.raw`\empty`, String.raw`\rightarrow`];
+import { katexFcts } from "../data";
 
 export function Home() {
     // TODO: Add routing to home page
