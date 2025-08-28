@@ -9,8 +9,8 @@ export default function Notes() {
     console.log("Render notes: " + notes);
     return (
         <>
-        <div className="text-center">Editor: <br/>
-        <textarea className="w-1/2 h-3/4 border border-black-500" onChange={onChange}/>
+        <div className="text-center h-1/2 w-full">Editor: <br/>
+        <textarea className="w-3/4 h-full border border-black-500 " onChange={onChange}/>
         <br/>
         <select>
             <option>Sample value</option>
