@@ -1,8 +1,13 @@
 import { useState, useRef, useEffect } from 'react'
+import styled from '@emotion/styled'
 
 export default function Notes() {
     const [notes, setNotes] = useState("")
     const ref = useRef<HTMLTextAreaElement>(null);
+
+    const StyledSelect = styled('select')`
+        color: red;
+    `
     
     const onChange = (e : React.ChangeEvent<HTMLTextAreaElement>) => {
         setNotes(e.target.value);
@@ -20,9 +25,9 @@ export default function Notes() {
         <div className="text-center h-1/2 w-full">Editor: <br/>
         <textarea className="w-3/4 h-full border border-black-500 " onChange={onChange} ref={ref}/>
         <br/>
-        <select className={`absolute z-2`}>
+        <StyledSelect>
             <option>Sample value</option>
-        </select>
+        </StyledSelect>
         </div>
         </>
     )
