@@ -6,10 +6,11 @@ export default function Notes() {
     
     const[x,setx] = useState(0);
     const[y,sety] = useState(0);
+    const [hidden, setHidden] = useState<boolean>(true);
+
     const inputRef = useRef<HTMLDivElement>(null);
     //const listRef = useRef<HTMLUListElement>(null);
     const selectRef = useRef<HTMLSelectElement>(null);
-
     const list = useRef<string[]>([]);
 
    
@@ -54,6 +55,7 @@ export default function Notes() {
             // ));
             // console.log(list);
         setSelection();
+        setHidden(false)
 
         }
     }
@@ -62,8 +64,8 @@ export default function Notes() {
         console.log("<List/>: ");
         return (
             list.current.map((katexFct: string) => (
-             <option key={katexFct} >{katexFct}</option>
-                ))
+                <option key={katexFct} >{katexFct}</option>
+            ))
         )
     }
 
@@ -72,13 +74,21 @@ export default function Notes() {
         
     }
 
+    const documentClickListener = (event: Event) => {
+        console.log("documentClickListener(): ");
+        if ((event.target != inputRef.current) && (event.target != selectRef.current)) {
+            setHidden(true);
+        }
+    }
+
     useLayoutEffect(() => {
         inputRef.current?.addEventListener('input', inputListener);
         inputRef.current?.addEventListener('keydown', keydownListener);
-
+        document.addEventListener('click', documentClickListener);
         return () => {
             inputRef.current?.removeEventListener('input', inputListener);
             inputRef.current?.removeEventListener('keydown', keydownListener);
+            document.removeEventListener('click', documentClickListener);
 
         }
         
@@ -89,13 +99,9 @@ export default function Notes() {
         <>
         <div className="text-center h-1/2 w-full">Editor: <br/>
         <div id="MyText" className="border-2" contentEditable = "true" aria-autocomplete="list" aria-haspopup="true" aria-owns="autocomplete-list" ref={inputRef}  ></div>
-        <select size = {list.current.length} style={{position: 'absolute', left: x, top: y}} ref={selectRef}>
+        <select size = {list.current.length} style={{position: 'absolute', left: x, top: y}} ref={selectRef} hidden={hidden}>
              <List/>
         </select>
-            
-        
-
-        
         </div>
         </>
     )
