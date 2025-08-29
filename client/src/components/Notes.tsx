@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useLayoutEffect } from 'react'
 import { katexFcts } from '../data';
 
 export default function Notes() {
@@ -7,8 +7,10 @@ export default function Notes() {
     const[x,setx] = useState(0);
     const[y,sety] = useState(0);
     const inputRef = useRef<HTMLDivElement>(null);
-    const listRef = useRef<HTMLUListElement>(null);
+    //const listRef = useRef<HTMLUListElement>(null);
     const selectRef = useRef<HTMLSelectElement>(null);
+
+    const list = useRef<string[]>([]);
 
    
     // const onChange = (e : React.ChangeEvent<HTMLDivElement>) => {
@@ -31,24 +33,38 @@ export default function Notes() {
         };
     }
 
+
     const inputListener = () => {
         console.log("inputListener(): ");
         //console.log("katexFcts: " + katexFcts);
         //console.log("\\forall");
-        const text = inputRef.current?.textContent;
+        const text = inputRef.current?.textContent.trim();
         if (!text) {
             return;
         }
         if (text) {
-            const matches = katexFcts.filter((katexFct, index) => {
+            list.current = katexFcts.filter((katexFct: string) => {
                 //console.log(katexFct);
                 //console.log(text);
+                // OR return katexFct.includes(text);
                 return String.raw`${katexFct}`.includes(String.raw`${text}`);
             });
-            console.log(matches);
+            console.log("list.current: " + list.current);
+            // const list = 
+            // ));
+            // console.log(list);
         setSelection();
 
         }
+    }
+
+    const List = () => {
+        console.log("<List/>: ");
+        return (
+            list.current.map((katexFct: string) => (
+             <option key={katexFct} >{katexFct}</option>
+                ))
+        )
     }
 
     const keydownListener = () => {
@@ -56,7 +72,7 @@ export default function Notes() {
         
     }
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         inputRef.current?.addEventListener('input', inputListener);
         inputRef.current?.addEventListener('keydown', keydownListener);
 
@@ -67,21 +83,19 @@ export default function Notes() {
         }
         
     });
-
+    //<ul id="autocomplete-list" className="border-1" role="listbox" ref={listRef} style = {{position: 'absolute', left:x, top:y}} hidden></ul>
 
     return (
         <>
         <div className="text-center h-1/2 w-full">Editor: <br/>
         <div id="MyText" className="border-2" contentEditable = "true" aria-autocomplete="list" aria-haspopup="true" aria-owns="autocomplete-list" ref={inputRef}  ></div>
-        <ul id="autocomplete-list" className="autocomplete-list" role="listbox" hidden ref={listRef}></ul>
-        
-         <select size={2} className = "" style={{position: 'absolute', left: x, top: y}} ref={selectRef}>
-            <option>Option 1</option>
-            <option>Option 2</option>
+        <select size = {list.current.length} style={{position: 'absolute', left: x, top: y}} ref={selectRef}>
+             <List/>
         </select>
-        {katexFcts.map((katexFct: string) => ( //Testing map function
-            <li key={katexFct}>{katexFct}</li>
-        ))}
+            
+        
+
+        
         </div>
         </>
     )
