@@ -33,11 +33,27 @@ export default function Notes() {
 
     const inputListener = () => {
         console.log("inputListener(): ");
+        //console.log("katexFcts: " + katexFcts);
+        //console.log("\\forall");
+        const text = inputRef.current?.textContent;
+        if (!text) {
+            return;
+        }
+        if (text) {
+            const matches = katexFcts.filter((katexFct, index) => {
+                //console.log(katexFct);
+                //console.log(text);
+                return String.raw`${katexFct}`.includes(String.raw`${text}`);
+            });
+            console.log(matches);
         setSelection();
+
+        }
     }
 
     const keydownListener = () => {
         console.log("keydownListener(): ");
+        
     }
 
     useEffect(() => {
