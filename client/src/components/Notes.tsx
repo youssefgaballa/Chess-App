@@ -1,33 +1,48 @@
 import { useState, useRef, useEffect } from 'react'
-import styled from '@emotion/styled'
 
 export default function Notes() {
-    const [notes, setNotes] = useState("")
-    const ref = useRef<HTMLTextAreaElement>(null);
-
-    const StyledSelect = styled('select')`
-        color: red;
-    `
+    //const [notes, setNotes] = useState("")
     
-    const onChange = (e : React.ChangeEvent<HTMLTextAreaElement>) => {
-        setNotes(e.target.value);
-    };
+    const[x,setx] = useState(0);
+    const[y,sety] = useState(0);
+    const editableRef = useRef<HTMLDivElement>(null);
+
+   
+    // const onChange = (e : React.ChangeEvent<HTMLDivElement>) => {
+    //     setNotes(e.target.title);
+    // };
+    const setSelection = () => {
+        const selection = window.getSelection();
+        console.log("setSelection")
+        if (selection) {
+            if (selection.rangeCount !== 0) {
+                const range = selection.getRangeAt(0).cloneRange();
+                range.collapse(true);
+                const rect = range.getClientRects()[0];
+                    if (rect) {
+                        setx(rect.left);
+                        sety(rect.top+20);
+                    }
+            }
+        };
+    }
 
     useEffect(() => {
-        console.log("selection start" + ref.current?.selectionStart);
-        console.log("offsetLeft" + ref.current?.offsetLeft);
-        console.log("offsetParent" + ref.current?.offsetParent);
+        document.addEventListener('input', setSelection);
+        return () => {
+            document.removeEventListener('input', setSelection);
+        }
+        
+    });
 
-    }, [notes]);
-    //console.log("Render notes: " + notes);
     return (
         <>
         <div className="text-center h-1/2 w-full">Editor: <br/>
-        <textarea className="w-3/4 h-full border border-black-500 " onChange={onChange} ref={ref}/>
-        <br/>
-        <StyledSelect>
-            <option>Sample value</option>
-        </StyledSelect>
+        <div contentEditable = "true" ref={editableRef} className="border-2" ></div>
+        <select size={2} className = "overflow-auto" style={{position: 'absolute', left: x, top: y}}>
+            <option>Option 1</option>
+            <option>Option 2</option>
+        </select>
         </div>
         </>
     )
