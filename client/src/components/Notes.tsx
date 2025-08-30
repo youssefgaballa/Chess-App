@@ -10,7 +10,7 @@ export default function Notes() {
 
     const inputRef = useRef<HTMLDivElement>(null);
     //const listRef = useRef<HTMLUListElement>(null);
-    const selectRef = useRef<HTMLSelectElement>(null);
+    const selectRef = useRef<HTMLUListElement>(null);
     const list = useRef<string[]>([]);
 
    
@@ -79,21 +79,21 @@ export default function Notes() {
           
     }
     
-    const clickHandler = (event : React.MouseEvent<HTMLSelectElement>) => {
+    const clickHandler = (event : React.MouseEvent<HTMLLIElement>) => {
         console.log("clickHandler:");
         //event.stopPropagation()
-        const target = event.target as HTMLSelectElement;
-        const match = target.value;
-        //console.log("match" + match);
+        const target = event.target as HTMLLIElement;
+        const match = target.innerText;
+        console.log("match: " + match);
         insertSelection(match);
-        //setHidden(true);
+        setHidden(true);
     }
 
     const List = () => {
         //console.log("<List/>: ");
         return (
             list.current.map((katexFct: string) => (
-                <option key={katexFct}>{katexFct}</option>
+                <li key={katexFct} onClick={clickHandler}>{katexFct}</li>
             ))
         )
     }
@@ -123,14 +123,16 @@ export default function Notes() {
         
     });
     //<ul id="autocomplete-list" className="border-1" role="listbox" ref={listRef} style = {{position: 'absolute', left:x, top:y}} hidden></ul>
-
+    // <select size = {list.current.length} style={{appearance: 'none',  position: 'absolute', left: x, top: y}} ref={selectRef} hidden={hidden} onClick={clickHandler}>
+    //          <List/>
+    //     </select>
     return (
         <>
         <div className="text-center h-1/2 w-full">Editor: <br/>
         <div id="MyText" className="border-2" contentEditable = "true" aria-autocomplete="list" aria-haspopup="true" aria-owns="autocomplete-list" ref={inputRef}  ></div>
-        <select size = {list.current.length} style={{appearance: 'none',  position: 'absolute', left: x, top: y}} ref={selectRef} hidden={hidden} onClick={clickHandler}>
-             <List/>
-        </select>
+        <ul style={{appearance: 'none',  position: 'absolute', left: x, top: y}} ref={selectRef} hidden={hidden}>
+            <List/>
+        </ul>
         </div>
         </>
     )
