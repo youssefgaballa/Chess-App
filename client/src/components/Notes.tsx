@@ -89,15 +89,6 @@ export default function Notes() {
         setHidden(true);
     }
 
-    const List = () => {
-        //console.log("<List/>: ");
-        return (
-            list.current.map((katexFct: string) => (
-                <li key={katexFct} onClick={clickHandler}>{katexFct}</li>
-            ))
-        )
-    }
-
     const keydownListener = () => {
         console.log("keydownListener(): ");
         
@@ -122,16 +113,15 @@ export default function Notes() {
         }
         
     });
-    //<ul id="autocomplete-list" className="border-1" role="listbox" ref={listRef} style = {{position: 'absolute', left:x, top:y}} hidden></ul>
-    // <select size = {list.current.length} style={{appearance: 'none',  position: 'absolute', left: x, top: y}} ref={selectRef} hidden={hidden} onClick={clickHandler}>
-    //          <List/>
-    //     </select>
+   
     return (
         <>
         <div className="text-center h-1/2 w-full">Editor: <br/>
         <div id="MyText" className="border-2" contentEditable = "true" aria-autocomplete="list" aria-haspopup="true" aria-owns="autocomplete-list" ref={inputRef}  ></div>
         <ul style={{appearance: 'none',  position: 'absolute', left: x, top: y}} ref={selectRef} hidden={hidden}>
-            <List/>
+            {list.current.map((katexFct: string) => (
+                <li key={katexFct} onClick={clickHandler}>{katexFct}</li>
+            ))}
         </ul>
         </div>
         </>
