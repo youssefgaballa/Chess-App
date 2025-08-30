@@ -34,11 +34,11 @@ export default function Notes() {
         };
     }
 
+   
 
     const inputListener = () => {
         console.log("inputListener(): ");
         //console.log("katexFcts: " + katexFcts);
-        //console.log("\\forall");
         const text = inputRef.current?.textContent.trim();
         if (!text) {
             return;
@@ -54,17 +54,46 @@ export default function Notes() {
             // const list = 
             // ));
             // console.log(list);
-        setSelection();
-        setHidden(false)
+            //insertSelection(list.current[0]);
+            setSelection();
+            setHidden(false)
 
         }
     }
 
+     const insertSelection = (match: string) => {
+       
+        const string = '\\';          
+        const index = inputRef.current?.innerText.lastIndexOf(string);
+        console.log("index: "+ index);
+            if ((index !== undefined) && (index !== -1)) {
+                const substring = inputRef.current?.innerText.substring(index);
+                console.log("substring: " + substring);
+                console.log("match: " + match);
+                if ((substring !== undefined) && (inputRef.current?.innerText !== undefined)) {
+                    inputRef.current.innerText = inputRef.current?.innerText.replace(substring, match)
+
+                }
+            }
+             
+          
+    }
+    
+    const clickHandler = (event : React.MouseEvent<HTMLSelectElement>) => {
+        console.log("clickHandler:");
+        //event.stopPropagation()
+        const target = event.target as HTMLSelectElement;
+        const match = target.value;
+        //console.log("match" + match);
+        insertSelection(match);
+        //setHidden(true);
+    }
+
     const List = () => {
-        console.log("<List/>: ");
+        //console.log("<List/>: ");
         return (
             list.current.map((katexFct: string) => (
-                <option key={katexFct} >{katexFct}</option>
+                <option key={katexFct}>{katexFct}</option>
             ))
         )
     }
@@ -74,21 +103,21 @@ export default function Notes() {
         
     }
 
-    const documentClickListener = (event: Event) => {
-        console.log("documentClickListener(): ");
-        if ((event.target != inputRef.current) && (event.target != selectRef.current)) {
-            setHidden(true);
-        }
-    }
+    // const documentClickListener = (event: Event) => {
+    //     console.log("documentClickListener(): ");
+    //     if ((event.target != inputRef.current) && (event.target != selectRef.current)) {
+    //         setHidden(true);
+    //     }
+    // }
 
     useLayoutEffect(() => {
         inputRef.current?.addEventListener('input', inputListener);
         inputRef.current?.addEventListener('keydown', keydownListener);
-        document.addEventListener('click', documentClickListener);
+        //document.addEventListener('click', documentClickListener);
         return () => {
             inputRef.current?.removeEventListener('input', inputListener);
             inputRef.current?.removeEventListener('keydown', keydownListener);
-            document.removeEventListener('click', documentClickListener);
+            //document.removeEventListener('click', documentClickListener);
 
         }
         
@@ -99,7 +128,7 @@ export default function Notes() {
         <>
         <div className="text-center h-1/2 w-full">Editor: <br/>
         <div id="MyText" className="border-2" contentEditable = "true" aria-autocomplete="list" aria-haspopup="true" aria-owns="autocomplete-list" ref={inputRef}  ></div>
-        <select size = {list.current.length} style={{position: 'absolute', left: x, top: y}} ref={selectRef} hidden={hidden}>
+        <select size = {list.current.length} style={{appearance: 'none',  position: 'absolute', left: x, top: y}} ref={selectRef} hidden={hidden} onClick={clickHandler}>
              <List/>
         </select>
         </div>
