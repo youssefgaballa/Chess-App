@@ -81,7 +81,7 @@ export default function Notes() {
     
     const clickHandler = (event : React.MouseEvent<HTMLLIElement>) => {
         console.log("clickHandler:");
-        //event.stopPropagation()
+        event.stopPropagation()
         const target = event.target as HTMLLIElement;
         const match = target.innerText;
         console.log("match: " + match);
@@ -94,21 +94,21 @@ export default function Notes() {
         
     }
 
-    // const documentClickListener = (event: Event) => {
-    //     console.log("documentClickListener(): ");
-    //     if ((event.target != inputRef.current) && (event.target != selectRef.current)) {
-    //         setHidden(true);
-    //     }
-    // }
+    const documentClickListener = (event: Event) => {
+        if ((event.target != inputRef.current) && (event.target != selectRef.current)) {
+            console.log("documentClickListener(): ");
+            setHidden(true);
+        }
+    }
 
     useLayoutEffect(() => {
         inputRef.current?.addEventListener('input', inputListener);
         inputRef.current?.addEventListener('keydown', keydownListener);
-        //document.addEventListener('click', documentClickListener);
+        document.addEventListener('click', documentClickListener);
         return () => {
             inputRef.current?.removeEventListener('input', inputListener);
             inputRef.current?.removeEventListener('keydown', keydownListener);
-            //document.removeEventListener('click', documentClickListener);
+            document.removeEventListener('click', documentClickListener);
 
         }
         
