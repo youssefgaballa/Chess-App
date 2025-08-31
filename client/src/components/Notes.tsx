@@ -11,7 +11,7 @@ export default function Notes() {
     const listRef = useRef<HTMLUListElement>(null);
     const list = useRef<string[]>([]);
 
-    const setSelection = () => {
+    const setCaretCoords = () => {
         const selection = window.getSelection();
         //console.log("setSelection")
         if (selection) {
@@ -43,7 +43,7 @@ export default function Notes() {
                 return String.raw`${katexFct}`.includes(String.raw`${text}`);
             });
             console.log("list.current: " + list.current);
-            setSelection();
+            setCaretCoords();
             setHidden(false)
 
         }
