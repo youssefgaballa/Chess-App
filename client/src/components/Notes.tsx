@@ -51,14 +51,14 @@ export default function Notes() {
 
      const insertSelection = (match: string) => {
         const string = '\\';          
-        const index = inputRef.current?.innerText.lastIndexOf(string);
+        const index = inputRef.current?.textContent.lastIndexOf(string);
         console.log("index: "+ index);
             if ((index !== undefined) && (index !== -1)) {
-                const substring = inputRef.current?.innerText.substring(index);
+                const substring = inputRef.current?.textContent.substring(index);
                 //console.log("substring: " + substring);
                 //console.log("match: " + match);
-                if ((substring !== undefined) && (inputRef.current?.innerText !== undefined)) {
-                    inputRef.current.innerText = inputRef.current?.innerText.replace(substring, match)
+                if ((substring !== undefined) && (inputRef.current?.textContent !== undefined)) {
+                    inputRef.current.textContent = inputRef.current?.textContent.replace(substring, match)
 
                 }
             }
@@ -70,7 +70,7 @@ export default function Notes() {
         console.log("clickHandler():");
         event.stopPropagation()
         const target = event.target as HTMLLIElement;
-        const match = target.innerText;
+        const match = target.textContent;
         console.log("match: " + match);
         insertSelection(match);
         setHidden(true);
