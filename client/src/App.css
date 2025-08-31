@@ -3,3 +3,7 @@
 html, body, #root {
     height: 100%
 }
+
+li.selected {
+    background-color: gray;
+}
