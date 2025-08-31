@@ -31,21 +31,27 @@ export default function Notes() {
     const inputListener = () => {
         console.log("inputListener(): ");
         //console.log("katexFcts: " + katexFcts);
-        const text = inputRef.current?.textContent.trim();
-        if (!text) {
-            return;
-        }
-        if (text) {
-            list.current = katexFcts.filter((katexFct: string) => {
-                //console.log(katexFct);
-                //console.log(text);
-                // OR return katexFct.includes(text);
-                return String.raw`${katexFct}`.includes(String.raw`${text}`);
-            });
-            console.log("list.current: " + list.current);
-            setCaretCoords();
-            setHidden(false)
+        const string = '\\';          
+        const index = inputRef.current?.textContent.lastIndexOf(string);
+        //console.log("index: "+ index);
+        if (index != undefined) {
+            const text = inputRef.current?.textContent.substring(index);
+            
+            if (!text) {
+                return;
+            }
+            if (text) {
+                list.current = katexFcts.filter((katexFct: string) => {
+                    //console.log(katexFct);
+                    //console.log(text);
+                    // OR return katexFct.includes(text);
+                    return String.raw`${katexFct}`.includes(String.raw`${text}`);
+                });
+                //console.log("list.current: " + list.current);
+                setCaretCoords();
+                setHidden(false)
 
+            }
         }
     }
 
@@ -55,11 +61,11 @@ export default function Notes() {
         console.log("index: "+ index);
             if ((index !== undefined) && (index !== -1)) {
                 const substring = inputRef.current?.textContent.substring(index);
-                //console.log("substring: " + substring);
-                //console.log("match: " + match);
+                console.log("substring: " + substring);
+                console.log("match: " + match);
                 if ((substring !== undefined) && (inputRef.current?.textContent !== undefined)) {
-                    inputRef.current.textContent = inputRef.current?.textContent.replace(substring, match)
-
+                    //inputRef.current.textContent = inputRef.current?.textContent.replace(substring, match)
+                    inputRef.current.textContent = inputRef.current.textContent.substring(0, index) + match;
                 }
             }
              
@@ -71,7 +77,7 @@ export default function Notes() {
         event.stopPropagation()
         const target = event.target as HTMLLIElement;
         const match = target.textContent;
-        console.log("match: " + match);
+        //console.log("match: " + match);
         insertSelection(match);
         setHidden(true);
     }
