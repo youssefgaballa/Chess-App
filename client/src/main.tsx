@@ -9,6 +9,17 @@ declare global {
     MathJax: any;
   }
 }
+// This shit dont get rid of the red squiggly under da mathml elements fo some reason
+  // namespace JSX {
+  //   interface InstrinsicElements {
+  //     math: React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>;
+  //     mn: any;
+  //     mfrac:any;
+  //   }
+  // }
+//}
+// interface math extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> {
+// }
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

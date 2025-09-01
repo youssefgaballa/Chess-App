@@ -168,7 +168,14 @@ export default function Notes() {
         </ul>
         <br/>
          MathJax:
-            \(ax^2 + bx + c = 0\)
+                <math>
+                    <mfrac>
+                        <mn href='/'>1</mn>
+                        <mn href='/Notes/#a'>3</mn>
+                    </mfrac>
+                </math>
+            <br/>
+                
         </div>
         </>
     )

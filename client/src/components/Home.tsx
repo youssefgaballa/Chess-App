@@ -9,12 +9,6 @@ export function Home() {
         <div className="text-center">
             Home page
         </div>
-        <br/>
-        <div> MathJax doesnt load unless components rerender <br/>
-            \(ax^2 + bx + c = 0\)
-            <br/>
-        </div>
-
         </>
     )
 }
