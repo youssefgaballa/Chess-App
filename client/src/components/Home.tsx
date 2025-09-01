@@ -11,12 +11,6 @@ export function Home() {
             Home page
         </div>
         <KaTeX katexExpression={katexFcts[0]} url = {"/Notes"} />
-        <br/>
-        <div> MathJax doesnt load unless components rerender <br/>
-            \(ax^2 + bx + c = 0\)
-            <br/>
-        </div>
-
         </>
     )
 }
