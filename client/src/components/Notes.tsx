@@ -145,6 +145,11 @@ export default function Notes() {
         inputElement?.addEventListener('input', inputListener);
         inputElement?.addEventListener('keydown', keydownListener);
         document.addEventListener('click', documentClickListener);
+        if (typeof window?.MathJax !== "undefined") {
+            console.log("window.MathJax.typeset();");
+            window.MathJax.typesetClear();
+            window.MathJax.typeset();
+        }
         return () => {
             inputElement?.removeEventListener('input', inputListener);
             inputElement?.removeEventListener('keydown', keydownListener);
@@ -161,6 +166,9 @@ export default function Notes() {
                 <li key={index} onClick={clickHandler} className = {(focus == index) ? 'selected' : ''}>{katexFct}</li>
             ))}
         </ul>
+        <br/>
+         MathJax:
+            \(ax^2 + bx + c = 0\)
         </div>
         </>
     )
