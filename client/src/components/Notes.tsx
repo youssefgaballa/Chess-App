@@ -28,6 +28,17 @@ export default function Notes() {
         };
     }
 
+    const setCursor = () => {
+        const selection = window.getSelection();
+        //console.log("setSelection")
+        if (selection) {
+            //console.log("inputRef.current.childNodes[0]: " + inputRef.current?.childNodes[0]);
+            if (inputRef.current?.childNodes[0]) {
+                selection.setPosition(inputRef.current,1);
+            }
+        }
+    }
+
     const inputListener = () => {
         console.log("inputListener(): ");
         //console.log("katexFcts: " + katexFcts);
@@ -80,6 +91,7 @@ export default function Notes() {
         //console.log("match: " + match);
         insertSelection(match);
         setHidden(true);
+        setCursor();
     }
 
     const keydownListener = (event: KeyboardEvent) => {
@@ -118,6 +130,7 @@ export default function Notes() {
                 break;
             }
         }
+        setCursor();
     }
 
     const documentClickListener = (event: Event) => {
