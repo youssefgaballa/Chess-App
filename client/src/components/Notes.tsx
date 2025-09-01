@@ -1,4 +1,4 @@
-import { useState, useRef, useLayoutEffect } from 'react'
+import { useState, useRef, useLayoutEffect, useEffect } from 'react'
 import { katexFcts } from '../data';
 
 export default function Notes() {
@@ -6,14 +6,16 @@ export default function Notes() {
     const[y,sety] = useState(0);
     const [hidden, setHidden] = useState<boolean>(true);
     const [focus, setFocus] = useState<number>(-1);
+    const [href, setHref] = useState<string>("placeholder");
 
     const inputRef = useRef<HTMLDivElement>(null);
     const listRef = useRef<HTMLUListElement>(null);
     const list = useRef<string[]>([]);
+    const notesRef = useRef<HTMLDivElement>(null);
 
     const setCaretCoords = () => {
         const selection = window.getSelection();
-        //console.log("setSelection")
+        //console.log("setCaretCoords():")
         if (selection) {
             if (selection.rangeCount !== 0) {
                 const range = selection.getRangeAt(0).cloneRange();
@@ -22,6 +24,7 @@ export default function Notes() {
                     if (rect) {
                         setx(rect.left);
                         sety(rect.bottom);
+                        setHref(rect.left.toString())
                         // return {x: rect.left, y: rect.bottom}
                     }
             }
@@ -40,7 +43,7 @@ export default function Notes() {
     }
 
     const inputListener = () => {
-        console.log("inputListener(): ");
+        //console.log("inputListener(): ");
         //console.log("katexFcts: " + katexFcts);
         const string = '\\';          
         const index = inputRef.current?.textContent.lastIndexOf(string);
@@ -69,11 +72,11 @@ export default function Notes() {
      const insertSelection = (match: string) => {
         const string = '\\';          
         const index = inputRef.current?.textContent.lastIndexOf(string);
-        console.log("index: "+ index);
+        //console.log("index: "+ index);
             if ((index !== undefined) && (index !== -1)) {
                 const substring = inputRef.current?.textContent.substring(index);
-                console.log("substring: " + substring);
-                console.log("match: " + match);
+                //console.log("substring: " + substring);
+                //console.log("match: " + match);
                 if ((substring !== undefined) && (inputRef.current?.textContent !== undefined)) {
                     //inputRef.current.textContent = inputRef.current?.textContent.replace(substring, match)
                     inputRef.current.textContent = inputRef.current.textContent.substring(0, index) + match;
@@ -84,7 +87,7 @@ export default function Notes() {
     }
     
     const clickHandler = (event : React.MouseEvent<HTMLLIElement>) => {
-        console.log("clickHandler():");
+        //console.log("clickHandler():");
         event.stopPropagation()
         const target = event.target as HTMLLIElement;
         const match = target.textContent;
@@ -95,7 +98,7 @@ export default function Notes() {
     }
 
     const keydownListener = (event: KeyboardEvent) => {
-        console.log("keydownListener(): ");
+        //console.log("keydownListener(): ");
         //console.log("event.key: " + event.key);
         switch (event.key) {
             case ('ArrowUp'):{
@@ -140,22 +143,27 @@ export default function Notes() {
         }
     }
 
-    useLayoutEffect(() => {
+    useEffect(() => {
         const inputElement = inputRef.current;
         inputElement?.addEventListener('input', inputListener);
         inputElement?.addEventListener('keydown', keydownListener);
         document.addEventListener('click', documentClickListener);
-        if (typeof window?.MathJax !== "undefined") {
-            console.log("window.MathJax.typeset();");
-            window.MathJax.typesetClear();
-            window.MathJax.typeset();
-        }
+       
         return () => {
             inputElement?.removeEventListener('input', inputListener);
             inputElement?.removeEventListener('keydown', keydownListener);
             document.removeEventListener('click', documentClickListener);
         }
     });
+
+    useLayoutEffect(() => {
+        console.log("href: " + href);
+        if (typeof window?.MathJax !== "undefined") {
+            console.log("window.MathJax.typeset();");
+            window.MathJax.typesetClear();
+            window.MathJax.typeset();
+        }
+    })
    
     return (
         <>
@@ -167,14 +175,15 @@ export default function Notes() {
             ))}
         </ul>
         <br/>
-         MathJax:
-                <math>
-                    <mfrac>
-                        <mn href='/'>1</mn>
-                        <mn href='/Notes/#a'>3</mn>
-                    </mfrac>
-                </math>
-            <br/>
+                <a href={href}>MathJax:</a>
+         <div ref={notesRef}>
+            <math>
+                <mfrac>
+                    <mn href={href}>1</mn>
+                    <mn href='/Notes/#a'>3</mn>
+                </mfrac>
+            </math>
+         </div>
                 
         </div>
         </>
