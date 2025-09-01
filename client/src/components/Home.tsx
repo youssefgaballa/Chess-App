@@ -10,7 +10,8 @@ export function Home() {
         <div className="text-center">
             Home page
         </div>
-        <KaTeX katexExpression={katexFcts[0]} url = {"/Notes"} />
+        
+        <KaTeX katexExpression="\sqrt{2}" url = {"/Notes"} />
         </>
     )
 }
