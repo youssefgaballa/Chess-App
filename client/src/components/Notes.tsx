@@ -163,7 +163,12 @@ export default function Notes() {
             window.MathJax.typesetClear();
             window.MathJax.typeset();
         }
-    })
+    });
+
+    const onClick = () => {
+        console.log("onClick(): ");
+        window.location.href = href;
+    }
    
     return (
         <>
@@ -179,7 +184,7 @@ export default function Notes() {
          <div ref={notesRef}>
             <math>
                 <mfrac>
-                    <mn href={href}>1</mn>
+                    <mn onClick = {onClick}>1</mn>
                     <mn href='/Notes/#a'>3</mn>
                 </mfrac>
             </math>
