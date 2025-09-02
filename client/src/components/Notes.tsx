@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { katexFcts } from '../data';
+import { mathFcts } from '../data';
 
 export default function Notes() {
     const[x,setx] = useState(0);
@@ -52,11 +52,11 @@ export default function Notes() {
                 return;
             }
             if (text) {
-                list.current = katexFcts.filter((katexFct: string) => {
+                list.current = mathFcts.filter((mathFct: string) => {
                     //console.log(katexFct);
                     //console.log(text);
                     // OR return katexFct.includes(text);
-                    return String.raw`${katexFct}`.includes(String.raw`${text}`);
+                    return String.raw`${mathFct}`.includes(String.raw`${text}`);
                 });
                 //console.log("list.current: " + list.current);
                 setCaretCoords();
