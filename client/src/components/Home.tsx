@@ -15,7 +15,9 @@ export function Home() {
         <>
         <div className="text-center">
             Home page <br/>
+            <a href='/a'>
                 \(ax^2 + bx + c = 0\)
+            </a>
         </div>
         </>
     )
