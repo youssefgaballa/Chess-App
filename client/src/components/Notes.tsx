@@ -1,4 +1,4 @@
-import { useState, useRef, useLayoutEffect, useEffect } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { katexFcts } from '../data';
 
 export default function Notes() {
@@ -6,12 +6,10 @@ export default function Notes() {
     const[y,sety] = useState(0);
     const [hidden, setHidden] = useState<boolean>(true);
     const [focus, setFocus] = useState<number>(-1);
-    const [href, setHref] = useState<string>("placeholder");
 
     const inputRef = useRef<HTMLDivElement>(null);
     const listRef = useRef<HTMLUListElement>(null);
     const list = useRef<string[]>([]);
-    const notesRef = useRef<HTMLDivElement>(null);
 
     const setCaretCoords = () => {
         const selection = window.getSelection();
@@ -24,7 +22,6 @@ export default function Notes() {
                     if (rect) {
                         setx(rect.left);
                         sety(rect.bottom);
-                        setHref(rect.left.toString())
                         // return {x: rect.left, y: rect.bottom}
                     }
             }
@@ -155,20 +152,6 @@ export default function Notes() {
             document.removeEventListener('click', documentClickListener);
         }
     });
-
-    useLayoutEffect(() => {
-        console.log("href: " + href);
-        if (typeof window?.MathJax !== "undefined") {
-            console.log("window.MathJax.typeset();");
-            window.MathJax.typesetClear();
-            window.MathJax.typeset();
-        }
-    });
-
-    const onClick = () => {
-        console.log("onClick(): ");
-        window.location.href = href;
-    }
    
     return (
         <>
@@ -180,15 +163,6 @@ export default function Notes() {
             ))}
         </ul>
         <br/>
-                <a href={href}>MathJax:</a>
-         <div ref={notesRef}>
-            <math>
-                <mfrac>
-                    <mn onClick = {onClick}>1</mn>
-                    <mn href='/Notes/#a'>3</mn>
-                </mfrac>
-            </math>
-         </div>
                 
         </div>
         </>
