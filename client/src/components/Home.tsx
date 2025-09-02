@@ -9,7 +9,9 @@ export function Home() {
         <>
         <div className="text-center">
             Home page <br/>
-            <KaTeX katexExpression='\sqrt{2}' url ='/SampleComponent'/>
+                <KaTeX katexExpression='\sum_{2}' url ='/SampleComponent'/>
+            <br/>
+            
         </div>
         </>
     )
