@@ -11,6 +11,9 @@ export default function NavBar() {
                 <li className = "">
                     <Link to = "/Notes" className ="flex items-center h-full p-10 hover:bg-green-500 ">Notes</Link>
                 </li>
+                <li className="">
+                    <Link to="/NotesEditor" className="flex items-center h-full p-10 hover:bg-green-500 ">Notes Editor</Link>
+                </li>
                 <li className = "">
                     <Link to = "/SampleComponent" className ="flex items-center h-full p-10 hover:bg-green-500 " >Sample Component</Link>
                 </li>
