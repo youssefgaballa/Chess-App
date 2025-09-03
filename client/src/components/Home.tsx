@@ -19,6 +19,7 @@ export function Home() {
                     <span className="bottom">6</span>
                 </span>
             </div>
+
         </>
     )
 }

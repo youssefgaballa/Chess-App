@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 //export const Fraction = ({ isNumerator, level} : { isNumerator: boolean, level: number}) => {
 
-export const Fraction = () => {
+export const Fraction = ({level} : {level: number}) => {
     //const svgRef = useRef<SVGSVGElement>(null);
     const numRef = useRef<HTMLDivElement>(null);
     const denomRef = useRef<HTMLDivElement>(null);
@@ -21,8 +21,8 @@ export const Fraction = () => {
             const maxHeight = Math.max(numRef.current?.clientHeight * 2, denomRef.current?.clientHeight * 2).toString();
             setWidth(maxWidth);
             setHeight(maxHeight);
-            //console.log("width: " + width);
-            // console.log("height" + height);
+            console.log("width: " + width);
+            console.log("height" + height);
         }
         //document.addEventListener('click', documentClickListener);
 
@@ -68,10 +68,11 @@ export const Fraction = () => {
    
     return (
         <>
+        <span style={{zIndex:level}}>
             <svg width={width} height={height}>
                 <foreignObject height='50%' width='100%' x='0%' y='0%' overflow='visible'> 
                     <div ref={numRef} contentEditable='true' className='numerator' onClick = {onClick} onKeyDown={onKeyDown}>
-                        {equations.map(() => <Fraction />
+                        {equations.map(() => <span className='tail'>{'\u00a0'}<Fraction level={level+1}/></span>
                     )}
                     </div>
                 </foreignObject>
@@ -82,6 +83,7 @@ export const Fraction = () => {
                 </foreignObject>
 
             </svg>
+            </span>
 
         </>
        

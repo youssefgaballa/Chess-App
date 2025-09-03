@@ -54,3 +54,6 @@ svg {
     border-top: 1px solid black;
     display: block;
 }
+.tail {
+    white-space: nowrap;
+}
