@@ -5,6 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js">
     </script>
+    <script>
+      window.MathJax = {
+          mml: {
+            allowHtmlInTokenNodes: true,
+          }, 
+          loader: { load: ['[tex]/html'] },
+          tex: { packages: { '[+]': ['html'] } },
+          options: {
+          menuOptions: {
+            settings: {
+              enrich: false,         // true to enable semantic-enrichment
+              collapsible: false,   // true to enable collapsible math
+              speech: false,         // true to enable speech generation
+              braille: false,        // true to enable Braille generation
+              assistiveMml: false,  // true to enable assistive MathML
+            }
+          }
+        }
+
+        }
+    </script>
     <title>Sci-Web</title>
   </head>
   <body>
