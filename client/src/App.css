@@ -11,3 +11,23 @@ li.selected {
 li:hover {
     background-color: lightgray;
 }
+
+svg {
+    display: inline;
+}
+
+.editable {
+    background-color:lightgray;
+}
+.editable1 {
+    display:flex;
+    field-sizing: content;
+
+    background-color: yellow;
+}
+
+.numerator {
+    display: inline-block;
+    min-width: 50px;
+    border-width: 1px;
+}

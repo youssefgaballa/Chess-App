@@ -1,13 +1,20 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Fraction } from "./Math-SVG/Fraction";
 
 export const NotesEditor = () => {
     const inputRef = useRef<HTMLDivElement>(null);
-    
+    const outputRef = useRef<HTMLDivElement>(null);
+    const [equations, setEquations] = useState<string[]>([]);
+
+    // const insertFraction = () => {
+
+    // }
+
     const keydownListener = (event: KeyboardEvent) => {
         console.log(event.key);
         switch (event.key) {
-            case ('a'): {
-                
+            case ('/'): {
+                setEquations((prev) => prev.concat('frac'))
                 break;
             }
             
@@ -15,16 +22,16 @@ export const NotesEditor = () => {
     }
 
      useEffect(() => {
-            const inputElement = inputRef.current;
+        const inputElement = inputRef.current;
 
-            inputElement?.addEventListener('keydown', keydownListener);
-
+        inputElement?.addEventListener('keydown', keydownListener);
+        console.log("equations = " + equations);
            
-            return () => {
+        return () => {
 
-                inputElement?.removeEventListener('keydown', keydownListener);
+            inputElement?.removeEventListener('keydown', keydownListener);
 
-            }
+        }
         });
 
 
@@ -34,8 +41,9 @@ export const NotesEditor = () => {
              <div className="border-2" contentEditable="true" ref={inputRef}></div>
 
              Output: <br/>
-            <div >
-
+            <div ref = {outputRef}>
+                    {equations.map((eqn, index) => <Fraction key={index} isNumerator={true} level={1}/>
+                )}
              </div>
         </div>
         </>
