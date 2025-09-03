@@ -14,13 +14,10 @@ export function Home() {
             <div className="text-center">
                 Home page
                 <br/>
-                <svg width='300' height='300'>
-                    <foreignObject x="20" y="20" width="50" height="50">
-                        <div contentEditable='true'>
-                            hi
-                        </div>
-                    </foreignObject>
-                </svg>
+                <span className="fraction">
+                    <span className="top">1</span>
+                    <span className="bottom">6</span>
+                </span>
             </div>
         </>
     )

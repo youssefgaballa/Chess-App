@@ -42,7 +42,7 @@ export const NotesEditor = () => {
 
              Output: <br/>
             <div ref = {outputRef}>
-                    {equations.map((eqn, index) => <Fraction key={index} isNumerator={true} level={1}/>
+                    {equations.map(() => <Fraction />
                 )}
              </div>
         </div>

@@ -26,3 +26,11 @@ export const svgRender = (math: string, isNum?: boolean) => {
         }
         return null;
     }
+
+     //In progress
+        // const parseMath = (math: string) => {
+        //     console.log("math.charAt(0) = " + math.charAt(0));
+        //     if (math.charAt(0) == '\\') {
+        //         return svgRender('fraction');
+        //     }
+        // }
