@@ -15,7 +15,8 @@ const theme = {
     //...
 }
 
-
+// later we'll replace this with an actual database
+//const notes = [];
 
 export default function Editor() {
     const initialConfig = {
