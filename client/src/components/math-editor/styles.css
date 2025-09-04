@@ -1,0 +1,5 @@
+@import "tailwindcss";
+
+.contentEditable {
+    @apply h-[40vh] w-[30vh] mx-auto border-green-500 border-2;
+}
