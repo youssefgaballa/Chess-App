@@ -10,9 +10,10 @@ export function Home() {
             window.MathJax.typesetClear();
             window.MathJax.typeset();
         }
-    })
+    });
     const tex1 = '\\(\\href{/SampleComponent}{\\style{color: blue}{hi}} + bx + c = 0\\)'
-    const tex2 = '\\[\\sum_{\\href{\\SampleComponent}{k}=0}^n \\]'
+    //const tex2 = '\\[\\sum_{\\href{\\SampleComponent}{k}=0}^n \\]'
+    const tex3 = '\\[ \\frac{\\frac{\\frac{1}{2}}{3}}{2} \\]'
     return (
         <>
         <div className="text-center">
@@ -20,15 +21,9 @@ export function Home() {
             
                 {tex1}
                 <br/>
-                {tex2}
+                {tex3}
             <br/><br/>
-                <math>
-                    
-                    <mfrac>
-                        <a href='/a'><mn>1</mn></a>
-                        <mn>3</mn>
-                    </mfrac>
-                </math>
+              
         </div>
         </>
     )

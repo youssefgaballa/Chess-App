@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { katexFcts } from '../data';
+import { mathFcts } from '../data';
 
 export default function Notes() {
     const[x,setx] = useState(0);
@@ -10,6 +10,14 @@ export default function Notes() {
     const inputRef = useRef<HTMLDivElement>(null);
     const listRef = useRef<HTMLUListElement>(null);
     const list = useRef<string[]>([]);
+
+    useEffect(() => {
+        if ((window?.MathJax.typesetClear) && (window?.MathJax.typeset)) {
+            console.log("window.MathJax.typeset();");
+            window.MathJax.typesetClear();
+            window.MathJax.typeset();
+        }
+    })
 
     const setCaretCoords = () => {
         const selection = window.getSelection();
@@ -52,7 +60,7 @@ export default function Notes() {
                 return;
             }
             if (text) {
-                list.current = katexFcts.filter((katexFct: string) => {
+                list.current = mathFcts.filter((katexFct: string) => {
                     //console.log(katexFct);
                     //console.log(text);
                     // OR return katexFct.includes(text);
@@ -76,7 +84,8 @@ export default function Notes() {
                 //console.log("match: " + match);
                 if ((substring !== undefined) && (inputRef.current?.textContent !== undefined)) {
                     //inputRef.current.textContent = inputRef.current?.textContent.replace(substring, match)
-                    inputRef.current.textContent = inputRef.current.textContent.substring(0, index) + match;
+                    inputRef.current.textContent = inputRef.current.textContent.substring(0, index) + '\\(' + match + ' \\)';
+                    setCursor();
                 }
             }
              
@@ -156,10 +165,10 @@ export default function Notes() {
     return (
         <>
         <div className="text-center h-1/2 w-full">Editor: <br/>
-        <div id="MyText" className="border-2" contentEditable = "true" aria-autocomplete="list" aria-haspopup="true" aria-owns="autocomplete-list" ref={inputRef}  ></div>
+        <div id="MyText" className="border-2" contentEditable = "true" ref={inputRef}  ></div>
         <ul style={{appearance: 'none',  position: 'absolute', left: x, top: y}} ref={listRef} hidden={hidden}>
-            {list.current.map((katexFct: string, index: number) => (
-                <li key={index} onClick={clickHandler} className = {(focus == index) ? 'selected' : ''}>{katexFct}</li>
+            {list.current.map((mathFct: string, index: number) => (
+                <li key={index} onClick={clickHandler} className = {(focus == index) ? 'selected' : ''}>{mathFct}</li>
             ))}
         </ul>
         <br/>
