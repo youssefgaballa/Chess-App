@@ -1,4 +1,4 @@
-export const mathEditorTheme = {
+export const editorTheme = {
     paragraph: 'editor-paragraph',
     quote: 'editor-quote',
     heading: {

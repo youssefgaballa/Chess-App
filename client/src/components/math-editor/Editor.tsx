@@ -9,7 +9,7 @@ import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
-import { mathEditorTheme } from './MathEditorTheme';
+import { editorTheme } from './editorTheme';
 import Toolbar from './Toolbar';
 
 
@@ -19,12 +19,12 @@ import Toolbar from './Toolbar';
 export default function Editor() {
     const initialConfig = {
         namespace: 'MyEditor',
-        theme: mathEditorTheme,
+        theme: editorTheme,
         onError,
     };
 
     return (
-        <div className="max-w-[50rem] h-full mx-auto bg-white rounded-lg ">
+        <div className="max-w-[50rem] h-[50%] mx-auto bg-white rounded-lg ">
         <LexicalComposer initialConfig={initialConfig}>
             <Toolbar/>
             <RichTextPlugin
@@ -32,7 +32,7 @@ export default function Editor() {
                     <ContentEditable 
                         aria-placeholder={'Enter some text...'}
                         placeholder={<div>Enter some text...</div>}
-                            className='h-[50%]'
+                            className='h-full'
                     />
                 }
                 ErrorBoundary={LexicalErrorBoundary}

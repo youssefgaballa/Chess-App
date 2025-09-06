@@ -1,7 +1,7 @@
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { mergeRegister } from "@lexical/utils";
 import { useEffect, useState, useCallback } from "react";
-import { FORMAT_TEXT_COMMAND, type EditorState } from "lexical";
+import { FORMAT_TEXT_COMMAND, type EditorState, type TextFormatType } from "lexical";
 import { $getSelection, $isRangeSelection } from 'lexical';
 
 export default function Toolbar() {
@@ -19,6 +19,10 @@ export default function Toolbar() {
 
         }
     }, []);
+
+    const onClick = (type: TextFormatType) => {
+        editor.dispatchCommand(FORMAT_TEXT_COMMAND, type)
+    }
 
     useEffect(() => {
         return mergeRegister(
@@ -38,16 +42,10 @@ export default function Toolbar() {
 
     return (
         <div className='space-x-2'>
-            <button className={`size-8 rounded-lg ${isBold ? 'bg-gray-300 font-bold' : ''}`} onClick={() => {
-                editor.dispatchCommand(FORMAT_TEXT_COMMAND, "bold")
-
-            }}>
+            <button className={`size-8 rounded-lg ${isBold ? 'bg-gray-300 font-bold' : ''}`} onClick={() => onClick('bold')}>
                 B
             </button>
-            <button className={`size-8 rounded-lg ${isItalic ? 'bg-gray-300 italic' : ''}`} onClick={() => {
-                editor.dispatchCommand(FORMAT_TEXT_COMMAND, "italic")
-
-            }}>
+            <button className={`size-8 rounded-lg ${isItalic ? 'bg-gray-300 italic' : ''}`} onClick={() => onClick('italic')}>
                 i
             </button>
         </div>
