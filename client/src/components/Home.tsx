@@ -15,8 +15,8 @@ export function Home() {
                     Home page
             </header>
 
-        <Editor/>
-        
+            <Editor/>
+            
         
         </>
     )

@@ -1,13 +1,15 @@
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { mergeRegister } from "@lexical/utils";
 import { useEffect, useState, useCallback } from "react";
-import { FORMAT_TEXT_COMMAND, type EditorState, type TextFormatType } from "lexical";
+import { $insertNodes, FORMAT_TEXT_COMMAND, type EditorState, type TextFormatType } from "lexical";
 import { $getSelection, $isRangeSelection } from 'lexical';
+import { $createMathNode } from "./MathNode";
 
 export default function Toolbar() {
     const [editor] = useLexicalComposerContext();
     const [isBold, setIsBold] = useState<boolean>(false);
     const [isItalic, setIsItalic] = useState<boolean>(false);
+    
 
 
     const $updateToolbar = useCallback(() => {
@@ -22,6 +24,12 @@ export default function Toolbar() {
 
     const onClick = (type: TextFormatType) => {
         editor.dispatchCommand(FORMAT_TEXT_COMMAND, type)
+    }
+    const addMathNode = () => {
+        editor.update(() => {
+            const mathNode = $createMathNode("math");
+            $insertNodes([mathNode]);
+        });
     }
 
     useEffect(() => {
@@ -42,11 +50,14 @@ export default function Toolbar() {
 
     return (
         <div className='space-x-2'>
-            <button className={`size-8 rounded-lg ${isBold ? 'bg-gray-300 font-bold' : ''}`} onClick={() => onClick('bold')}>
+            <button className={`size-8 rounded-lg hover:bg-gray-100 ${isBold ? 'bg-gray-300 font-bold' : ''}`} onClick={() => onClick('bold')}>
                 B
             </button>
-            <button className={`size-8 rounded-lg ${isItalic ? 'bg-gray-300 italic' : ''}`} onClick={() => onClick('italic')}>
+            <button className={`size-8 rounded-lg hover:bg-gray-100 ${isItalic ? 'bg-gray-300 italic' : ''}`} onClick={() => onClick('italic')}>
                 i
+            </button>
+            <button onClick={addMathNode}>
+                Add math
             </button>
         </div>
     )

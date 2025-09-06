@@ -1,46 +1,49 @@
-import {
-    $create,
-    //$getState,
-    //$getStateChange,
-    $setState,
-    DecoratorNode,
-    //type EditorConfig,
-    type LexicalNode,
-    createState,
-} from 'lexical';
+import { $applyNodeReplacement, DecoratorNode, type LexicalNode, type LexicalUpdateJSON, type NodeKey, type SerializedLexicalNode } from 'lexical';
 import type { JSX } from 'react';
 
-const idState = createState('id', {
-    parse: (value) => (typeof value === 'string' ? value : ''),
-});
+interface SerializedCustomNode extends SerializedLexicalNode {
+}
 
 export class MathNode extends DecoratorNode<JSX.Element> {
-    $config() {
-        return this.config('math', {
-            extends: DecoratorNode,
-            stateConfigs: [{ flat: true, stateConfig: idState }],
-        });
-    }
+  __id: string;
 
-    createDOM(): HTMLElement {
-        return document.createElement('div');
-    }
+  static getType(): string {
+    return 'math';
+  }
 
-    updateDOM(): false {
-        return false;
+    static clone(node: MathNode): MathNode {
+        return new MathNode(node.__id, node.__key);
+  }
+
+    static importJSON(serializedNode: LexicalUpdateJSON<SerializedCustomNode>): MathNode {
+        return new MathNode('math').updateFromJSON(serializedNode);
     }
+  constructor(id: string, key?: NodeKey) {
+    super(key);
+    this.__id = id;
+  }
+
+  createDOM(): HTMLElement {
+    return document.createElement('div');
+  }
+
+  updateDOM(): false {
+    return false;
+  }
 
     decorate(): JSX.Element {
-        return <div>Custom Element</div>
-    }
+        //return <div>Math</div>
+        return <math-field >{`\\frac{1}{2}`}</math-field>;
+  }
 }
 
-export function $createVideoNode(id: string): MathNode {
-    return $setState($create(MathNode), idState, id);
+export function $createMathNode(id: string): MathNode {
+    //return $applyNodeReplacement(new MathNode(id));
+    return new MathNode(id);
 }
 
-export function $isMathNoder(
-    node: LexicalNode | null | undefined,
+export function $isMathNode(
+  node: LexicalNode | null | undefined,
 ): node is MathNode {
     return node instanceof MathNode;
 }

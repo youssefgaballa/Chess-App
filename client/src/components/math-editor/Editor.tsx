@@ -11,6 +11,9 @@ import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
 import { editorTheme } from './editorTheme';
 import Toolbar from './Toolbar';
+import { $createMathNode, MathNode } from './MathNode';
+import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
+import { $insertNodes } from 'lexical';
 
 
 // later we'll replace this with an actual database
@@ -21,7 +24,10 @@ export default function Editor() {
         namespace: 'MyEditor',
         theme: editorTheme,
         onError,
-    };
+        nodes: [MathNode],
+    }
+
+    
 
     return (
         <div className="max-w-[50rem] h-[50%] mx-auto bg-white rounded-lg ">
@@ -37,6 +43,7 @@ export default function Editor() {
                 }
                 ErrorBoundary={LexicalErrorBoundary}
             />
+            
             <HistoryPlugin />
             <AutoFocusPlugin />
         </LexicalComposer>

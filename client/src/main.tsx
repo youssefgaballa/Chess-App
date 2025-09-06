@@ -13,6 +13,8 @@ declare global {
   }
 }
 
+MathfieldElement.fontsDirectory = "../../mathlive/fonts"; 
+
 
 
 createRoot(document.getElementById('root')!).render(
