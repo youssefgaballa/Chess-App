@@ -14,6 +14,8 @@ import Toolbar from './Toolbar';
 import { $createMathNode, MathNode } from './MathNode';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { $insertNodes } from 'lexical';
+import React from 'react';
+import { SaveStatePlugin } from './Plugins/SaveStatePlugin';
 
 
 // later we'll replace this with an actual database
@@ -27,7 +29,8 @@ export default function Editor() {
     nodes: [MathNode],
   }
 
-
+  const [html, setHtml] = React.useState("");
+  console.log(html);
 
   return (
     <div className="max-w-[50rem] h-[50%] mx-auto bg-white rounded-lg ">
@@ -46,6 +49,7 @@ export default function Editor() {
 
         <HistoryPlugin />
         <AutoFocusPlugin />
+        <SaveStatePlugin state={html} onChange={(newState) => setHtml(newState)}/>
       </LexicalComposer>
     </div>
   );
