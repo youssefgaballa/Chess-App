@@ -27,26 +27,26 @@ export default function Editor() {
         nodes: [MathNode],
     }
 
-    
+
 
     return (
         <div className="max-w-[50rem] h-[50%] mx-auto bg-white rounded-lg ">
-        <LexicalComposer initialConfig={initialConfig}>
-            <Toolbar/>
-            <RichTextPlugin
-                contentEditable={
-                    <ContentEditable 
-                        aria-placeholder={'Enter some text...'}
-                        placeholder={<div>Enter some text...</div>}
+            <LexicalComposer initialConfig={initialConfig}>
+                <Toolbar />
+                <RichTextPlugin
+                    contentEditable={
+                        <ContentEditable
+                            aria-placeholder={'Enter some text...'}
+                            placeholder={<div>Enter some text...</div>}
                             className='h-full'
-                    />
-                }
-                ErrorBoundary={LexicalErrorBoundary}
-            />
-            
-            <HistoryPlugin />
-            <AutoFocusPlugin />
-        </LexicalComposer>
+                        />
+                    }
+                    ErrorBoundary={LexicalErrorBoundary}
+                />
+
+                <HistoryPlugin />
+                <AutoFocusPlugin />
+            </LexicalComposer>
         </div>
     );
 }

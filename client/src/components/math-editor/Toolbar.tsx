@@ -9,7 +9,7 @@ export default function Toolbar() {
     const [editor] = useLexicalComposerContext();
     const [isBold, setIsBold] = useState<boolean>(false);
     const [isItalic, setIsItalic] = useState<boolean>(false);
-    
+
 
 
     const $updateToolbar = useCallback(() => {
@@ -34,7 +34,7 @@ export default function Toolbar() {
 
     useEffect(() => {
         return mergeRegister(
-            editor.registerUpdateListener(({editorState} : {editorState: EditorState}) => {
+            editor.registerUpdateListener(({ editorState }: { editorState: EditorState }) => {
                 //console.log("editor.registerUpdateListener(): ");
                 editorState.read(
                     () => {
@@ -61,5 +61,5 @@ export default function Toolbar() {
             </button>
         </div>
     )
-    
+
 }

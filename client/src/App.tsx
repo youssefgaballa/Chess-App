@@ -9,12 +9,12 @@ function App() {
   //<Route path = "/NotesDepr" element = {<NotesDepr/>}/>
   return (
     <>
-    <NavBar/>
-    <Routes>
-      <Route path = "/" element={<Home/>}/>
-      
-      <Route path = "/SampleComponent" element = {<SampleComponent/>}/>
-    </Routes> 
+      <NavBar />
+      <Routes>
+        <Route path="/" element={<Home />} />
+
+        <Route path="/SampleComponent" element={<SampleComponent />} />
+      </Routes>
     </>
   )
 }

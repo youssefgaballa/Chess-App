@@ -15,7 +15,8 @@ declare module 'react/jsx-runtime' {
   }
 }
 
-MathfieldElement.fontsDirectory = "../../mathlive/fonts"; 
+
+MathfieldElement.fontsDirectory = "../../mathlive/fonts";
 
 
 
@@ -23,7 +24,7 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
       <App />
-      
+
     </BrowserRouter>
   </StrictMode>,
 )
