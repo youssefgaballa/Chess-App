@@ -1,14 +1,16 @@
-import { StrictMode } from 'react'
+import { StrictMode, type DetailedHTMLProps, type HTMLAttributes } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router'
 import App from './App.tsx'
 import { MathfieldElement } from "mathlive";
 
-declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
+declare module 'react/jsx-runtime' {
   namespace JSX {
     interface IntrinsicElements {
-      'math-field': React.DetailedHTMLProps<React.HTMLAttributes<MathfieldElement>, MathfieldElement>;
+      'math-field': DetailedHTMLProps<
+        HTMLAttributes<MathfieldElement>,
+        MathfieldElement
+      >;
     }
   }
 }
