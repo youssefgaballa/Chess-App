@@ -14,7 +14,7 @@ import ToolbarPlugin from './plugins/ToolbarPlugin';
 //import { $insertNodes } from 'lexical';
 import React, { useEffect } from 'react';
 import { SaveStatePlugin } from './plugins/SaveStatePlugin';
-import { getData, updateData } from './hooks/saveStateHooks';
+import { useDataQuery, useDataMutation } from './hooks/saveStateHooks';
 
 
 // later we'll replace this with an actual database
@@ -29,9 +29,9 @@ export default function Editor() {
   }
 
   const [serializedNodes, setSerializedNodes] = React.useState("");
-  const { mutateAsync: saveText, isPending } = updateData();
-  const { data } = getData();
-  console.log("html = " + serializedNodes);
+  const { mutateAsync: saveText, isPending } = useDataMutation();
+  const { data } = useDataQuery();
+  //console.log("html = " + serializedNodes);
 
   const onSave = () => {
     saveText(serializedNodes);

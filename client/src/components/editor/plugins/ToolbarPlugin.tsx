@@ -1,7 +1,7 @@
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { mergeRegister } from "@lexical/utils";
 import { useEffect, useState, useCallback } from "react";
-import { $insertNodes, FORMAT_TEXT_COMMAND, type EditorState, type TextFormatType } from "lexical";
+import { FORMAT_TEXT_COMMAND, type EditorState, type TextFormatType } from "lexical";
 import { $getSelection, $isRangeSelection } from 'lexical';
 
 export default function Toolbar() {

@@ -1,26 +1,12 @@
-import { StrictMode, type DetailedHTMLProps, type HTMLAttributes } from 'react'
+//import { StrictMode, type DetailedHTMLProps, type HTMLAttributes } from 'react'
+import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router'
 import App from './App.tsx'
-import { MathfieldElement } from "mathlive";
+//import { MathfieldElement } from "mathlive";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const queryClient = new QueryClient();
-
-declare module 'react/jsx-runtime' {
-  namespace JSX {
-    interface IntrinsicElements {
-      'math-field': DetailedHTMLProps<
-        HTMLAttributes<MathfieldElement>,
-        MathfieldElement
-      >;
-    }
-  }
-}
-
-
-MathfieldElement.fontsDirectory = "../../mathlive/fonts";
-
 
 
 createRoot(document.getElementById('root')!).render(
@@ -32,3 +18,17 @@ createRoot(document.getElementById('root')!).render(
     </BrowserRouter>
   </StrictMode>,
 )
+
+// declare module 'react/jsx-runtime' {
+//   namespace JSX {
+//     interface IntrinsicElements {
+//       'math-field': DetailedHTMLProps<
+//         HTMLAttributes<MathfieldElement>,
+//         MathfieldElement
+//       >;
+//     }
+//   }
+// }
+
+
+//MathfieldElement.fontsDirectory = "../../mathlive/fonts";
