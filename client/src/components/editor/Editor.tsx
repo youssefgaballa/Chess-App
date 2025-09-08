@@ -1,7 +1,7 @@
 //import * as React from 'react'
 
 //import { $getRoot, $getSelection } from 'lexical';
-import './styles.css'
+import './theme/styles.css'
 
 import { AutoFocusPlugin } from '@lexical/react/LexicalAutoFocusPlugin';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
@@ -9,13 +9,12 @@ import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
-import { editorTheme } from './editorTheme';
-import Toolbar from './Toolbar';
-import { $createMathNode, MathNode } from './MathNode';
-import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import { $insertNodes } from 'lexical';
-import React from 'react';
-import { SaveStatePlugin } from './Plugins/SaveStatePlugin';
+import { editorTheme } from './theme/editorTheme';
+import ToolbarPlugin from './plugins/ToolbarPlugin';
+//import { $insertNodes } from 'lexical';
+import React, { useEffect } from 'react';
+import { SaveStatePlugin } from './plugins/SaveStatePlugin';
+import { getData, updateData } from './hooks/saveStateHooks';
 
 
 // later we'll replace this with an actual database
@@ -26,22 +25,33 @@ export default function Editor() {
     namespace: 'MyEditor',
     theme: editorTheme,
     onError,
-    nodes: [MathNode],
+    nodes: [],
   }
 
-  const [html, setHtml] = React.useState("");
-  console.log(html);
+  const [serializedNodes, setSerializedNodes] = React.useState("");
+  const { mutateAsync: saveText, isPending } = updateData();
+  const { data } = getData();
+  console.log("html = " + serializedNodes);
+
+  const onSave = () => {
+    saveText(serializedNodes);
+  }
+
+  useEffect(() => {
+    setSerializedNodes(data);
+  }, [data]);
 
   return (
     <div className="max-w-[50rem] h-[50%] mx-auto bg-white rounded-lg ">
       <LexicalComposer initialConfig={initialConfig}>
-        <Toolbar />
+        <ToolbarPlugin />
         <RichTextPlugin
           contentEditable={
             <ContentEditable
+              className="h-full focus:outline-none border border-black"
               aria-placeholder={'Enter some text...'}
-              placeholder={<div>Enter some text...</div>}
-              className='h-full'
+              placeholder={<>Enter some text...</>}
+              
             />
           }
           ErrorBoundary={LexicalErrorBoundary}
@@ -49,7 +59,10 @@ export default function Editor() {
 
         <HistoryPlugin />
         <AutoFocusPlugin />
-        <SaveStatePlugin state={html} onChange={(newState) => setHtml(newState)}/>
+        <SaveStatePlugin state={serializedNodes} onChange={(newState) => setSerializedNodes(newState)} />
+        <button onClick={onSave}>
+          {isPending ? "Saving..." : "Save"}
+        </button>
       </LexicalComposer>
     </div>
   );
