@@ -5,6 +5,8 @@
     "target": "ES2024",
     "sourceMap": true,
     "outDir": "dist",
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
   },
   "include": [
     "src/**/*"

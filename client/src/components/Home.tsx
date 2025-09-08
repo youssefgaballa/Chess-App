@@ -1,4 +1,3 @@
-import Editor from "./editor/Editor"
 import 'mathlive'
 //import { convertLatexToMarkup } from 'mathlive';
 
