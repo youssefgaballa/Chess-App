@@ -1,0 +1,42 @@
+name: "nodejs-project-development"
+services: 
+  db:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: root
+      POSTGRES_DB: pg-db
+  backend:
+    build: 
+      context: ./server
+      dockerfile: Dockerfile
+    env_file: ./server/.env
+    restart: unless-stopped
+    develop:
+      watch: 
+        - path: ./server
+          action: sync
+          ignore: 
+            - node_modules
+            - .git/
+          target: /app
+        - path: ./server/package.json
+          action: rebuild
+    ports:
+      - 5000:5000
+  frontend:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    develop:
+      watch:
+        - path: ./client
+          action: sync
+          ignore:
+          - node_modules
+          - .git/
+          target: /app
+        - path: ./client/package.json
+          action: rebuild
+    ports:
+      - 5173:5173

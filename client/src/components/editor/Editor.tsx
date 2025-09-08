@@ -31,7 +31,7 @@ export default function Editor() {
   const [serializedNodes, setSerializedNodes] = React.useState("");
   const { mutateAsync: saveText, isPending } = useDataMutation();
   const { data } = useDataQuery();
-  //console.log("html = " + serializedNodes);
+  console.log("serializedNodes = " + serializedNodes);
 
   const onSave = () => {
     saveText(serializedNodes);

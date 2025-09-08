@@ -11,9 +11,10 @@ router.get("/data", (req, res) => {
 router.post("/data", (req, res) => {
   const { text: newText } = req.body;
   text = newText;
-  setTimeout(() => {
-    res.send({ status: true });
-  }, 2000);
+  res.send({ status: true });
+  // setTimeout(() => {
+  //   res.send({ status: true });
+  // }, 2000);
 });
 
 
