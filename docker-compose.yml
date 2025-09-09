@@ -6,6 +6,8 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_USER: root
       POSTGRES_DB: pg-db
+    ports:
+      - 5432:5432
   backend:
     build: 
       context: ./server
@@ -22,8 +24,18 @@ services:
           target: /app
         - path: ./server/package.json
           action: rebuild
+        - path: ./docker-compose.yml
+          action: rebuild
     ports:
       - 5000:5000
+    depends_on:
+      - db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -p 5432 -U root -d pg-db"]
+      interval: 2s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
   frontend:
     build:
       context: ./client
