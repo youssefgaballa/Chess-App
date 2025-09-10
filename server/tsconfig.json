@@ -1,14 +1,50 @@
 {
+  // Visit https://aka.ms/tsconfig to read more about this file
   "compilerOptions": {
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    // File Layout
+    // "rootDir": "./src",
+    // "outDir": "./dist",
+
+    // Environment Settings
+    // See also https://aka.ms/tsconfig/module
+    "module": "nodeNext",
+    "moduleResolution": "nodeNext",
     "target": "ES2024",
+    "types": ["node"],
+    // For nodejs:
+    // "lib": ["esnext"],
+    "lib": ["ES2024"],
+
+    // Other Outputs
     "sourceMap": true,
     "outDir": "dist",
+
+
+    // Stricter Typechecking Options
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+
+    // Style Options
+    // "noImplicitReturns": true,
+    // "noImplicitOverride": true,
+    // "noUnusedLocals": true,
+    // "noUnusedParameters": true,
+    // "noFallthroughCasesInSwitch": true,
+    // "noPropertyAccessFromIndexSignature": true,
     "allowImportingTsExtensions": true,
     "noEmit": true,
+    
+
+    // Recommended Options
+    "strict": true,
+    "jsx": "react-jsx",
+    "verbatimModuleSyntax": true,
+    "isolatedModules": true,
+    "noUncheckedSideEffectImports": true,
+    "moduleDetection": "force",
+    "skipLibCheck": true,
   },
   "include": [
-    "src/**/*"
+    "src/**/*",
   ],
 }

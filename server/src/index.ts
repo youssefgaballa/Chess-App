@@ -1,23 +1,35 @@
+
 import express from "express";
 import cors from "cors";
-import { type Express } from "express";
-import router from "./routes/routes.ts";
-import {pool} from "./db/db.ts";
+import router from "./routes/index.ts";
+import client from "./database/index.ts";
 
-async function main() {
-  const client = await pool.connect();
-}
+const app = express();
 
-main()
-  .then(() => console.log('Connected to Postgres!'))
-  .catch(err => console.error('Error connecting to Postgres!', err));
+app.use("/api", router);
 
-const app: Express = express();
+
+
 
 app.use(express.json());
 app.use(cors({ credentials: true, origin: true }));
-app.use(router);
 
-app.listen(5000, () => {
-  console.log("Server is listening on port 5000!");
-});
+(async () => {
+  await client.connect();
+
+  app.listen(process.env.BACKEND_PORT, () => {
+    console.log(`Server is listening on port ${process.env.BACKEND_PORT}.`);
+  });
+  //console.log(client.connectionParameters);
+  const results = await client
+    .query("SELECT * FROM notes")
+    .then((payload) => {
+      return payload.rows;
+    })
+    .catch(() => {
+      throw new Error("Query failed");
+    });
+  console.log(results);
+  
+})().catch((e) => { console.error(e); });
+

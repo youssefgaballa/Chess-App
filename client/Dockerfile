@@ -1,8 +1,8 @@
-FROM node:iron-trixie-slim
+FROM node:lts-trixie
 
-WORKDIR /app
+WORKDIR /usr/src/app
 COPY package*.json ./
-RUN npm ci 
+RUN npm install
 COPY . .
 EXPOSE 5173
 CMD ["npm", "run", "dev"] 

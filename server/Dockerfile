@@ -1,7 +1,13 @@
-FROM node:iron-trixie-slim
+FROM node:lts-trixie
 
-WORKDIR /app
+WORKDIR /usr/src/app
+
 COPY package*.json ./
-RUN npm ci 
+
+RUN npm install
+
 COPY . .
-CMD ["npm", "run", "start"]
+
+EXPOSE 5000
+
+CMD [ "npm", "run", "start" ]
