@@ -9,7 +9,7 @@ export function Home() {
     <>
       <div>
         <header className="text-center">
-          Home page!
+          Home page.
         </header>
       </div>
     </>
