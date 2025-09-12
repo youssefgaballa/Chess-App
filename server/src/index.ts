@@ -8,9 +8,6 @@ const app = express();
 
 app.use("/api", router);
 
-
-
-
 app.use(express.json());
 app.use(cors({ credentials: true, origin: true }));
 
