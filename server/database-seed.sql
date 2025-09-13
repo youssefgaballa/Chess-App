@@ -1,8 +1,8 @@
 CREATE TABLE notes
 (
     id serial,
-    content text, 
     title text,
+    content text, 
     CONSTRAINT notes_pkey PRIMARY KEY (id)
 );
 

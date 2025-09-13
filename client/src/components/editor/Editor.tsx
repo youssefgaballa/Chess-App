@@ -12,9 +12,11 @@ import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
 import { editorTheme } from './theme/editorTheme';
 import ToolbarPlugin from './plugins/ToolbarPlugin';
 //import { $insertNodes } from 'lexical';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { SaveStatePlugin } from './plugins/SaveStatePlugin';
-import { useDataQuery, useDataMutation } from './hooks/saveStateHooks';
+import { useGetNotesQuery, usePublishMutation, useUpdateMutation } from './hooks/saveStateHooks';
+import { useParams } from 'react-router';
+import type { UseQueryResult } from '@tanstack/react-query';
 
 
 // later we'll replace this with an actual database
@@ -27,31 +29,55 @@ export default function Editor() {
     onError,
     nodes: [],
   }
-
+  const params = useParams();
+  const notesTitle = params.title?.replaceAll('-', ' ') || "";
+  // useState to manage title
+  //
+  const [title, setTitle] = useState(notesTitle);
   const [serializedNodes, setSerializedNodes] = React.useState("");
-  const { mutateAsync: saveText, isPending } = useDataMutation();
-  const { data } = useDataQuery();
+  const { mutateAsync: publishNotes, isPending: isPublishing } = usePublishMutation(title);
+  const { mutateAsync: updateNotes, isPending: isUpdating } = useUpdateMutation(title);
+
+  const { data } : UseQueryResult<string> = useGetNotesQuery({title, enabled: (title !== "")});
+
+  const [published, setPublished] = useState(false);
   console.log("serializedNodes = " + serializedNodes);
 
-  const onSave = () => {
-    saveText(serializedNodes);
+  const onPublish = () => {
+    publishNotes(serializedNodes);
+    setPublished(true);
+  }
+
+  const onUpdate = () => {
+    updateNotes(serializedNodes);
   }
 
   useEffect(() => {
-    setSerializedNodes(data);
+    if (title === "") {
+      return;
+    }
+
+      setPublished(true);
+      if (data) {
+        console.log("data = " + data.toString());
+        setSerializedNodes(data);
+      }
+
+
+    //setPublished(true);
   }, [data]);
 
   return (
     <div className="max-w-[50rem] h-[50%] mx-auto bg-white rounded-lg ">
       <LexicalComposer initialConfig={initialConfig}>
         <ToolbarPlugin />
+        {<input type="text" className="border border-black w-full" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)}/>}
         <RichTextPlugin
           contentEditable={
             <ContentEditable
               className="h-full focus:outline-none border border-black"
               aria-placeholder={'Enter some text...'}
-              placeholder={<>Enter some text...</>}
-              
+              placeholder={<></>}
             />
           }
           ErrorBoundary={LexicalErrorBoundary}
@@ -60,8 +86,11 @@ export default function Editor() {
         <HistoryPlugin />
         <AutoFocusPlugin />
         <SaveStatePlugin state={serializedNodes} onChange={(newState) => setSerializedNodes(newState)} />
-        <button onClick={onSave}>
-          {isPending ? "Saving..." : "Save"}
+        {!published && <button onClick={onPublish} className={`size-15 rounded-lg hover:bg-gray-100 ${isPublishing ? 'bg-gray-300 font-bold' : ''}`}>
+          {isPublishing ? "Publishing..." : "Publish"}
+        </button>}
+        <button onClick={onUpdate} className={`size-15 rounded-lg hover:bg-gray-100 ${isUpdating ? 'bg-gray-300 font-bold' : ''}`}>
+          {isUpdating ? "Updating..." : "Update"}
         </button>
       </LexicalComposer>
     </div>

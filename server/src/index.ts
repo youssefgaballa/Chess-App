@@ -6,11 +6,10 @@ import client from "./database/index.ts";
 
 const app = express();
 
-app.use("/api", router);
-
 app.use(express.json());
-app.use(cors({ credentials: true, origin: true }));
-
+app.use(cors({ credentials: true, origin: ['http://localhost:5173'] }));
+app.use("/", router);
+//
 (async () => {
   await client.connect();
 

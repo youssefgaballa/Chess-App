@@ -11,6 +11,7 @@ export const SaveStatePlugin = ({ state, onChange }: { state: string, onChange: 
   const [isFirstLoad, setIsFirstLoad] = useState(true);
 
   useEffect(() => {
+    // If there's no state or it's not the first load, do nothing
     if (!state || !isFirstLoad) {
       return;
     }
