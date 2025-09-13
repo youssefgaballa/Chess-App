@@ -1,7 +1,7 @@
 services:
   backend:
     container_name: nodejs-backend-container
-    build: ./server
+    build: ./nodejs-backend
     depends_on:
       postgres:
         condition: service_healthy
@@ -9,35 +9,35 @@ services:
     ports:
       - "${BACKEND_PORT}:${BACKEND_PORT}"
     env_file:
-      - ./server/example.env
+      - ./nodejs-backend/example.env
       - ./.env
     develop:
       watch: 
-        - path: ./server
+        - path: ./nodejs-backend
           action: rebuild
           ignore: 
             - node_modules
             - .git/
           target: /app
-        - path: ./server/package.json
+        - path: ./nodejs-backend/package.json
           action: rebuild
-        - path: ./server/tsconfig.json
+        - path: ./nodejs-backend/tsconfig.json
           action: rebuild
-        - path: ./docker-compose.yml
+        - path: ./docker-compose-nodejs.yml
           action: rebuild
   postgres:
     container_name: postgres-db-container
     image: postgres:14.1-alpine
     restart: on-failure:3
     env_file:
-      - ./server/example.env
+      - ./nodejs-backend/example.env
     ports:
       - "${POSTGRES_PORT}:${POSTGRES_PORT}"
     volumes:
       # When the PostgresSQL container is started it will run any scripts
       # provided in the `docker-entrypoint-initdb.d` directory, this connects
       # our seed file to that directory so that it gets run
-      - ./server/database-seed.sql:/docker-entrypoint-initdb.d/database-seed.sql
+      - ./nodejs-backend/database-seed.sql:/docker-entrypoint-initdb.d/database-seed.sql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U root"]
       interval: 2s

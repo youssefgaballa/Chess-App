@@ -1,6 +1,6 @@
 import { Link, Route, Routes } from "react-router-dom";
 import { useGetAllNotesQuery } from "./editor/hooks/saveStateHooks";
-import Editor from "./editor/Editor";
+//import Editor from "./editor/Editor";
 
 
 export const Notes = () => {
@@ -23,7 +23,7 @@ export const Notes = () => {
 
                   <strong>Title:</strong> {note.title}
                   <br />
-                <Link to={`/Notes/Editor/${note.title.replaceAll(" ", '-')}`}>Edit Note:</Link>
+                <Link to={`/Notes/Editor/${note.title.replaceAll(" ", '-')}`} className='hover:text-blue-500'>Edit Note:</Link>
                 
               </li>
             ))}
