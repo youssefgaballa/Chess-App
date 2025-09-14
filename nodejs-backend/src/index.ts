@@ -1,15 +1,23 @@
 
 import express from "express";
 import cors from "cors";
-import router from "./routes/index.ts";
+import router from "./routes/notes.ts";
 import client from "./database/index.ts";
+import usersRouter from "./routes/users.ts";
 
 const app = express();
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }))
 app.use(cors({ credentials: true, origin: ['http://localhost:5173'] }));
-app.use("/", router);
-//
+// app.use((req, res, next) => {
+//   console.log(`${req.method} ${req.path}`);
+//   next();
+// });
+app.use("/", usersRouter);
+app.use("/", router);//
+
+
 (async () => {
   await client.connect();
 
@@ -26,6 +34,7 @@ app.use("/", router);
       throw new Error("Query failed");
     });
   console.log(results);
+
   
 })().catch((e) => { console.error(e); });
 

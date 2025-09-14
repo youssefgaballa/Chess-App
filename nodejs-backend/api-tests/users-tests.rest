@@ -1,0 +1,36 @@
+
+# requires vs code REST Client extension
+# I perfer it over Postman cause of some bugs I'm experiencing with it
+# also it feels better to centralize api tests in a single file
+
+###
+# GET a user
+GET http://localhost:5000/users/bubba
+
+###
+# GET all users
+GET http://localhost:5000/users
+
+###
+POST http://localhost:5000/users
+Content-Type: application/json
+
+{
+  "username": "bubba",
+  "email": "bubba@exampledomain.com",
+  "role": "user"
+
+}
+
+###
+
+DELETE http://localhost:5000/users/bubba
+
+###
+PATCH http://localhost:5000/users/bubba
+Content-Type: application/json
+
+{
+  "email": "bubba02@exampledomain.com"
+}
+###

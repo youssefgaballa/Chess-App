@@ -12,7 +12,7 @@ export default function NavBar() {
             <Link to="/Notes" className="flex items-center h-full p-5 hover:bg-green-500 ">Notes</Link>
                 </li>
                 <li className="">
-            <Link to="/SampleComponent" className="flex items-center h-full p-5 hover:bg-green-500 " >Sample Component</Link>
+            <Link to="/Registration" className="flex items-center h-full p-5 hover:bg-green-500 " >Register</Link>
                 </li>
             </ul>
 
