@@ -21,5 +21,13 @@ export default defineConfig({
     origin: 'http://127.0.0.1:5173',
     watch: { usePolling: true },
   },
-
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          ui: ['@mui/icons-material']
+        }
+      }
+    }
+  }
 })

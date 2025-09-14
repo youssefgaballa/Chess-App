@@ -1,0 +1,32 @@
+
+# requires vs code REST Client extension
+# I perfer it over Postman cause of some bugs I'm experiencing with it
+# also it feels better to centralize api tests in a single file
+
+# root's password is 12432543234
+# jschlatt's password is 1242353453234
+
+###
+# GET all users
+GET http://localhost:5000/users
+
+###
+POST http://localhost:5000/authentication
+Content-Type: application/json
+
+{
+  "username": "root",
+  "password": "12432543234"
+}
+###
+
+POST http://localhost:5000/authentication
+Content-Type: application/json
+
+{
+  "username": "jschlatt",
+  "password": "1242353453234"
+}
+###
+
+#

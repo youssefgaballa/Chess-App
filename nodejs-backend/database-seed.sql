@@ -14,9 +14,9 @@ INSERT INTO notes(content, title) VALUES
 CREATE TABLE IF NOT EXISTS users
 (
     user_id serial,
-    username text UNIQUE,
+    username text UNIQUE NOT NULL,
     email text UNIQUE,
-    pwd text,
+    pwd text NOT NULL,
     user_role text,
     CONSTRAINT users_pkey PRIMARY KEY (user_id)
 );

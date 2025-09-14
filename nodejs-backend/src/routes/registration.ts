@@ -13,7 +13,7 @@ registrationRouter.post('/registration', async (req, res) => {
     res.status(400).json({'Client Error': 'Username and password are required.'})
     return;
   }
-  const duplicate = await client
+  const duplicateUsername = await client
     .query("SELECT (username) FROM users WHERE username = $1", [newUsername])
     .then((payload) => {
       return payload.rows;
@@ -21,11 +21,24 @@ registrationRouter.post('/registration', async (req, res) => {
     .catch(() => {
       throw new Error("Query failed");
     });
-  console.log(duplicate[0]);
-  console.log(duplicate.length);
-  if (duplicate[0]) {
+  console.log(duplicateUsername[0]);
+  if (duplicateUsername[0]) {
     console.log("duplicate user in database");
     res.status(400).json({ 'Client Error': 'Username taken' });
+    return;
+  }
+  const duplicateEmail = await client
+    .query("SELECT (email) FROM users WHERE email = $1", [newEmail])
+    .then((payload) => {
+      return payload.rows;
+    })
+    .catch(() => {
+      throw new Error("Query failed");
+    });
+  console.log(duplicateEmail[0]);
+  if (duplicateEmail[0]) {
+    console.log("duplicate email in database");
+    res.status(400).json({ 'Client Error': 'Email taken' });
     return;
   }
   const hashedPwd = await hash(newPassword, 10);

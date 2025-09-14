@@ -5,6 +5,7 @@ import notesRouter from "./routes/notes.ts";
 import client from "./database/index.ts";
 import usersRouter from "./routes/users.ts";
 import registrationRouter from "./routes/registration.ts";
+import authenticationRouter from "./routes/authentication.ts";
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use(cors({ credentials: true, origin: ['http://localhost:5173'] }));
 app.use("/", usersRouter);
 app.use("/", notesRouter);//
 app.use('/', registrationRouter);
+app.use('/', authenticationRouter);
 
 
 (async () => {
