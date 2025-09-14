@@ -2,7 +2,9 @@ import express, { Router } from "express";
 import client from "../database/index.ts";
 
 const usersRouter: Router = express.Router();
-//TODO put actual requests in controller
+//TODO; put actual requests in controller
+//TODO: have not found messages
+//TODO: remove endpoints that shouldnt be called by frontend
 
 usersRouter.get('/users/:username', async (req, res) => {
   //console.log("get single user");
@@ -31,18 +33,18 @@ usersRouter.get('/users', async (req, res) => {
 
 
 
-usersRouter.post('/users', async (req, res) => {
+// usersRouter.post('/users', async (req, res) => {
 
-  const { username: newUsername, email: newEmail, role: newRole } = req.body;
-  //const { "username": newUsername } = req.body;
-  const result = await client.query("INSERT INTO users (username, email, user_role) VALUES ($1, $2, $3) RETURNING *", [newUsername, newEmail, newRole])
-    .catch(() => {
-      throw new Error("Query failed");
-    });
-  res.send(result);
-  //res.send({ status: true });
+//   const { username: newUsername, email: newEmail, role: newRole } = req.body;
+//   //const { "username": newUsername } = req.body;
+//   const result = await client.query("INSERT INTO users (username, email, user_role) VALUES ($1, $2, $3) RETURNING *", [newUsername, newEmail, newRole])
+//     .catch(() => {
+//       throw new Error("Query failed");
+//     });
+//   res.send(result);
+//   //res.send({ status: true });
 
-});
+// });
 
 // update email
 usersRouter.patch("/users/:username", async (req, res) => {

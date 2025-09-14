@@ -1,10 +1,10 @@
 import express, { Router } from "express";
 import client from "../database/index.ts";
 
-const router: Router = express.Router();
+const notesRouter: Router = express.Router();
 //TODO put actual requests in controller
-
-router.get("/data/:title", async (req, res) => {
+//TODO have not found messages
+notesRouter.get("/data/:title", async (req, res) => {
   //console.log("/get");
   const title = req.params.title;
   const results = await client
@@ -17,7 +17,7 @@ router.get("/data/:title", async (req, res) => {
     });
   res.send(results[0].content);
 });
-router.get("/data", async (req, res) => {
+notesRouter.get("/data", async (req, res) => {
   //console.log("/get all");  
   const results = await client
     .query("SELECT * FROM notes")
@@ -30,7 +30,7 @@ router.get("/data", async (req, res) => {
   res.send(results);
 });
 
-router.post("/data/:title", async (req, res) => {
+notesRouter.post("/data/:title", async (req, res) => {
   const { text: newText } = req.body;
   //console.log("text = " + newText);
   const title = req.params.title;
@@ -42,14 +42,14 @@ router.post("/data/:title", async (req, res) => {
 
 });
 
-router.patch("/data/:title", async (req, res) => {
+notesRouter.patch("/data/:title", async (req, res) => {
   const { text: newText } = req.body;
   const title = req.params.title;
   const results = await client.query("UPDATE notes SET content = $1 WHERE title = $2 RETURNING *", [newText, title]);
   res.send({ status: true });
 });
 
-router.delete("/data/:title", async (req, res) => {
+notesRouter.delete("/data/:title", async (req, res) => {
   //console.log(req.params.title);
   const title = req.params.title;
   const results = await client.query("DELETE FROM notes WHERE title = $1", [title]);
@@ -58,4 +58,4 @@ router.delete("/data/:title", async (req, res) => {
 
 
 
-export default router;
+export default notesRouter;

@@ -1,9 +1,10 @@
 
 import express from "express";
 import cors from "cors";
-import router from "./routes/notes.ts";
+import notesRouter from "./routes/notes.ts";
 import client from "./database/index.ts";
 import usersRouter from "./routes/users.ts";
+import registrationRouter from "./routes/registration.ts";
 
 const app = express();
 
@@ -15,7 +16,8 @@ app.use(cors({ credentials: true, origin: ['http://localhost:5173'] }));
 //   next();
 // });
 app.use("/", usersRouter);
-app.use("/", router);//
+app.use("/", notesRouter);//
+app.use('/', registrationRouter);
 
 
 (async () => {
