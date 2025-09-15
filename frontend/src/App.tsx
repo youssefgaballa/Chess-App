@@ -1,6 +1,7 @@
 import './App.css'
 import Editor from './components/editor/Editor';
 import { Home } from './components/Home';
+import { LoginUser } from './components/LoginUser';
 import NavBar from './components/Navbar';
 import { Notes } from './components/Notes';
 import { NotFound } from './components/NotFound';
@@ -21,6 +22,7 @@ function App() {
         <Route path="/Notes/Editor/:title" element={<Editor />} />
         <Route path="/Notes/Editor" element={<Editor />} />
         <Route path="/Registration" element={<RegisterUser />} />
+        <Route path="/Login" element={<LoginUser />} />
       </Routes>
     </>
   )

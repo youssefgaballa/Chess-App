@@ -7,6 +7,7 @@ const authenticationRouter: Router = express.Router();
 // TODO: put duplicate logic (also in registration.ts) in different file
 
 authenticationRouter.post('/authentication', async (req, res) => {
+  console.log(process.env.ACCESS_TOKEN_SECRET);
   const { username: username, password: password} = req.body;
   if (!username || !password) {
     res.status(400).json({ 'Client Error': 'Username and password are required.' })
@@ -27,6 +28,14 @@ authenticationRouter.post('/authentication', async (req, res) => {
   }
   const passwordMatch = await compare(password, foundUser.pwd);
   // TODO: figureout how to use jwt
+
+  //console.log(passwordMatch);
+  // if (passwordMatch) {
+  //   const accessToken = sign({ username: foundUser.username },
+  //     `${process.env.ACCESS_TOKEN_SECRET}`, { expiresIn: '60s' });
+  //   const refreshToken = sign({ username: foundUser.username },
+  //     `${process.env.REFRESH_TOKEN_SECRET}`, { expiresIn: '24hr' });
+  // }
   res.send('yay')
 });
 

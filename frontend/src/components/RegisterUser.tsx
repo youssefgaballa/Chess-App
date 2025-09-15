@@ -1,4 +1,6 @@
-import { useRef, useState, useEffect, lazy, type ChangeEvent } from 'react';
+import {  useState, useEffect,  type ChangeEvent } from 'react';
+import { Link } from "react-router-dom";
+
 import {Error, Check, Info, Visibility, VisibilityOff} from '@mui/icons-material'
 import axios from 'axios';
 
@@ -16,6 +18,7 @@ const emailRegexp: RegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 export const RegisterUser = () => {
   // TODO: add signin link + route
   // TODO: validate email by sending an email to it
+  // TODO: route to login page after successful registration
   const [username, setUsername] = useState('');
   const [isUsernameValid, setIsUsernameValid] = useState(false);
   const [usernameFocus, setUsernameFocus] = useState(false);
@@ -100,91 +103,91 @@ export const RegisterUser = () => {
   };
 
   return (
-    <>
-      <div className='flex w-full h-full '>
+
+    <div className='flex w-full h-full '>
       <div className='w-[30%] h-full'></div>
-      <div className="text-center w-[40%] h-[90%] mt-[2%] pt-[5%] text-2xl rounded-xl shadow-lg border border-black">
-          <form onSubmit={handleSubmit} action='#' className='flex flex-col items-center justify-start text-center mt-[3%] mb-[3%] w-full h-[85%]'>
-            <span className='font-bold text-5xl mb-[3%]'>User Registration</span><br />
-            <span className='text-xl'>Sign up for a free user account or login.</span><br />
+      <div className="text-center w-[40%] h-[80%] mt-[2%] pt-[5%] text-2xl rounded-xl shadow-lg border border-black">
+        <form onSubmit={handleSubmit} className='flex flex-col items-center justify-start text-center mt-[3%] mb-[3%] w-full h-[85%]'>
+          <span className='font-bold text-5xl mb-[3%]'>User Registration</span><br />
+          <span className='text-xl'>Sign up for a free user account or login.</span><br />
           <label htmlFor='username'>Username: <span className='text-red-500'>*</span></label>
           <input type='text' onChange={(event) => changeUsername(event)} onFocus={() => setUsernameFocus(true)} onBlur={() => setUsernameFocus(false)}
             required className=" focus:outline-none border border-black rounded-md" />
           {isUsernameValid ? <span hidden={username ? false : true} ><Check style={{ fill: 'green' }} /></span> : <span hidden={username ? false : true} ><Error style={{ fill: 'red' }} /></span>}
-            
-          {usernameFocus && username && !isUsernameValid && 
+
+          {usernameFocus && username && !isUsernameValid &&
             <div className='flex justify-center'>
               <div className='text-center text-xl bg-red-300 w-[20vw] rounded-md p-[2%] mt-[1%]'>
-                Invalid Username:<br/>
+                Invalid Username:<br />
                 Username must be 3 to 20 characters long, start with a letter, and contain only letters, numbers, and underscores.
               </div>
             </div>
           }
-            
-            <label htmlFor='email'>Email: <span className='text-red-500'>*</span></label>
-            <input type='text' onChange={(event) => changeEmail(event)} onFocus={() => setEmailFocus(true)} onBlur={() => setEmailFocus(false)}
-              required className=" focus:outline-none border border-black rounded-md" />
-            {isEmailValid ? <span hidden={email ? false : true} ><Check style={{ fill: 'green' }} /></span> : <span hidden={email ? false : true} ><Error style={{ fill: 'red' }} /></span>}
-            {emailFocus && email && !isEmailValid &&
-              <div className='flex justify-center'>
-                <div className='text-center text-xl bg-red-300 w-[20vw] rounded-md p-[2%] mt-[1%]'>
-                  Invalid Email:<br />
-                  Email must be a valid email address.
-                </div>
-              </div>
-            }
 
-            <label htmlFor='password'>Password: <span className='text-red-500'>*</span></label>
-            <div className='relative'>
-          <input type={isPasswordVisible ? 'text' : 'password'} onChange={(event) => changePassword(event)} onFocus={() => setPasswordFocus(true)} onBlur={() => setPasswordFocus(false)}
-                required className="focus:outline-none border border-black rounded-md" />
-              <button className='' onClick={() => setIsPasswordVisible(!isPasswordVisible)} type='button'>
-                {isPasswordVisible ? <Visibility style={{ position: 'absolute', right: '3%', bottom:'15%', cursor: 'pointer' }} /> : <VisibilityOff style={{ position: 'absolute', right: '3%', bottom:'15%', cursor: 'pointer' }} />}
-              </button>
+          <label htmlFor='email'>Email: <span className='text-red-500'>*</span></label>
+          <input type='text' onChange={(event) => changeEmail(event)} onFocus={() => setEmailFocus(true)} onBlur={() => setEmailFocus(false)}
+            required className=" focus:outline-none border border-black rounded-md" />
+          {isEmailValid ? <span hidden={email ? false : true} ><Check style={{ fill: 'green' }} /></span> : <span hidden={email ? false : true} ><Error style={{ fill: 'red' }} /></span>}
+          {emailFocus && email && !isEmailValid &&
+            <div className='flex justify-center'>
+              <div className='text-center text-xl bg-red-300 w-[20vw] rounded-md p-[2%] mt-[1%]'>
+                Invalid Email:<br />
+                Email must be a valid email address.
+              </div>
             </div>
+          }
+
+          <label htmlFor='password'>Password: <span className='text-red-500'>*</span></label>
+          <div className='relative'>
+            <input type={isPasswordVisible ? 'text' : 'password'} onChange={(event) => changePassword(event)} onFocus={() => setPasswordFocus(true)} onBlur={() => setPasswordFocus(false)}
+              required className="focus:outline-none border border-black rounded-md" />
+            <button className='' onClick={() => setIsPasswordVisible(!isPasswordVisible)} type='button'>
+              {isPasswordVisible ? <Visibility style={{ position: 'absolute', right: '3%', bottom: '15%', cursor: 'pointer' }} /> : <VisibilityOff style={{ position: 'absolute', right: '3%', bottom: '15%', cursor: 'pointer' }} />}
+            </button>
+          </div>
           {isPasswordValid ? <span hidden={password ? false : true} ><Check style={{ fill: 'green' }} /></span> : <span hidden={password ? false : true} ><Error style={{ fill: 'red' }} /></span>}
           {passwordFocus && password && !isPasswordValid &&
             <div className='flex justify-center'>
-                <div className='text-center text-xl bg-red-300 w-[20vw] rounded-md p-[2%] mt-[1%]'>
+              <div className='text-center text-xl bg-red-300 w-[20vw] rounded-md p-[2%] mt-[1%]'>
                 Invalid Password:<br />
                 Password must be at least 8 characters long and contain
                 an uppercase letter, lowercase letter, a number, and a symbol (!@#$%^&*()).
               </div>
             </div>
-            }
-            <label htmlFor='confirmPassword'>Confirm Password: <span className='text-red-500'>*</span></label>
-            <div className='relative'>
+          }
+          <label htmlFor='confirmPassword'>Confirm Password: <span className='text-red-500'>*</span></label>
+          <div className='relative'>
             <input type={isConfirmPasswordVisible ? 'text' : 'password'} onChange={(event) => changeConfirmPassword(event)} onFocus={() => setConfirmPasswordFocus(true)} onBlur={() => setConfirmPasswordFocus(false)}
               required className=" focus:outline-none border border-black rounded-md" />
             <button className='' onClick={() => setIsConfirmPasswordVisible(!isConfirmPasswordVisible)} type='button'>
-                {isConfirmPasswordVisible ? <Visibility style={{ position: 'absolute', right: '3%', bottom: '15%', cursor: 'pointer' }} /> : <VisibilityOff style={{ position: 'absolute', right: '3%', bottom: '15%', cursor: 'pointer' }} />}
-              </button>
+              {isConfirmPasswordVisible ? <Visibility style={{ position: 'absolute', right: '3%', bottom: '15%', cursor: 'pointer' }} /> : <VisibilityOff style={{ position: 'absolute', right: '3%', bottom: '15%', cursor: 'pointer' }} />}
+            </button>
+          </div>
+          {isConfirmPasswordValid ? <span hidden={confirmPassword ? false : true} ><Check style={{ fill: 'green' }} /></span> : <span hidden={confirmPassword ? false : true} ><Error style={{ fill: 'red' }} /></span>}
+          {confirmPasswordFocus && confirmPassword && !isConfirmPasswordValid &&
+            <div className='flex justify-center'>
+              <div className='text-center text-xl bg-red-300 w-[20vw] rounded-md p-[2%] mt-[1%]'>
+                Invalid Password Confirmation:<br />
+                Password and Confirm Password must match.
               </div>
-            {isConfirmPasswordValid ? <span hidden={confirmPassword ? false : true} ><Check style={{ fill: 'green' }} /></span> : <span hidden={confirmPassword ? false : true} ><Error style={{ fill: 'red' }} /></span>}
-            {confirmPasswordFocus && confirmPassword && !isConfirmPasswordValid &&
-              <div className='flex justify-center'>
-                <div className='text-center text-xl bg-red-300 w-[20vw] rounded-md p-[2%] mt-[1%]'>
-                  Invalid Password Confirmation:<br />
-                  Password and Confirm Password must match.
-                </div>
-              </div>
-            }
-            
-            {false && <div className='flex justify-center mt-[3%] text-xl'><div className='bg-gray-400 w-[60%] rounded-xl'><Info /><br />The <span className='text-red-500'>*</span> denotes a required field.</div></div>}
-            <br />
-            <button type='submit' disabled={!isUsernameValid || !isPasswordValid || !isConfirmPasswordValid ? true : false}
-              className={`w-[30%] h-[6%] rounded-lg hover:bg-gray-100 
-              ${!isUsernameValid || !isPasswordValid || !isConfirmPasswordValid ? 'bg-gray-100 text-gray-400 border border-black' : 'bg-green-300 font-bold text-black border border-black'}`}>Register</button>
-            <br/>
-            <div hidden={errorMessage ? false : true}><span hidden={errorMessage ? false : true} ><Error style={{ fill: 'red' }} /></span>{errorMessage}</div>
-        </form>
+            </div>
+          }
 
+          {false && <div className='flex justify-center mt-[3%] text-xl'><div className='bg-gray-400 w-[60%] rounded-xl'><Info /><br />The <span className='text-red-500'>*</span> denotes a required field.</div></div>}
+          <br />
+          <button type='submit' disabled={!isUsernameValid || !isPasswordValid || !isConfirmPasswordValid ? true : false}
+            className={`mt-[2%] mb-[2%] w-[15%] p-[1.5%] bg-blue-500 text-white rounded-md
+              ${!isUsernameValid || !isPasswordValid || !isConfirmPasswordValid ? 'cursor-not-allowed bg-gray-400' : 'hover:bg-blue-700 cursor-pointer'}`}>Register</button>
+          <br />
+          <div hidden={errorMessage ? false : true}><span hidden={errorMessage ? false : true} ><Error style={{ fill: 'red' }} /></span>{errorMessage}</div>
+        </form>
+        <div>Already have an account? <Link to="/Login" className='text-blue-500'>Login</Link></div>
       </div >
-        <div className='w-[30%] h-full'></div>
-      </div>
-      </>
-        
-        
-    )
+      <div className='w-[30%] h-full'></div>
+    </div>
+
+
+
+  )
 
 }
