@@ -5,6 +5,8 @@
 
 # root's password is 12432543234
 # jschlatt's password is 1242353453234
+# jgoldberg's password is 24325
+# bob's password is 252453
 
 ###
 # GET all users

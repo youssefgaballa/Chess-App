@@ -5,4 +5,4 @@ Can create Notes,
 ### TODO: 
 General: Js-docs, tests, dev-environments, kubernetes  
 Frontend: tanstack-query, react rtk  
-Backend: Authentication, Authorication, Message queues (RabbitMQ), kafka, streams, security,
+Backend: Authentication, Authorization, Message queues (RabbitMQ), kafka, streams, security,

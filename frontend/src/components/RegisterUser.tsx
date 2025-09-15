@@ -1,5 +1,5 @@
 import {  useState, useEffect,  type ChangeEvent } from 'react';
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 import {Error, Check, Info, Visibility, VisibilityOff} from '@mui/icons-material'
 import axios from 'axios';
@@ -38,28 +38,28 @@ export const RegisterUser = () => {
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
 
 
-  const [errorMessage, setErrorMesssage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
   //const [success, setSuccess] = useState(false);
 
   useEffect(() => {
     const match = usernameRegexp.test(username);
     //check if username is unique in database
     setIsUsernameValid(match);
-    setErrorMesssage('');
+    setErrorMessage('');
     //console.log(match);
   }, [username]);
 
   useEffect(() => {
     const match = emailRegexp.test(email);
     setIsEmailValid(match);
-    setErrorMesssage('');
+    setErrorMessage('');
   }, [email]);
 
   useEffect(() => {
     const match = passwordRegexp.test(password);
     setIsPasswordValid(match);
     setIsConfirmPasswordValid(password === confirmPassword);
-    setErrorMesssage('');
+    setErrorMessage('');
     //console.log(match);
   }, [password, confirmPassword]); 
 
@@ -92,11 +92,11 @@ export const RegisterUser = () => {
     const response = await axios.post('http://localhost:5000/registration', reqBody).catch((error) => {
       console.log(error);
       if (!error?.response) {
-        setErrorMesssage("No response from server");
+        setErrorMessage("No response from server");
       } else if (error.response?.status === 400) {
-        setErrorMesssage(error.response.data['Client Error']);
+        setErrorMessage(error.response.data['Client Error']);
       } else {
-        setErrorMesssage("Registration Failed");
+        setErrorMessage("Registration Failed");
       }
     });
     console.log(response);
@@ -105,15 +105,16 @@ export const RegisterUser = () => {
   return (
 
     <div className='flex w-full h-full '>
-      <div className='w-[30%] h-full'></div>
-      <div className="text-center w-[40%] h-[80%] mt-[2%] pt-[5%] text-2xl rounded-xl shadow-lg border border-black">
+      <div className='w-[30vw] h-full'></div>
+      <div className="text-center w-[40vw] h-[80vh] mt-[2%] pt-[5%] text-2xl rounded-xl shadow-lg border border-black overflow-auto">
         <form onSubmit={handleSubmit} className='flex flex-col items-center justify-start text-center mt-[3%] mb-[3%] w-full h-[85%]'>
           <span className='font-bold text-5xl mb-[3%]'>User Registration</span><br />
           <span className='text-xl'>Sign up for a free user account or login.</span><br />
           <label htmlFor='username'>Username: <span className='text-red-500'>*</span></label>
           <input type='text' onChange={(event) => changeUsername(event)} onFocus={() => setUsernameFocus(true)} onBlur={() => setUsernameFocus(false)}
             required className=" focus:outline-none border border-black rounded-md" />
-          {isUsernameValid ? <span hidden={username ? false : true} ><Check style={{ fill: 'green' }} /></span> : <span hidden={username ? false : true} ><Error style={{ fill: 'red' }} /></span>}
+          {isUsernameValid ? <span hidden={username ? false : true} ><Check style={{ fill: 'green' }} /></span>
+            : <span hidden={username ? false : true} ><Error style={{ fill: 'red' }} /></span>}
 
           {usernameFocus && username && !isUsernameValid &&
             <div className='flex justify-center'>
@@ -127,7 +128,8 @@ export const RegisterUser = () => {
           <label htmlFor='email'>Email: <span className='text-red-500'>*</span></label>
           <input type='text' onChange={(event) => changeEmail(event)} onFocus={() => setEmailFocus(true)} onBlur={() => setEmailFocus(false)}
             required className=" focus:outline-none border border-black rounded-md" />
-          {isEmailValid ? <span hidden={email ? false : true} ><Check style={{ fill: 'green' }} /></span> : <span hidden={email ? false : true} ><Error style={{ fill: 'red' }} /></span>}
+          {isEmailValid ? <span hidden={email ? false : true} ><Check style={{ fill: 'green' }} /></span>
+            : <span hidden={email ? false : true} ><Error style={{ fill: 'red' }} /></span>}
           {emailFocus && email && !isEmailValid &&
             <div className='flex justify-center'>
               <div className='text-center text-xl bg-red-300 w-[20vw] rounded-md p-[2%] mt-[1%]'>
@@ -139,13 +141,16 @@ export const RegisterUser = () => {
 
           <label htmlFor='password'>Password: <span className='text-red-500'>*</span></label>
           <div className='relative'>
-            <input type={isPasswordVisible ? 'text' : 'password'} onChange={(event) => changePassword(event)} onFocus={() => setPasswordFocus(true)} onBlur={() => setPasswordFocus(false)}
+            <input type={isPasswordVisible ? 'text' : 'password'} onChange={(event) => changePassword(event)}
+              onFocus={() => setPasswordFocus(true)} onBlur={() => setPasswordFocus(false)}
               required className="focus:outline-none border border-black rounded-md" />
             <button className='' onClick={() => setIsPasswordVisible(!isPasswordVisible)} type='button'>
-              {isPasswordVisible ? <Visibility style={{ position: 'absolute', right: '3%', bottom: '15%', cursor: 'pointer' }} /> : <VisibilityOff style={{ position: 'absolute', right: '3%', bottom: '15%', cursor: 'pointer' }} />}
+              {isPasswordVisible ? <Visibility style={{ position: 'absolute', right: '3%', bottom: '15%', cursor: 'pointer' }} />
+                : <VisibilityOff style={{ position: 'absolute', right: '3%', bottom: '15%', cursor: 'pointer' }} />}
             </button>
           </div>
-          {isPasswordValid ? <span hidden={password ? false : true} ><Check style={{ fill: 'green' }} /></span> : <span hidden={password ? false : true} ><Error style={{ fill: 'red' }} /></span>}
+          {isPasswordValid ? <span hidden={password ? false : true} ><Check style={{ fill: 'green' }} /></span>
+            : <span hidden={password ? false : true} ><Error style={{ fill: 'red' }} /></span>}
           {passwordFocus && password && !isPasswordValid &&
             <div className='flex justify-center'>
               <div className='text-center text-xl bg-red-300 w-[20vw] rounded-md p-[2%] mt-[1%]'>
@@ -157,13 +162,16 @@ export const RegisterUser = () => {
           }
           <label htmlFor='confirmPassword'>Confirm Password: <span className='text-red-500'>*</span></label>
           <div className='relative'>
-            <input type={isConfirmPasswordVisible ? 'text' : 'password'} onChange={(event) => changeConfirmPassword(event)} onFocus={() => setConfirmPasswordFocus(true)} onBlur={() => setConfirmPasswordFocus(false)}
+            <input type={isConfirmPasswordVisible ? 'text' : 'password'} onChange={(event) => changeConfirmPassword(event)}
+              onFocus={() => setConfirmPasswordFocus(true)} onBlur={() => setConfirmPasswordFocus(false)}
               required className=" focus:outline-none border border-black rounded-md" />
             <button className='' onClick={() => setIsConfirmPasswordVisible(!isConfirmPasswordVisible)} type='button'>
-              {isConfirmPasswordVisible ? <Visibility style={{ position: 'absolute', right: '3%', bottom: '15%', cursor: 'pointer' }} /> : <VisibilityOff style={{ position: 'absolute', right: '3%', bottom: '15%', cursor: 'pointer' }} />}
+              {isConfirmPasswordVisible ? <Visibility style={{ position: 'absolute', right: '3%', bottom: '15%', cursor: 'pointer' }} />
+                : <VisibilityOff style={{ position: 'absolute', right: '3%', bottom: '15%', cursor: 'pointer' }} />}
             </button>
           </div>
-          {isConfirmPasswordValid ? <span hidden={confirmPassword ? false : true} ><Check style={{ fill: 'green' }} /></span> : <span hidden={confirmPassword ? false : true} ><Error style={{ fill: 'red' }} /></span>}
+          {isConfirmPasswordValid ? <span hidden={confirmPassword ? false : true} ><Check style={{ fill: 'green' }} /></span>
+            : <span hidden={confirmPassword ? false : true} ><Error style={{ fill: 'red' }} /></span>}
           {confirmPasswordFocus && confirmPassword && !isConfirmPasswordValid &&
             <div className='flex justify-center'>
               <div className='text-center text-xl bg-red-300 w-[20vw] rounded-md p-[2%] mt-[1%]'>
@@ -173,17 +181,19 @@ export const RegisterUser = () => {
             </div>
           }
 
-          {false && <div className='flex justify-center mt-[3%] text-xl'><div className='bg-gray-400 w-[60%] rounded-xl'><Info /><br />The <span className='text-red-500'>*</span> denotes a required field.</div></div>}
+          {/* && <div className='flex justify-center mt-[3%] text-xl'><div className='bg-gray-400 w-[60%] rounded-xl'><Info /><br />
+            The <span className='text-red-500'>*</span> denotes a required field.</div></div> */}
           <br />
           <button type='submit' disabled={!isUsernameValid || !isPasswordValid || !isConfirmPasswordValid ? true : false}
-            className={`mt-[2%] mb-[2%] w-[15%] p-[1.5%] bg-blue-500 text-white rounded-md
+            className={`mt-[2%] mb-[2%] w-[25%] p-[1.5%] bg-blue-500 text-white rounded-md
               ${!isUsernameValid || !isPasswordValid || !isConfirmPasswordValid ? 'cursor-not-allowed bg-gray-400' : 'hover:bg-blue-700 cursor-pointer'}`}>Register</button>
           <br />
           <div hidden={errorMessage ? false : true}><span hidden={errorMessage ? false : true} ><Error style={{ fill: 'red' }} /></span>{errorMessage}</div>
+          <div>Already have an account? <Link to="/Login" className='text-blue-500'>Login</Link></div>
         </form>
-        <div>Already have an account? <Link to="/Login" className='text-blue-500'>Login</Link></div>
+        
       </div >
-      <div className='w-[30%] h-full'></div>
+      <div className='w-[30vw] h-full'></div>
     </div>
 
 

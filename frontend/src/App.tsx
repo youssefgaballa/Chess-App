@@ -6,7 +6,7 @@ import NavBar from './components/Navbar';
 import { Notes } from './components/Notes';
 import { NotFound } from './components/NotFound';
 import { RegisterUser } from './components/RegisterUser';
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router";
 
 
 function App() {

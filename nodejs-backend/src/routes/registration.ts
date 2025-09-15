@@ -7,6 +7,11 @@ const registrationRouter: Router = express.Router();
 
 //Register new user
 registrationRouter.post('/registration', async (req, res) => {
+  //const hash3 = await hash('252453', 10);
+  //const hash4 = await hash('332252', 10);
+
+  //console.log("hash4: " + hash4);
+  //console.log("hash3: " + hash3);
   const { username: newUsername, email: newEmail, password: newPassword, role: newRole } = req.body;
   //const { "username": newUsername } = req.body;
   if (!newUsername || !newPassword) {
@@ -46,6 +51,7 @@ registrationRouter.post('/registration', async (req, res) => {
   // const hash2 = await hash('1242353453234', 10);
   // console.log("hash1: " + hash1);
   // console.log("hash2: " + hash2);
+
    const result = await client.query("INSERT INTO users (username, email, pwd, user_role) VALUES ($1, $2, $3, $4) RETURNING *", [newUsername, newEmail, hashedPwd, newRole])
      .catch(() => {
        throw new Error("Query failed");
