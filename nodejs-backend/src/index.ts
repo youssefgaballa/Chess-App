@@ -6,12 +6,15 @@ import client from "./database/index.ts";
 import usersRouter from "./routes/users.ts";
 import registrationRouter from "./routes/registration.ts";
 import authenticationRouter from "./routes/authentication.ts";
+import refreshRouter from "./routes/refresh.ts";
+import cookieParser from "cookie-parser";
 
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }))
 app.use(cors({ credentials: true, origin: ['http://localhost:5173'] }));
+app.use(cookieParser());
 // app.use((req, res, next) => {
 //   console.log(`${req.method} ${req.path}`);
 //   next();
@@ -20,6 +23,9 @@ app.use("/", usersRouter);
 app.use("/", notesRouter);//
 app.use('/', registrationRouter);
 app.use('/', authenticationRouter);
+// app.use('/', require('cookie-parser')());
+app.use('/', refreshRouter);
+
 
 
 (async () => {

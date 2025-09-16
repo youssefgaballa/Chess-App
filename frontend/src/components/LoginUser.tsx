@@ -1,13 +1,14 @@
 import { Visibility, VisibilityOff, Error } from "@mui/icons-material";
 import { Link, useNavigate, useLocation } from "react-router";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import axios from "axios";
-import useAuth from "../state/AuthorizationContext";
+import  AuthContext  from "../state/AuthorizationContext";
 
 export const LoginUser = () => {
   // TODO: route to home page after successful login and turn the Register and login
   // buttons into a logout button and profile button
-  const {userAuth, setUserAuth} = useAuth();
+  const userAuth = useContext(AuthContext)?.userAuth!;
+  const setUserAuth = useContext(AuthContext)?.setUserAuth!;
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -33,7 +34,9 @@ export const LoginUser = () => {
       password: password
     };
 
-    const response = await axios.post('http://localhost:5000/authentication', reqBody).catch((error) => { 
+    const response = await axios.post('http://localhost:5000/authentication', reqBody,
+      {withCredentials: true, headers: { 'Content-Type': 'application/json' } }
+      ).catch((error) => {
       console.log(error);
       if (!error?.response) {
         setErrorMessage("No response from server");

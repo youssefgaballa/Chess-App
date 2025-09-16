@@ -1,11 +1,15 @@
 import { Link, Route, Routes, useLocation } from "react-router";
 import { useGetAllNotesQuery } from "./editor/hooks/saveStateHooks";
+import AuthContext  from "../state/AuthorizationContext";
+import { useContext } from "react";
 //import Editor from "./editor/Editor";
 
 
 export const Notes = () => {
   const location = useLocation();
   const { data } = useGetAllNotesQuery();
+  const userAuth = useContext(AuthContext)?.userAuth!;
+  
 
   return ( 
     <>
@@ -23,7 +27,9 @@ export const Notes = () => {
 
                   <strong>Title:</strong> {note.title}
                   <br />
-                <Link to={`/Notes/Editor/${note.title.replaceAll(" ", '-')}`} state={{ from: location }} className='hover:text-blue-500'>Edit Note:</Link>
+                {userAuth.username &&
+                  <Link to={`/Notes/Editor/${note.title.replaceAll(" ", '-')}`} state={{ from: location }} className='hover:text-blue-500'>Edit Note:</Link>
+                }
                 
               </li>
             ))}

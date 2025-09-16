@@ -6,13 +6,20 @@ import NavBar from './components/Navbar';
 import { Notes } from './components/Notes';
 import { NotFound } from './components/NotFound';
 import { RegisterUser } from './components/RegisterUser';
-import { Routes, Route, Navigate } from "react-router";
-import useAuth from './state/AuthorizationContext';
+import { Routes, Route } from "react-router";
 import Unauthorized from './components/Unauthorized';
+import { Map } from './components/Map';
+import { useContext } from 'react';
+import AuthContext  from './state/AuthorizationContext';
 
 
 function App() {
-  const { userAuth, setUserAuth } = useAuth();
+  //TODO:
+  //Map app:
+  // admins can undo stuff (have stack for the server state)
+  // have rockets that can be controlled and store position, velocity, etc. in the backend
+    const userAuth = useContext(AuthContext)?.userAuth!;
+  
   // TODO: add conditional route to "/Notes/Editor/:title" after
   // users schema allows owning notes
   //TODO: show message that route is blocked if not authorized.
@@ -29,9 +36,11 @@ function App() {
         <Route path="/Notes/Editor"
           element={(userAuth.role === "editor") || (userAuth.role === "admin") ? <Editor /> : <Unauthorized />} />
         <Route path="/Registration"
-          element={userAuth.username ? <Unauthorized /> : <RegisterUser />} />
+          element={userAuth.username ? <Home /> : <RegisterUser />} />
         <Route path="/Login"
-          element={userAuth.username ? <Unauthorized /> : <LoginUser />} />
+          element={userAuth.username ? <Home /> : <LoginUser />} />
+        <Route path="/Map"
+          element={(userAuth.role === "gamer") || (userAuth.role === "admin") ? <Map /> : <Unauthorized />} />
       </Routes>
     </>
   )

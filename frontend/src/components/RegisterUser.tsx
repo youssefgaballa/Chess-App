@@ -1,7 +1,7 @@
 import {  useState, useEffect,  type ChangeEvent } from 'react';
 import { Link, useLocation, useNavigate } from "react-router";
 
-import {Error, Check, Info, Visibility, VisibilityOff} from '@mui/icons-material'
+import {Error, Check, Visibility, VisibilityOff} from '@mui/icons-material'
 import axios from 'axios';
 
 // Username can be 3 to 20 characters long and consist of letters, numbers, underscores
@@ -101,6 +101,7 @@ export const RegisterUser = () => {
       } else {
         setErrorMessage("Registration Failed");
       }
+      return;
     });
     console.log(response);
     navigate('/login', { replace: true });
