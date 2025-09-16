@@ -8,6 +8,7 @@ import { NotFound } from './components/NotFound';
 import { RegisterUser } from './components/RegisterUser';
 import { Routes, Route, Navigate } from "react-router";
 import useAuth from './state/AuthorizationContext';
+import Unauthorized from './components/Unauthorized';
 
 
 function App() {
@@ -24,13 +25,13 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/Notes" element={<Notes />} />
         <Route path="/Notes/Editor/:title"
-          element={(userAuth.role === "editor") || (userAuth.role === "admin") ? <Editor /> : <Navigate to="/" replace />} />
+          element={(userAuth.role === "editor") || (userAuth.role === "admin") ? <Editor /> : <Unauthorized />} />
         <Route path="/Notes/Editor"
-          element={(userAuth.role === "editor") || (userAuth.role === "admin") ? <Editor /> : <Navigate to="/" replace />} />
+          element={(userAuth.role === "editor") || (userAuth.role === "admin") ? <Editor /> : <Unauthorized />} />
         <Route path="/Registration"
-          element={userAuth.username ? <Navigate to="/" replace /> : <RegisterUser />} />
+          element={userAuth.username ? <Unauthorized /> : <RegisterUser />} />
         <Route path="/Login"
-          element={userAuth.username ? <Navigate to="/" replace /> : <LoginUser />} />
+          element={userAuth.username ? <Unauthorized /> : <LoginUser />} />
       </Routes>
     </>
   )
