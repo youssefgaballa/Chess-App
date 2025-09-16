@@ -1,11 +1,13 @@
 import { Visibility, VisibilityOff, Error } from "@mui/icons-material";
-import { Link } from "react-router";
+import { Link, useNavigate, useLocation } from "react-router";
 import { useState } from "react";
 import axios from "axios";
+import useAuth from "../state/AuthorizationContext";
 
 export const LoginUser = () => {
   // TODO: route to home page after successful login and turn the Register and login
   // buttons into a logout button and profile button
+  const {userAuth, setUserAuth} = useAuth();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -18,6 +20,11 @@ export const LoginUser = () => {
   const changePassword = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
   }
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname ? ((location.state.from.pathname == "/Registration")
+    ? "/" : location.state.from.pathname) : "/";
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     console.log("handleSubmit called");
     event.preventDefault();
@@ -35,13 +42,22 @@ export const LoginUser = () => {
       } else {
         setErrorMessage("Login Failed");
       }
+      return;
     });
 
-    // if (response && response.status === 200) {
-    //   const data = await response.json();
-    //   console.log(data);
-    //   setErrorMessage('');
-    // }
+    if (response?.data) {
+      console.log("response.data: ", response.data);
+      setUserAuth({
+        username: response.data.username,
+        role: response.data.role,
+        accessToken: response.data.access_token
+      });
+    }
+    console.log("userAuth: ", userAuth);
+
+    //console.log(location);
+    //console.log(from);
+    navigate(from, { replace: true });
   }
 
     return (
@@ -71,7 +87,7 @@ export const LoginUser = () => {
             <br />
             <div hidden={errorMessage ? false : true}><span hidden={errorMessage ? false : true} ><Error style={{ fill: 'red' }} /></span>{errorMessage}</div>
           </form>
-          <div>Don't have an account? <Link to="/Registration" className='text-blue-500'>Register</Link></div>
+          <div>Don't have an account? <Link to="/Registration" state={{ from: location }} className='text-blue-500'>Register</Link></div>
         </div>
       
         <div className='w-[30vw] h-[100vh]'></div>

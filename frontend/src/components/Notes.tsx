@@ -1,10 +1,10 @@
-import { Link, Route, Routes } from "react-router-dom";
+import { Link, Route, Routes, useLocation } from "react-router";
 import { useGetAllNotesQuery } from "./editor/hooks/saveStateHooks";
 //import Editor from "./editor/Editor";
 
 
 export const Notes = () => {
-
+  const location = useLocation();
   const { data } = useGetAllNotesQuery();
 
   return ( 
@@ -23,14 +23,14 @@ export const Notes = () => {
 
                   <strong>Title:</strong> {note.title}
                   <br />
-                <Link to={`/Notes/Editor/${note.title.replaceAll(" ", '-')}`} className='hover:text-blue-500'>Edit Note:</Link>
+                <Link to={`/Notes/Editor/${note.title.replaceAll(" ", '-')}`} state={{ from: location }} className='hover:text-blue-500'>Edit Note:</Link>
                 
               </li>
             ))}
           </ul>
         </div>
         <div className="w-[20%] flex justify-around border-b border-black">
-          <Link to="/Notes/Editor" className="hover:text-blue-500 ">Create New Note</Link>
+          <Link to="/Notes/Editor" state={{ from: location }} className="hover:text-blue-500 ">Create New Note</Link>
         </div>
       </div>
       

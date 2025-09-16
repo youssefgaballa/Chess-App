@@ -1,5 +1,5 @@
 import {  useState, useEffect,  type ChangeEvent } from 'react';
-import { Link } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 
 import {Error, Check, Info, Visibility, VisibilityOff} from '@mui/icons-material'
 import axios from 'axios';
@@ -16,6 +16,9 @@ const passwordRegexp: RegExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()]
 const emailRegexp: RegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 export const RegisterUser = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
   // TODO: add signin link + route
   // TODO: validate email by sending an email to it
   // TODO: route to login page after successful registration
@@ -100,6 +103,7 @@ export const RegisterUser = () => {
       }
     });
     console.log(response);
+    navigate('/login', { replace: true });
   };
 
   return (
@@ -189,7 +193,7 @@ export const RegisterUser = () => {
               ${!isUsernameValid || !isPasswordValid || !isConfirmPasswordValid ? 'cursor-not-allowed bg-gray-400' : 'hover:bg-blue-700 cursor-pointer'}`}>Register</button>
           <br />
           <div hidden={errorMessage ? false : true}><span hidden={errorMessage ? false : true} ><Error style={{ fill: 'red' }} /></span>{errorMessage}</div>
-          <div>Already have an account? <Link to="/Login" className='text-blue-500'>Login</Link></div>
+          <div>Already have an account? <Link to="/Login" state={{ from: location }} className='text-blue-500'>Login</Link></div>
         </form>
         
       </div >
