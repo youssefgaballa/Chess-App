@@ -1,6 +1,6 @@
 import { useContext, useEffect } from "react";
 //import { getRefreshToken } from "../util/getRefreshToken";
-import AuthContext, { useAuth, type AuthContextType} from "../state/AuthorizationContext";
+import AuthContext, { useAuth, type AuthContextType } from "../state/AuthorizationContext";
 import { getRefreshToken } from "../util/RefreshToken";
 
 export function Home() {
@@ -21,7 +21,7 @@ export function Home() {
   // };
   const userAuth = useAuth()?.userAuth;
   (async () => {
-    console.log(await getRefreshToken(userAuth!));
+    console.log("refresh token", await getRefreshToken(userAuth!));
   })();
   
 

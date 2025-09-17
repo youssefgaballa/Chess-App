@@ -2,7 +2,7 @@ import { Visibility, VisibilityOff, Error } from "@mui/icons-material";
 import { Link, useNavigate, useLocation } from "react-router";
 import { useContext, useState } from "react";
 import axios from "axios";
-import  AuthContext  from "../state/AuthorizationContext";
+import AuthContext from "../state/AuthorizationContext";
 
 export const LoginUser = () => {
   // TODO: route to home page after successful login and turn the Register and login

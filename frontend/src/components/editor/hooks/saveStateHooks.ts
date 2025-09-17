@@ -1,5 +1,8 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import AuthContext, { useAuth } from "../../../state/AuthorizationContext";
+import { useContext } from "react";
+
 
 
 export const usePublishMutation = (title: string) => {
@@ -30,12 +33,22 @@ export const useGetNotesQuery = ({title,enabled}:{title:string, enabled: boolean
     });
 };
   
-export const useGetAllNotesQuery = () => {
+export const useGetAllNotesQuery = (accessToken: string) => {
     return useQuery({
       queryKey: ["get-all-data"],
       queryFn: async () => {
-        const { data } = await axios.get(`http://localhost:5000/data`);
-        return data;
+        console.log("useGetAllNotesQuery called");
+        
+        const reqBody = { access_token: accessToken };
+        console.log("reqBody: ", reqBody);
+        const response = await axios.get(`http://localhost:5000/data`, { params: reqBody, withCredentials: true }).catch((error) => {
+          console.log(error.response.data);
+          //QueryClient.invalidateQueries({ queryKey: ["get-all-data"] });
+          return;
+        
+        });
+        return response?.data;
       },
+      staleTime: Infinity
     });
 };
