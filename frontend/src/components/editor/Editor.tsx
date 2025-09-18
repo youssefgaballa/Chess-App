@@ -17,7 +17,9 @@ import { SaveStatePlugin } from './plugins/SaveStatePlugin';
 import { useGetNotesQuery, usePublishMutation, useUpdateMutation } from './hooks/saveStateHooks';
 import { useParams } from 'react-router';
 import type { UseQueryResult } from '@tanstack/react-query';
-//import { useAuth } from '../../state/AuthorizationContext';
+import { useAuth } from '../../state/AuthorizationContext';
+import { usePersistLogin } from '../../util/persistLogin';
+import { axiosInterceptors } from '../../util/axiosInterceptors';
 
 
 // later we'll replace this with an actual database
@@ -30,18 +32,20 @@ export default function Editor() {
     onError,
     nodes: [],
   }
-  //const { userAuth } = useAuth();
+  const { userAuth } = useAuth();
+  axiosInterceptors();
+  usePersistLogin();
   const params = useParams();
   const notesTitle = params.title?.replaceAll('-', ' ') || "";
   // useState to manage title
   //
   const [title, setTitle] = useState(notesTitle);
   const [serializedNodes, setSerializedNodes] = React.useState("");
-  const { mutateAsync: publishNotes, isPending: isPublishing } = usePublishMutation(title);
-  const { mutateAsync: updateNotes, isPending: isUpdating } = useUpdateMutation(title);
-  const isEnabled: boolean = (title != "");
 
-  const { data }: UseQueryResult<string> = useGetNotesQuery({ title, enabled: isEnabled });
+  const { mutateAsync: publishNotes, isPending: isPublishing } = usePublishMutation(title, userAuth);
+  const { mutateAsync: updateNotes, isPending: isUpdating } = useUpdateMutation(title, userAuth);
+
+  const { data }: UseQueryResult<string> = useGetNotesQuery(title, userAuth );
 
   const [published, setPublished] = useState(false);
   console.log("serializedNodes = " + serializedNodes);
@@ -60,11 +64,11 @@ export default function Editor() {
       return;
     }
 
-      setPublished(true);
-      if (data) {
-        console.log("data = " + data.toString());
-        setSerializedNodes(data);
-      }
+    setPublished(true);
+    if (data) {
+      console.log("data = " + data.toString());
+      setSerializedNodes(data);
+    }
 
 
     //setPublished(true);

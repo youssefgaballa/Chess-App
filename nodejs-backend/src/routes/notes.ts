@@ -8,7 +8,7 @@ const notesRouter: Router = express.Router();
 //TODO put actual requests in controller
 //TODO have not found messages
 notesRouter.get("/data/:title", async (req, res) => {
-  //console.log("/get");
+  console.log("-----/get----");
   const title = req.params.title;
   const results = await client
     .query("SELECT content FROM notes WHERE title = $1", [title])

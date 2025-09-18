@@ -34,7 +34,7 @@ authenticationRouter.post('/authentication', async (req, res) => {
 
   if (passwordMatch) {
     const accessToken = sign({ username: foundUser.username },
-      `${process.env.ACCESS_TOKEN_SECRET}`, { expiresIn: '10s' });
+      `${process.env.ACCESS_TOKEN_SECRET}`, { expiresIn: '25s' });
     const refreshToken = sign({ username: foundUser.username },
       `${process.env.REFRESH_TOKEN_SECRET}`, { expiresIn: '24h' });
     

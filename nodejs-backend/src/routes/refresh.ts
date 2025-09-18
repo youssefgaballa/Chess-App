@@ -29,7 +29,7 @@ refreshRouter.post('/refresh', async (req, res) => {
       return res.status(403).json({ 'Client Error': 'Invalid refresh token, please login again' });
     }
     const accessToken = jwt.sign({ username: decoded.username },
-      `${process.env.ACCESS_TOKEN_SECRET}`, { expiresIn: '10s' });
+      `${process.env.ACCESS_TOKEN_SECRET}`, { expiresIn: '25s' });
     console.log("new access token: ", accessToken);
     res.json({ accessToken });
   });

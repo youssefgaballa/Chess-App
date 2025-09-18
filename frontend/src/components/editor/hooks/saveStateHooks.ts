@@ -1,34 +1,50 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import { customAxios } from "../../../util/customAxios";
 
 
 
-export const usePublishMutation = (title: string) => {
+export const usePublishMutation = (title: string,
+  userAuth: { username: string, role: string, accessToken: string }) => {
     return useMutation({
       mutationFn: async (text: string) => {
-        const { data } = await axios.post(`http://localhost:5000/data/${title}`, { text });
+        console.log("--usePublishMutation--");
+        console.log("userAuth in usePublishMutation: ", userAuth);
+        const { data } = await customAxios.post(`http://localhost:5000/data/${title}`, { text }, {
+          headers: {
+            authorization: `bearer ${userAuth.accessToken}`
+          }
+        });
         return data;
       },
     });
 };
   
-export const useUpdateMutation = (title: string) => {
+export const useUpdateMutation = (title: string,
+  userAuth: { username: string, role: string, accessToken: string }) => {
   return useMutation({
     mutationFn: async (text: string) => {
-      const { data } = await axios.patch(`http://localhost:5000/data/${title}`, { text });
+      const { data } = await customAxios.patch(`http://localhost:5000/data/${title}`, { text }, {
+        headers: {
+          authorization: `bearer ${userAuth.accessToken}`
+        }
+      });
       return data;
     },
   });
 };
 
-export const useGetNotesQuery = ({title,enabled}:{title:string, enabled: boolean}) => {
+export const useGetNotesQuery = (title: string, userAuth: { username: string, role: string, accessToken: string }) => {
     return useQuery({
       queryKey: ["get-data"],
       queryFn: async () => {
-        const { data } = await axios.get(`http://localhost:5000/data/${title}`);
+        console.log("--useGetNotesQuery--");
+        console.log("userAuth in useGetNotesQuery: ", userAuth);
+        const { data } = await customAxios.get(`http://localhost:5000/data/${title}`);
         return data;
       },
+      enabled: !!userAuth?.accessToken && title !== "", // Only run the query if accessToken is available and title is not empty
+      staleTime: 0, // 0 milliseconds
+      retry: 10 // Retry up to 10 times on failure
     });
 };
   

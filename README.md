@@ -6,3 +6,4 @@ Can create Notes,
 General: Js-docs, tests, dev-environments, kubernetes  
 Frontend: tanstack-query, react rtk  
 Backend: Authentication, Authorization, Message queues (RabbitMQ), kafka, streams, security,
+fix api tests so that correct authorization headers are passed (as if logged in)

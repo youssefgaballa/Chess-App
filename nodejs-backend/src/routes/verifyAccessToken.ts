@@ -17,10 +17,11 @@ verifyAccessTokenRouter.use((req, res, next) => {
     `${process.env.ACCESS_TOKEN_SECRET}`,
     (err, decoded) => {
       if (err) {
+        console.log("err from verify in /verifyAccessToken: ", err);
         return res.sendStatus(403);
       } //invalid token
-      // console.log("decoded from verifyAccessToken middleware: ", decoded);
-       res.locals.username = (decoded as any).username;
+      console.log("decoded from verifyAccessToken middleware: ", decoded);
+      res.locals.username = (decoded as any).username;
       // (req as any).username = (decoded as any).username;
       next();
     }
