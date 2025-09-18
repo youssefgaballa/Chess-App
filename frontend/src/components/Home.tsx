@@ -6,7 +6,7 @@ export function Home() {
   //   console.log("refresh token", await getRefreshToken(userAuth!));
   // })();
 
-  usePersistLogin();
+  // usePersistLogin();
 
 
   return (

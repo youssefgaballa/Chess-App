@@ -10,6 +10,8 @@ import { Routes, Route } from "react-router";
 import Unauthorized from './components/Unauthorized';
 import { Map } from './components/Map';
 import { useAuth }  from './state/AuthorizationContext';
+import { usePersistLogin } from './util/persistLogin';
+import { use, useEffect, useState } from 'react';
 
 
 function App() {
@@ -24,6 +26,8 @@ function App() {
   // Note that this conditional routing can be overridden by refreshing the page (which clears the context state)
 
   const { userAuth } = useAuth();
+  usePersistLogin();
+
 
   return (
     <>
@@ -34,15 +38,15 @@ function App() {
 
         <Route path="/Notes" element={<Notes />} />
         <Route path="/Notes/Editor/:title"
-          element={(userAuth.role === "editor") || (userAuth.role === "admin") ? <Editor /> : <Unauthorized />} />
+          element={<Editor />} />
         <Route path="/Notes/Editor"
-          element={(userAuth.role === "editor") || (userAuth.role === "admin") ? <Editor /> : <Unauthorized />} />
+          element={<Editor />} />
         <Route path="/Registration"
-          element={userAuth.username ? <Home /> : <RegisterUser />} />
+          element={<RegisterUser />} />
         <Route path="/Login"
-          element={userAuth.username ? <Home /> : <LoginUser />} />
+          element={<LoginUser />} />
         <Route path="/Map"
-          element={(userAuth.role === "gamer") || (userAuth.role === "admin") ? <Map /> : <Unauthorized />} />
+          element={<Map /> } />
       </Routes>
     </>
   )

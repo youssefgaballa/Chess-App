@@ -3,6 +3,7 @@ import { useGetAllNotesQuery } from "./editor/hooks/saveStateHooks";
 import  { useAuth } from "../state/AuthorizationContext";
 import { axiosInterceptors } from "../util/axiosInterceptors";
 import { usePersistLogin } from "../util/persistLogin";
+import { Suspense, useEffect, useState } from "react";
 //import Editor from "./editor/Editor";
 
 
@@ -14,9 +15,13 @@ export const Notes = () => {
   
   usePersistLogin();
   const { data } = useGetAllNotesQuery(userAuth);
-
-  //console.log("data from useGetAllNotesQuery: ", data);
-
+  // const [notes, setNotes] = useState(data ? data : []);
+  // useEffect(() => {
+  //   setNotes(data ? data : []);
+  // }, [data]);
+  // console.log("notes from useGetAllNotesQuery: ", notes);
+  console.log("data from useGetAllNotesQuery: ", data);
+  //TODO: display only the notes a user has.
   return ( 
     <>
       
@@ -26,8 +31,9 @@ export const Notes = () => {
           
         </div>
         <div className="w-[60%]">View Notes
+
           <ul>
-            {data && data.map((note: { title: string; content: string }, index: number) => (
+            {data ? data.map((note: { title: string; content: string }, index: number) => (
               
               <li key={index} className="border border-black m-2 p-2">
 
@@ -38,8 +44,13 @@ export const Notes = () => {
                 }
                 
               </li>
-            ))}
-          </ul>
+            )) : (
+              <li className="border border-black m-2 p-2">
+                No notes available.
+              </li>
+            )}
+            </ul>
+
         </div>
         <div className="w-[20%] flex justify-around border-b border-black">
           <Link to="/Notes/Editor" state={{ from: location }} className="hover:text-blue-500 ">Create New Note</Link>

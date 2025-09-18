@@ -8,7 +8,7 @@ const notesRouter: Router = express.Router();
 //TODO put actual requests in controller
 //TODO have not found messages
 notesRouter.get("/data/:title", async (req, res) => {
-  console.log("-----/get----");
+  console.log("-----/data----");
   const title = req.params.title;
   const results = await client
     .query("SELECT content FROM notes WHERE title = $1", [title])
@@ -22,7 +22,7 @@ notesRouter.get("/data/:title", async (req, res) => {
 });
 // GET all notes for a user
 notesRouter.get("/data", async (req, res) => {
-  console.log("----/get all");
+  console.log("----/data all");
 
   //const accessToken = req.query.access_token?.toString();
   const accessToken = req.headers?.authorization?.split(' ')[1];
@@ -30,9 +30,9 @@ notesRouter.get("/data", async (req, res) => {
   // const username = req.headers?.username;
   // console.log("username from headers: ", username);
   //console.log("username from body: ", req.body.username);
-  console.log("res.locals.username: ", res.locals.username);
-  console.log("refresh token: ", refreshToken);
-  console.log("access token: ", accessToken);
+  //console.log("res.locals.username: ", res.locals.username);
+  // console.log("refresh token: ", refreshToken);
+  // console.log("access token: ", accessToken);
   if (!accessToken) {
     return res.status(400).json({ 'Client Error': 'No valid access token provided' });
     // throw new Error("No access token provided");
@@ -49,6 +49,7 @@ notesRouter.get("/data", async (req, res) => {
   res.send(results);
 });
 
+//PUBLISH new note
 notesRouter.post("/data/:title", async (req, res) => {
   const { text: newText } = req.body;
   //console.log("text = " + newText);
@@ -61,6 +62,7 @@ notesRouter.post("/data/:title", async (req, res) => {
 
 });
 
+// UPDATE a note
 notesRouter.patch("/data/:title", async (req, res) => {
   const { text: newText } = req.body;
   const title = req.params.title;
