@@ -1,15 +1,14 @@
 import { Link, useLocation } from "react-router"
 import { useContext, useEffect } from "react";
-import AuthContext from "../state/AuthorizationContext";
+import AuthContext, { useAuth } from "../state/AuthorizationContext";
 
 export default function NavBar() {
   const location = useLocation();
-  const userAuth = useContext(AuthContext)?.userAuth!;
-  const setUserAuth = useContext(AuthContext)?.setUserAuth!;
+  const { userAuth, setUserAuth } = useAuth();
   useEffect(() => {
     console.log("userAuth changed: ", userAuth);
   }, [userAuth]);
-  console.log("userAuth: ", userAuth);
+ 
     return (
       <nav className="bg-gray-400 w-[100vw] h-[10vh] border-b border-black">
 

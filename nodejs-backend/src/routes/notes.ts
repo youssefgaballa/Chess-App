@@ -22,24 +22,22 @@ notesRouter.get("/data/:title", async (req, res) => {
 });
 // GET all notes for a user
 notesRouter.get("/data", async (req, res) => {
-  //console.log("/get all");
-  try {
-    const accessToken = req.query.access_token?.toString();
-    console.log("req.query: ", req.query);
-    console.log("access token: ", accessToken);
-    if (!accessToken) throw new Error("No access token provided");
-    
-    verify(accessToken, `${process.env.ACCESS_TOKEN_SECRET}`, (err: any, decoded: any) => {
-      if (err) {
-        throw new Error("Invalid access token");
-      }
-      console.log("decoded: ", decoded);
-      return;
-    });
-  } catch {
-    res.status(400).json({ 'Client Error': 'No valid access token provided' });
-    return;
+  console.log("----/get all");
+
+  //const accessToken = req.query.access_token?.toString();
+  const accessToken = req.headers?.authorization?.split(' ')[1];
+  const refreshToken = req.cookies?.jwt;
+  // const username = req.headers?.username;
+  // console.log("username from headers: ", username);
+  //console.log("username from body: ", req.body.username);
+  console.log("res.locals.username: ", res.locals.username);
+  console.log("refresh token: ", refreshToken);
+  console.log("access token: ", accessToken);
+  if (!accessToken) {
+    return res.status(400).json({ 'Client Error': 'No valid access token provided' });
+    // throw new Error("No access token provided");
   }
+ 
   const results = await client
     .query("SELECT * FROM notes")
     .then((payload) => {

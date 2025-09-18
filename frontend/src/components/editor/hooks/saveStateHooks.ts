@@ -1,7 +1,7 @@
-import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
+import { QueryClient, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import AuthContext, { useAuth } from "../../../state/AuthorizationContext";
-import { useContext } from "react";
+import { customAxios } from "../../../util/customAxios";
 
 
 
@@ -33,22 +33,24 @@ export const useGetNotesQuery = ({title,enabled}:{title:string, enabled: boolean
     });
 };
   
-export const useGetAllNotesQuery = (accessToken: string) => {
-    return useQuery({
-      queryKey: ["get-all-data"],
-      queryFn: async () => {
-        console.log("useGetAllNotesQuery called");
+export const useGetAllNotesQuery = () => {
+  return useQuery({
+    queryKey: ["get-all-data"],
+    queryFn: async () => {
+
+      try {
+        const response = await customAxios.get(`http://localhost:5000/data`, { withCredentials: true });
+        console.log(response.data);
+        return response.data;
         
-        const reqBody = { access_token: accessToken };
-        console.log("reqBody: ", reqBody);
-        const response = await axios.get(`http://localhost:5000/data`, { params: reqBody, withCredentials: true }).catch((error) => {
-          console.log(error.response.data);
-          //QueryClient.invalidateQueries({ queryKey: ["get-all-data"] });
-          return;
-        
-        });
-        return response?.data;
-      },
-      staleTime: Infinity
-    });
+          
+      } catch (error) {
+        return error;
+      }
+    },
+    staleTime: 1000 *5, // 5 seconds
+
+
+
+  });
 };

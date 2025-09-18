@@ -1,17 +1,21 @@
-import { Link, Route, Routes, useLocation } from "react-router";
+import { Link, Route, Routes, useLocation, useNavigate } from "react-router";
 import { useGetAllNotesQuery } from "./editor/hooks/saveStateHooks";
 import AuthContext, { useAuth } from "../state/AuthorizationContext";
-import { useContext } from "react";
+import { useContext, useEffect, useLayoutEffect, useState } from "react";
+import { axiosInterceptors } from "../util/axiosInterceptors";
 //import Editor from "./editor/Editor";
 
 
 export const Notes = () => {
   const location = useLocation();
- 
+  const navigate = useNavigate();
+  axiosInterceptors();
   const { userAuth } = useAuth();
-  console.log("userAuth in Notes component: ", userAuth);
-  const { data } = useGetAllNotesQuery(userAuth!.accessToken);
-  
+
+  const { data, error } = useGetAllNotesQuery();
+
+
+  console.log("data from useGetAllNotesQuery: ", data);
 
   return ( 
     <>

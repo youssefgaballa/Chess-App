@@ -1,7 +1,7 @@
 import { useContext, useEffect } from "react";
 //import { getRefreshToken } from "../util/getRefreshToken";
 import AuthContext, { useAuth, type AuthContextType } from "../state/AuthorizationContext";
-import { getRefreshToken } from "../util/RefreshToken";
+import { getNewAccessToken } from "../util/RefreshToken";
 
 export function Home() {
   // TODO: Add routing to home page
@@ -19,10 +19,10 @@ export function Home() {
   //   //   });
   //   // return response.data.refreshToken;
   // };
-  const userAuth = useAuth()?.userAuth;
-  (async () => {
-    console.log("refresh token", await getRefreshToken(userAuth!));
-  })();
+  // const userAuth = useAuth()?.userAuth;
+  // (async () => {
+  //   console.log("refresh token", await getRefreshToken(userAuth!));
+  // })();
   
 
 

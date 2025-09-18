@@ -34,7 +34,7 @@ authenticationRouter.post('/authentication', async (req, res) => {
 
   if (passwordMatch) {
     const accessToken = sign({ username: foundUser.username },
-      `${process.env.ACCESS_TOKEN_SECRET}`, { expiresIn: '20s' });
+      `${process.env.ACCESS_TOKEN_SECRET}`, { expiresIn: '10s' });
     const refreshToken = sign({ username: foundUser.username },
       `${process.env.REFRESH_TOKEN_SECRET}`, { expiresIn: '24h' });
     
@@ -50,8 +50,8 @@ authenticationRouter.post('/authentication', async (req, res) => {
       });
     console.log(rolesResult[0]);
     //res.cookie('jwt', refreshToken, { httpOnly: true, sameSite: 'none', secure: true, maxAge: 24 * 60 * 60 * 1000 });//TODO: set secure to true when deploying
-    //res.cookie('jwt', refreshToken, { httpOnly: true, sameSite: 'none', maxAge: 24 * 60 * 60 * 1000 });
-    res.cookie('jwt', refreshToken, { sameSite: 'none', maxAge: 24 * 60 * 60 * 1000 });
+    //res.cookie('jwt', refreshToken, { httpOnly: true, sameSite: 'none', secure: true,maxAge: 24 * 60 * 60 * 1000 });
+    res.cookie('jwt', refreshToken, { sameSite: 'lax', maxAge: 24 * 60 * 60 * 1000 });
     res.json({ username: foundUser.username, role: rolesResult[0].user_role, access_token: accessToken });
     return;
   }

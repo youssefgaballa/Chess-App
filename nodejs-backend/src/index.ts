@@ -8,6 +8,7 @@ import registrationRouter from "./routes/registration.ts";
 import authenticationRouter from "./routes/authentication.ts";
 import refreshRouter from "./routes/refresh.ts";
 import cookieParser from "cookie-parser";
+import verifyAccessTokenRouter from "./routes/verifyAccessToken.ts";
 
 const app = express();
 
@@ -19,12 +20,15 @@ app.use(cookieParser());
 //   console.log(`${req.method} ${req.path}`);
 //   next();
 // });
-app.use("/", usersRouter);
-app.use("/", notesRouter);//
 app.use('/', registrationRouter);
 app.use('/', authenticationRouter);
-// app.use('/', require('cookie-parser')());
 app.use('/', refreshRouter);
+app.use('/', verifyAccessTokenRouter)
+app.use("/", usersRouter);
+app.use("/", notesRouter);//
+
+// app.use('/', require('cookie-parser')());
+
 
 
 
