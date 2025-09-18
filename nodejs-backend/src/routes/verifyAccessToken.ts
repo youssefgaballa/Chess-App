@@ -13,8 +13,7 @@ verifyAccessTokenRouter.use((req, res, next) => {
   }
   console.log("authHeader", authHeader);
   const accessToken = authHeader.split(' ')[1]!;
-  const isVerified = verify(
-    accessToken,
+  const isVerified = verify(accessToken,
     `${process.env.ACCESS_TOKEN_SECRET}`,
     (err, decoded) => {
       if (err) {

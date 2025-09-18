@@ -9,7 +9,8 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export default AuthContext;
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [userAuth, setUserAuth] = useState({username:"", role:"", accessToken:""});
+  const [userAuth, setUserAuth] = useState({ username: "", role: "", accessToken: "" });
+  //console.log("-----AuthProvider rendered");
 
   return (
     <AuthContext.Provider value={{ userAuth, setUserAuth }}>

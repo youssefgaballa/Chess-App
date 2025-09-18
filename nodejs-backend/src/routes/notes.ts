@@ -2,7 +2,7 @@ import express, { Router } from "express";
 import client from "../database/index.ts";
 import jwt from 'jsonwebtoken';
 
-const { verify } = jwt;
+//const { verify } = jwt;
 
 const notesRouter: Router = express.Router();
 //TODO put actual requests in controller

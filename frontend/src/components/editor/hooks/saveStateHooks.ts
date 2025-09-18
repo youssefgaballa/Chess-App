@@ -1,6 +1,5 @@
-import { QueryClient, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import AuthContext, { useAuth } from "../../../state/AuthorizationContext";
 import { customAxios } from "../../../util/customAxios";
 
 
@@ -33,11 +32,10 @@ export const useGetNotesQuery = ({title,enabled}:{title:string, enabled: boolean
     });
 };
   
-export const useGetAllNotesQuery = () => {
+export const useGetAllNotesQuery = (userAuth: { username: string, role: string, accessToken: string }) => {
   return useQuery({
     queryKey: ["get-all-data"],
     queryFn: async () => {
-
       try {
         const response = await customAxios.get(`http://localhost:5000/data`, { withCredentials: true });
         console.log(response.data);
@@ -48,8 +46,9 @@ export const useGetAllNotesQuery = () => {
         return error;
       }
     },
-    staleTime: 1000 *5, // 5 seconds
-
+    staleTime: 1000 * 5, // 5 seconds
+    retry: 10, // Retry up to 10 times on failure
+    enabled: !!userAuth?.accessToken // Only run the query if accessToken is available
 
 
   });

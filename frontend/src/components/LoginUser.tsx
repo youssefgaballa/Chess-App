@@ -7,7 +7,6 @@ import AuthContext from "../state/AuthorizationContext";
 export const LoginUser = () => {
   // TODO: route to home page after successful login and turn the Register and login
   // buttons into a logout button and profile button
-  const userAuth = useContext(AuthContext)?.userAuth!;
   const setUserAuth = useContext(AuthContext)?.setUserAuth!;
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -27,7 +26,7 @@ export const LoginUser = () => {
     ? "/" : location.state.from.pathname) : "/";
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    console.log("handleSubmit called");
+    //console.log("handleSubmit called");
     event.preventDefault();
     const reqBody = {
       username: username,
@@ -49,14 +48,13 @@ export const LoginUser = () => {
     });
 
     if (response?.data) {
-      console.log("response.data: ", response.data);
+      //console.log("response.data: ", response.data);
       setUserAuth({
         username: response.data.username,
         role: response.data.role,
         accessToken: response.data.access_token
       });
     }
-    console.log("userAuth: ", userAuth);
 
     //console.log(location);
     //console.log(from);

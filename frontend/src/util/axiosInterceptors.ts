@@ -1,7 +1,6 @@
-import axios from "axios";
 import { getNewAccessToken as getNewAccessToken } from "../util/RefreshToken";
-import AuthContext, { useAuth } from "../state/AuthorizationContext";
-import { useContext, useEffect } from "react";
+import  { useAuth } from "../state/AuthorizationContext";
+import { useEffect } from "react";
 import { customAxios } from "./customAxios";
 
 
@@ -9,26 +8,27 @@ export const axiosInterceptors = () => {
   const {userAuth} = useAuth();
   // Request interceptor to add the access token to headers
   useEffect(() => {
-    const requestInterscept = customAxios.interceptors.request.use(async (config: any) => {
-      console.log("---request interceptor fulfilled called");
+    const requestInterceptor = customAxios.interceptors.request.use(async (config: any) => {
+      console.log("---requestInterceptor fulfilled called");
 
       //console.log("userAuth.accessToken", userAuth.accessToken);
       if (!config.headers["authorization"]) {
+        //console.log("userAuth in request interceptor: ", userAuth);
         config.headers["authorization"] = `bearer ${userAuth?.accessToken ?? ""}`;
       }
       return config;
       
     }, (error) => {
-      console.log("request interceptor error called");
+      console.log("---requestInterceptor error called");
       return Promise.reject(error);
     });
 
-    const responseInterscept = customAxios.interceptors.response.use((response) => {
-      console.log("----response interceptor fulfilled called");
+    const responseInterceptor = customAxios.interceptors.response.use((response) => {
+      console.log("----responseInterceptor fulfilled called");
       return response;
     },
       async (error) => {
-        console.log("---response interceptor rejected called");
+        console.log("---responseInterceptor rejected called");
         const prevRequest = error?.config;
         if (error?.response?.status === 403 && !prevRequest?.sent) {
           prevRequest.sent = true;
@@ -44,8 +44,8 @@ export const axiosInterceptors = () => {
     );
 
     return () => {
-      customAxios.interceptors.request.eject(requestInterscept);
-      customAxios.interceptors.response.eject(responseInterscept);
+      customAxios.interceptors.request.eject(requestInterceptor);
+      customAxios.interceptors.response.eject(responseInterceptor);
     };
   }, [userAuth]);
 };

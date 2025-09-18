@@ -1,6 +1,4 @@
-import { useContext,  } from "react";
 import axios from "axios";
-import { type AuthContextType } from "../state/AuthorizationContext";
 
 
 export const getNewAccessToken = async (userAuth: {username: string, role: string, accessToken: string}) => {

@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router"
-import { useContext, useEffect } from "react";
-import AuthContext, { useAuth } from "../state/AuthorizationContext";
+import {  useEffect } from "react";
+import  { useAuth } from "../state/AuthorizationContext";
 
 export default function NavBar() {
   const location = useLocation();

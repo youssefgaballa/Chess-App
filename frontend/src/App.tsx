@@ -9,8 +9,7 @@ import { RegisterUser } from './components/RegisterUser';
 import { Routes, Route } from "react-router";
 import Unauthorized from './components/Unauthorized';
 import { Map } from './components/Map';
-import { useContext } from 'react';
-import AuthContext  from './state/AuthorizationContext';
+import { useAuth }  from './state/AuthorizationContext';
 
 
 function App() {
@@ -18,18 +17,21 @@ function App() {
   //Map app:
   // admins can undo stuff (have stack for the server state)
   // have rockets that can be controlled and store position, velocity, etc. in the backend
-    const userAuth = useContext(AuthContext)?.userAuth!;
   
   // TODO: add conditional route to "/Notes/Editor/:title" after
   // users schema allows owning notes
   //TODO: show message that route is blocked if not authorized.
   // Note that this conditional routing can be overridden by refreshing the page (which clears the context state)
+
+  const { userAuth } = useAuth();
+
   return (
     <>
       <NavBar />
       <Routes>
         <Route path='*' element={<NotFound/>}/>
         <Route path="/" element={<Home />} />
+
         <Route path="/Notes" element={<Notes />} />
         <Route path="/Notes/Editor/:title"
           element={(userAuth.role === "editor") || (userAuth.role === "admin") ? <Editor /> : <Unauthorized />} />
