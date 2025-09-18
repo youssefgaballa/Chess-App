@@ -36,7 +36,7 @@ export const LoginUser = () => {
     const response = await axios.post('http://localhost:5000/authentication', reqBody,
       {withCredentials: true, headers: { 'Content-Type': 'application/json' } }
       ).catch((error) => {
-      console.log(error);
+      console.log("error", error);
       if (!error?.response) {
         setErrorMessage("No response from server");
       } else if (error.response?.status === 400) {
@@ -54,11 +54,14 @@ export const LoginUser = () => {
         role: response.data.role,
         accessToken: response.data.access_token
       });
+      navigate(from, { replace: true });
+    } else {
+      console.log("No response data");
+      return;
     }
 
-    //console.log(location);
+    //console.log("location", location);
     //console.log(from);
-    navigate(from, { replace: true });
   }
 
     return (

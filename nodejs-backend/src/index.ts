@@ -16,15 +16,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }))
 app.use(cors({ credentials: true, origin: ['http://localhost:5173'] }));
 app.use(cookieParser());
-// app.use((req, res, next) => {
+// app.use((req, res, next) => {//
 //   console.log(`${req.method} ${req.path}`);
 //   next();
 // });
 app.use('/', registrationRouter);
 app.use('/', authenticationRouter);
+app.use("/", usersRouter);
 app.use('/', refreshRouter);
 app.use('/', verifyAccessTokenRouter)
-app.use("/", usersRouter);
 app.use("/", notesRouter);//
 
 // app.use('/', require('cookie-parser')());

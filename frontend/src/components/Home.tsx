@@ -1,4 +1,3 @@
-import { usePersistLogin } from "../util/persistLogin";
 
 export function Home() {
   // TODO: Add routing to home page
@@ -6,7 +5,6 @@ export function Home() {
   //   console.log("refresh token", await getRefreshToken(userAuth!));
   // })();
 
-  // usePersistLogin();
 
 
   return (

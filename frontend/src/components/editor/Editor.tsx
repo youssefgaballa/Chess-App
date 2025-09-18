@@ -48,7 +48,7 @@ export default function Editor() {
   const { data }: UseQueryResult<string> = useGetNotesQuery(title, userAuth );
 
   const [published, setPublished] = useState(false);
-  console.log("serializedNodes = " + serializedNodes);
+  //console.log("serializedNodes = " + serializedNodes);
 
   const onPublish = () => {
     publishNotes(serializedNodes);
@@ -73,7 +73,7 @@ export default function Editor() {
 
     //setPublished(true);
   }, [data]);
-
+  //TODO: add placeholder while data is fetching for published notes
   return (
     <div className="max-w-[50rem] h-[50%] mx-auto bg-white rounded-lg ">
       <LexicalComposer initialConfig={initialConfig}>

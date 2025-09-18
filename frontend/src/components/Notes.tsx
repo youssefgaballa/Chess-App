@@ -3,7 +3,6 @@ import { useGetAllNotesQuery } from "./editor/hooks/saveStateHooks";
 import  { useAuth } from "../state/AuthorizationContext";
 import { axiosInterceptors } from "../util/axiosInterceptors";
 import { usePersistLogin } from "../util/persistLogin";
-import { Suspense, useEffect, useState } from "react";
 //import Editor from "./editor/Editor";
 
 
@@ -15,11 +14,7 @@ export const Notes = () => {
   
   usePersistLogin();
   const { data } = useGetAllNotesQuery(userAuth);
-  // const [notes, setNotes] = useState(data ? data : []);
-  // useEffect(() => {
-  //   setNotes(data ? data : []);
-  // }, [data]);
-  // console.log("notes from useGetAllNotesQuery: ", notes);
+
   console.log("data from useGetAllNotesQuery: ", data);
   //TODO: display only the notes a user has.
   return ( 

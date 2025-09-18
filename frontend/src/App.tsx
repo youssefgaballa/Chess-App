@@ -7,11 +7,8 @@ import { Notes } from './components/Notes';
 import { NotFound } from './components/NotFound';
 import { RegisterUser } from './components/RegisterUser';
 import { Routes, Route } from "react-router";
-import Unauthorized from './components/Unauthorized';
 import { Map } from './components/Map';
-import { useAuth }  from './state/AuthorizationContext';
 import { usePersistLogin } from './util/persistLogin';
-import { use, useEffect, useState } from 'react';
 
 
 function App() {
@@ -25,7 +22,6 @@ function App() {
   //TODO: show message that route is blocked if not authorized.
   // Note that this conditional routing can be overridden by refreshing the page (which clears the context state)
 
-  const { userAuth } = useAuth();
   usePersistLogin();
 
 
