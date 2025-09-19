@@ -1,9 +1,10 @@
-import { Link, useLocation } from "react-router"
+import { Link, useLocation, useNavigate } from "react-router"
 import {  useEffect } from "react";
 import  { useAuth } from "../users/userAuthContext";
 //
 export default function NavBar() {
   const location = useLocation();
+  const navigate = useNavigate();
   const { userAuth, setUserAuth } = useAuth();
   useEffect(() => {
     console.log("userAuth changed: ", userAuth);
@@ -41,7 +42,10 @@ export default function NavBar() {
           
           {userAuth.username &&
             <li className="h-full">
-            <button onClick={() => setUserAuth({username:"", role:"", accessToken:""})} className="flex items-center h-full p-5 hover:bg-green-500 " >Logout</button>
+              <button onClick={() => {
+                setUserAuth({ username: "", role: "", accessToken: "" });
+                navigate("/Login", { replace: true });
+              }} className="flex items-center h-full p-5 hover:bg-green-500 " >Logout</button>
             </li>}
           
         </ul>

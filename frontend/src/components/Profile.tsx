@@ -6,8 +6,8 @@ import { useGetUserQuery } from "../users/usersHooks";
 // use react redux
 export default function Profile() {
   const { userAuth } = useAuth();
-
   usePersistLogin();
+  
   const [userDetails, setUserDetails] = useState<{
     username: string, email: string,
     firstName: string, lastName: string, role: string
