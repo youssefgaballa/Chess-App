@@ -1,17 +1,12 @@
-import { useEffect, useState } from "react";
-import { useAuth } from "../users/userAuthContext";
 import { usePersistLogin } from "../util/persistLogin";
-import { useGetUserQuery } from "../users/usersHooks";
 import { useSelector } from "react-redux";
-import type { RootState } from "../util/reduxStore";
 import { selectUser } from "../users/userSlice";
 
 // use react redux
 export default function Profile() {
-  const { userAuth } = useAuth();
   usePersistLogin();
   const user = useSelector(selectUser);
-  console.log("user from redux store: ", user);
+  //console.log("user from redux store: ", user);
 
   return (
       <>

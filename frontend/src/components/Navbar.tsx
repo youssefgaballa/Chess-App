@@ -1,14 +1,18 @@
 import { Link, useLocation, useNavigate } from "react-router"
 import {  useEffect } from "react";
-import  { useAuth } from "../users/userAuthContext";
+import { clearUser, selectUser } from "../users/userSlice";
+import { useDispatch, useSelector } from "react-redux";
 //
 export default function NavBar() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { userAuth, setUserAuth } = useAuth();
+  const user = useSelector(selectUser);
+  const dispatch = useDispatch();
+  const username = user.username;
   useEffect(() => {
-    console.log("userAuth changed: ", userAuth);
-  }, [userAuth]);
+    console.log("user changed: ", user);
+  }, [user]);
+  //console.log("user in Navbar: ", user);
  
     return (
       <nav className="bg-gray-400 w-[100vw] h-[10vh] border-b border-black">
@@ -17,33 +21,33 @@ export default function NavBar() {
           <li className="mr-auto h-full">
             <Link to="/" state={{ from: location }} className="flex items-center h-full p-5 hover:bg-green-500 ">Home</Link>
           </li>
-          {userAuth.username &&
+          {username &&
             <li className="h-full">
               <Link to="/Notes" state={{ from: location }} className="flex items-center h-full p-5 hover:bg-green-500 ">Notes</Link>
             </li>
           }
-          {userAuth.username &&
+          {username &&
             <li className="h-full">
               <Link to="/Map" state={{ from: location }} className="flex items-center h-full p-5 hover:bg-green-500 " >Map</Link>
             </li>}
-          {!userAuth.username &&
+          {!username &&
             <li className="h-full">
               <Link to="/Registration" state={{ from: location }} className="flex items-center h-full p-5 hover:bg-green-500 " >Register</Link>
             </li>
           }
-          {!userAuth.username &&
+          {!username &&
             <li className="h-full">
             <Link to="/Login" state={{ from: location }} className="flex items-center h-full p-5 hover:bg-green-500 " >Login</Link>
             </li>}
-          {userAuth.username &&
+          {username &&
             <li className="h-full">
               <Link to="/Profile" state={{ from: location }} className="flex items-center h-full p-5 hover:bg-green-500 " >Profile</Link>
             </li>}
           
-          {userAuth.username &&
+          {username &&
             <li className="h-full">
               <button onClick={() => {
-                setUserAuth({ username: "", role: "", accessToken: "" });
+                dispatch(clearUser());
                 navigate("/Login", { replace: true });
               }} className="flex items-center h-full p-5 hover:bg-green-500 " >Logout</button>
             </li>}

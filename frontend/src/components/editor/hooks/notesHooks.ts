@@ -3,8 +3,7 @@ import { customAxios } from "../../../util/customAxios";
 
 
 
-export const usePublishMutation = (title: string,
-  userAuth: { username: string, role: string, accessToken: string }) => {
+export const usePublishMutation = (title: string, accessToken: string | null) => {
     return useMutation({
       mutationFn: async (text: string) => {
         // console.log("--usePublishMutation--");
@@ -13,22 +12,21 @@ export const usePublishMutation = (title: string,
         // console.log("text in usePublishMutation: ", text);
         const { data } = await customAxios.post(`http://localhost:5000/data/${title}`, { text }, {
           headers: {
-            authorization: `bearer ${userAuth.accessToken}`
+            authorization: `bearer ${accessToken}`
           }
         });
         return data;
       },
     });
 };
-  
-export const useUpdateMutation = (title: string,
-  userAuth: { username: string, role: string, accessToken: string }) => {
+
+export const useUpdateMutation = (title: string, accessToken: string | null) => {
   return useMutation({
     mutationFn: async (text: string) => {
       //console.log("--useUpdateMutation--");
       const { data } = await customAxios.patch(`http://localhost:5000/data/${title}`, { text }, {
         headers: {
-          authorization: `bearer ${userAuth.accessToken}`
+          authorization: `bearer ${accessToken}`
         }
       });
       return data;
@@ -37,7 +35,7 @@ export const useUpdateMutation = (title: string,
   });
 };
 
-export const useGetNotesQuery = (published: boolean, title:string,userAuth: { username: string, role: string, accessToken: string }) => {
+export const useGetNotesQuery = (published: boolean, title: string, accessToken: string | null) => {
     return useQuery({
       queryKey: ["get-data"],
       queryFn: async () => {
@@ -46,13 +44,13 @@ export const useGetNotesQuery = (published: boolean, title:string,userAuth: { us
         const { data } = await customAxios.get(`http://localhost:5000/data/${title}`, {withCredentials: true});
         return data;
       },
-      enabled: !!userAuth?.accessToken && published, // Only run the query if accessToken is available and title is not empty
+      enabled: !!accessToken && published, // Only run the query if accessToken is available and title is not empty
       staleTime: 0, // 0 milliseconds
       retry: 10 // Retry up to 10 times on failure
     });
 };
   
-export const useGetAllNotesQuery = (userAuth: { username: string, role: string, accessToken: string }) => {
+export const useGetAllNotesQuery = (accessToken: string | null ) => {
   return useQuery({
     queryKey: ["get-all-data"],
     queryFn: async () => {
@@ -68,7 +66,7 @@ export const useGetAllNotesQuery = (userAuth: { username: string, role: string, 
     },
     staleTime: 1000 * 5, // 5 seconds
     retry: 10, // Retry up to 10 times on failure
-    enabled: !!userAuth?.accessToken // Only run the query if accessToken is available
+    enabled: !!accessToken // Only run the query if accessToken is available
 
 
   });

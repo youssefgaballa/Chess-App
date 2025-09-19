@@ -14,7 +14,7 @@ notesRouter.get("/data/:title", async (req, res) => {
   const results = await client
     .query("SELECT content FROM notes WHERE title = $1 AND owner_id = (SELECT user_id FROM users WHERE username = $2)", [title, username])
     .then((payload) => {
-      console.log("payload.rows: ", payload.rows);
+      //console.log("payload.rows: ", payload.rows);
       return payload.rows;
     })
     .catch(() => {
@@ -28,7 +28,7 @@ notesRouter.get("/data", async (req, res) => {
 
   //const accessToken = req.query.access_token?.toString();
   const accessToken = req.headers?.authorization?.split(' ')[1];
-  const refreshToken = req.cookies?.jwt;
+  const refreshToken = req.cookies?.refreshToken;
   //console.log("req.local.username: ", res.locals.username);
   // const username = req.headers?.username;
   // console.log("username from headers: ", username);
@@ -69,7 +69,10 @@ notesRouter.post("/data/:title", async (req, res) => {
       return payload.rows[0].user_id;
     });
   console.log("owner_id: ", owner_id);
-  const result = await client.query("INSERT INTO notes (content, title, owner_id) VALUES ($1, $2, $3) RETURNING *", [newText, title, owner_id]);
+  const result = await client.query("INSERT INTO notes (content, title, owner_id) VALUES ($1, $2, $3) RETURNING *", [newText, title, owner_id])
+    .catch(() => {
+      throw new Error("Query failed");
+    });
   console.log("result: ", result);
   res.send(result.rows[0]);
 

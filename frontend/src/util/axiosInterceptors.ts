@@ -1,11 +1,12 @@
 import { getNewAccessToken as getNewAccessToken } from "../util/RefreshToken";
-import  { useAuth } from "../users/userAuthContext";
 import { useEffect } from "react";
 import { customAxios } from "./customAxios";
+import { selectUser } from "../users/userSlice";
+import { useSelector } from "react-redux";
 
 
 export const axiosInterceptors = () => {
-  const {userAuth} = useAuth();
+  const user = useSelector(selectUser);
   // Request interceptor to add the access token to headers
   useEffect(() => {
     const requestInterceptor = customAxios.interceptors.request.use(async (config: any) => {
@@ -14,7 +15,7 @@ export const axiosInterceptors = () => {
       //console.log("userAuth.accessToken", userAuth.accessToken);
       if (!config.headers["authorization"]) {
         //console.log("userAuth in request interceptor: ", userAuth);
-        config.headers["authorization"] = `bearer ${userAuth?.accessToken ?? ""}`;
+        config.headers["authorization"] = `bearer ${user.accessToken ?? ""}`;
       }
       return config;
       
@@ -32,7 +33,7 @@ export const axiosInterceptors = () => {
         const prevRequest = error?.config;
         if (error?.response?.status === 403 && !prevRequest?.sent) {
           prevRequest.sent = true;
-          const newAccessToken = await getNewAccessToken(userAuth);
+          const newAccessToken = await getNewAccessToken(user.username);
           console.log("newAccessToken from getRefreshToken: ", newAccessToken);
           prevRequest.headers["authorization"] = `bearer ${newAccessToken}`;
 
@@ -47,5 +48,5 @@ export const axiosInterceptors = () => {
       customAxios.interceptors.request.eject(requestInterceptor);
       customAxios.interceptors.response.eject(responseInterceptor);
     };
-  }, [userAuth]);
+  }, [user]);
 };

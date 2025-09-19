@@ -17,9 +17,10 @@ import { SaveStatePlugin } from './plugins/SaveStatePlugin';
 import { useGetNotesQuery, usePublishMutation, useUpdateMutation } from './hooks/notesHooks';
 import { useParams } from 'react-router';
 import type { UseQueryResult } from '@tanstack/react-query';
-import { useAuth } from '../../users/userAuthContext';
 import { usePersistLogin } from '../../util/persistLogin';
 import { axiosInterceptors } from '../../util/axiosInterceptors';
+import { useSelector } from 'react-redux';
+import { selectUser } from '../../users/userSlice';
 
 
 // later we'll replace this with an actual database
@@ -32,7 +33,7 @@ export default function Editor() {
     onError,
     nodes: [],
   }
-  const { userAuth } = useAuth();
+  const user = useSelector(selectUser);
   axiosInterceptors();
   usePersistLogin();
   const params = useParams();
@@ -44,10 +45,10 @@ export default function Editor() {
   const [published, setPublished] = useState(false);
 
 
-  const { mutateAsync: publishNotes, isPending: isPublishing } = usePublishMutation(title, userAuth);
-  const { mutateAsync: updateNotes, isPending: isUpdating } = useUpdateMutation(title, userAuth);
+  const { mutateAsync: publishNotes, isPending: isPublishing } = usePublishMutation(title, user.accessToken);
+  const { mutateAsync: updateNotes, isPending: isUpdating } = useUpdateMutation(title, user.accessToken);
   //console.log("published = " + published);
-  const { data }: UseQueryResult<string> = useGetNotesQuery(published, title, userAuth );
+  const { data }: UseQueryResult<string> = useGetNotesQuery(published, title, user.accessToken);
 
   //console.log("serializedNodes = " + serializedNodes);
 

@@ -1,10 +1,9 @@
 import axios from "axios";
 
 
-export const getNewAccessToken = async (userAuth: {username: string, role: string, accessToken: string}) => {
+export const getNewAccessToken = async (username: string | null) => {
   //console.log(useContext(AuthContext));
   console.log("getRefreshToken called");
-       const username = userAuth?.username;
       // const username = "root";
       const response = await axios.post('http://localhost:5000/refresh', { username: username },
         {

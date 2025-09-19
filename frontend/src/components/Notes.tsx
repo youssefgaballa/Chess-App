@@ -1,19 +1,20 @@
 import { Link, useLocation } from "react-router";
 import { useGetAllNotesQuery } from "./editor/hooks/notesHooks";
-import  { useAuth } from "../users/userAuthContext";
 import { axiosInterceptors } from "../util/axiosInterceptors";
 import { usePersistLogin } from "../util/persistLogin";
+import { useSelector } from "react-redux";
+import { selectUser } from "../users/userSlice";
 //import Editor from "./editor/Editor";
 
-
+// TODO: add sorting of posts. Add collaborators to notes.
 export const Notes = () => {
   const location = useLocation();
   //const navigate = useNavigate();
   axiosInterceptors();
-  const { userAuth } = useAuth();
+  const user = useSelector(selectUser);
   
   usePersistLogin();
-  const { data } = useGetAllNotesQuery(userAuth);
+  const { data } = useGetAllNotesQuery(user.accessToken);
 
   console.log("data from useGetAllNotesQuery: ", data);
   //TODO: display only the notes a user has.
@@ -34,7 +35,7 @@ export const Notes = () => {
 
                   <strong>Title:</strong> {note.title}
                   <br />
-                {userAuth.username &&
+                {user.username &&
                   <Link to={`/Notes/Editor/${note.title.replaceAll(" ", '-')}`} state={{ from: location }} className='hover:text-blue-500'>Edit Note:</Link>
                 }
                 

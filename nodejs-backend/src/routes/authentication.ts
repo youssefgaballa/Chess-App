@@ -51,7 +51,7 @@ authenticationRouter.post('/authentication', async (req, res) => {
     console.log(rolesResult[0]);
     //res.cookie('jwt', refreshToken, { httpOnly: true, sameSite: 'none', secure: true, maxAge: 24 * 60 * 60 * 1000 });//TODO: set secure to true when deploying
     //res.cookie('jwt', refreshToken, { httpOnly: true, sameSite: 'none', secure: true,maxAge: 24 * 60 * 60 * 1000 });
-    res.cookie('jwt', refreshToken, { sameSite: 'lax', maxAge: 24 * 60 * 60 * 1000 });
+    res.cookie('refreshToken', refreshToken, { httpOnly: true,sameSite: 'lax', maxAge: 24 * 60 * 60 * 1000 });
     res.json({
       username: foundUser.username,
       email: foundUser.email,
