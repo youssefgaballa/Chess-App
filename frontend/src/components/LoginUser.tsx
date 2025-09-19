@@ -1,13 +1,16 @@
 import { Visibility, VisibilityOff, Error } from "@mui/icons-material";
 import { Link, useNavigate, useLocation } from "react-router";
-import { useContext, useState } from "react";
+import {  useState } from "react";
 import axios from "axios";
-import AuthContext from "../users/userAuthContext";
+import  { useAuth } from "../users/userAuthContext";
+import { setUser } from "../users/userSlice";
+import {useDispatch} from 'react-redux';
 
 export const LoginUser = () => {
   // TODO: route to home page after successful login and turn the Register and login
   // buttons into a logout button and profile button
-  const setUserAuth = useContext(AuthContext)?.setUserAuth!;
+  const { userAuth, setUserAuth } = useAuth();
+  const dispatch = useDispatch();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -51,9 +54,18 @@ export const LoginUser = () => {
       //console.log("response.data: ", response.data);
       setUserAuth({
         username: response.data.username,
-        role: response.data.role,
+        role: response.data.user_role,
         accessToken: response.data.access_token
       });
+      const userDetails = {
+        username: response.data.username,
+        email: response.data.email,
+        firstname: response.data.firstname,
+        lastname: response.data.lastname,
+        role: response.data.user_role
+      };
+      //console.log("userDetails: ", userDetails);
+      dispatch(setUser(userDetails));
       navigate(from, { replace: true });
     } else {
       console.log("No response data");

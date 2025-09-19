@@ -7,10 +7,10 @@ export const usePublishMutation = (title: string,
   userAuth: { username: string, role: string, accessToken: string }) => {
     return useMutation({
       mutationFn: async (text: string) => {
-        console.log("--usePublishMutation--");
-        console.log("userAuth in usePublishMutation: ", userAuth);
-        console.log("title in usePublishMutation: ", title);
-        console.log("text in usePublishMutation: ", text);
+        // console.log("--usePublishMutation--");
+        // console.log("userAuth in usePublishMutation: ", userAuth);
+        // console.log("title in usePublishMutation: ", title);
+        // console.log("text in usePublishMutation: ", text);
         const { data } = await customAxios.post(`http://localhost:5000/data/${title}`, { text }, {
           headers: {
             authorization: `bearer ${userAuth.accessToken}`
@@ -25,7 +25,7 @@ export const useUpdateMutation = (title: string,
   userAuth: { username: string, role: string, accessToken: string }) => {
   return useMutation({
     mutationFn: async (text: string) => {
-      console.log("--useUpdateMutation--");
+      //console.log("--useUpdateMutation--");
       const { data } = await customAxios.patch(`http://localhost:5000/data/${title}`, { text }, {
         headers: {
           authorization: `bearer ${userAuth.accessToken}`
@@ -41,8 +41,8 @@ export const useGetNotesQuery = (published: boolean, title:string,userAuth: { us
     return useQuery({
       queryKey: ["get-data"],
       queryFn: async () => {
-        console.log("--useGetNotesQuery--");
-        console.log("userAuth in useGetNotesQuery: ", userAuth);
+        // console.log("--useGetNotesQuery--");
+        // console.log("userAuth in useGetNotesQuery: ", userAuth);
         const { data } = await customAxios.get(`http://localhost:5000/data/${title}`, {withCredentials: true});
         return data;
       },
@@ -58,7 +58,7 @@ export const useGetAllNotesQuery = (userAuth: { username: string, role: string, 
     queryFn: async () => {
       try {
         const response = await customAxios.get(`http://localhost:5000/data`, { withCredentials: true });
-        console.log(response.data);
+        //console.log(response.data);
         return response.data;
         
           
