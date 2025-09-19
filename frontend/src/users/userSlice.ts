@@ -30,9 +30,12 @@ const userSlice = createSlice({
       state.lastname = action.payload.lastname;
       state.role = action.payload.role;
       state.accessToken = action.payload.accessToken;
+      // Do not store accessToken in localstorage for security reasons
+      window.localStorage.setItem('user', JSON.stringify({...state, accessToken: null}));
     },
     clearUser: (state) => {
       state = initialState;
+      window.localStorage.removeItem('user');
     },
   },
 });
