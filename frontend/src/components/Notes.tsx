@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router";
-import { useGetAllNotesQuery } from "./editor/hooks/saveStateHooks";
+import { useGetAllNotesQuery } from "./editor/hooks/notesHooks";
 import  { useAuth } from "../users/userAuthContext";
 import { axiosInterceptors } from "../util/axiosInterceptors";
 import { usePersistLogin } from "../util/persistLogin";

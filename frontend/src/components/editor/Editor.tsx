@@ -14,7 +14,7 @@ import ToolbarPlugin from './plugins/ToolbarPlugin';
 //import { $insertNodes } from 'lexical';
 import React, { useEffect, useState } from 'react';
 import { SaveStatePlugin } from './plugins/SaveStatePlugin';
-import { useGetNotesQuery, usePublishMutation, useUpdateMutation } from './hooks/saveStateHooks';
+import { useGetNotesQuery, usePublishMutation, useUpdateMutation } from './hooks/notesHooks';
 import { useParams } from 'react-router';
 import type { UseQueryResult } from '@tanstack/react-query';
 import { useAuth } from '../../users/userAuthContext';

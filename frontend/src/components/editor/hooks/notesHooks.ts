@@ -43,7 +43,7 @@ export const useGetNotesQuery = (published: boolean, title:string,userAuth: { us
       queryFn: async () => {
         console.log("--useGetNotesQuery--");
         console.log("userAuth in useGetNotesQuery: ", userAuth);
-        const { data } = await customAxios.get(`http://localhost:5000/data/${title}`);
+        const { data } = await customAxios.get(`http://localhost:5000/data/${title}`, {withCredentials: true});
         return data;
       },
       enabled: !!userAuth?.accessToken && published, // Only run the query if accessToken is available and title is not empty

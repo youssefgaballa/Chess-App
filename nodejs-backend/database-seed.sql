@@ -3,6 +3,8 @@ CREATE TABLE IF NOT EXISTS users
     user_id serial,
     username text UNIQUE NOT NULL,
     email text UNIQUE,
+    firstName text,
+    lastName text,
     pwd text NOT NULL,
     refresh_token text,
     valid_util timestamp,
@@ -10,11 +12,11 @@ CREATE TABLE IF NOT EXISTS users
     CONSTRAINT users_pkey PRIMARY KEY (user_id)
 );
 
-INSERT into users (username, email, pwd, user_role) VALUES
-('root', 'root@randomdomain.com', '$2b$10$BDdwqWMjNmW0qq6aYwznwuDvf9zpzDHPyRYGr0aSSqOVu7lI31hJC', 'admin'),
-('jschlatt','bigguy@randomdomain.com', '$2b$10$IjANtci8587mKmgEp7eB8OiMZzHFv9GbMIe.fjidGf.sJxo5mR2k6', 'user'),
-('jgoldberg', 'jgoldberg@randomdomain.com', '$2b$10$edfjfT0vf.1yfEjTX9w70./Jc8gempURz4SMqPsfL6WMsgZmBnzQC', 'editor'),
-('bob', 'bob@randomdomain.com', '$2b$10$phXIlRblLuToff58E9vT2ut6OE0tvOUOyj5DRYNBc65mTbyZUA/sW', 'spectator');
+INSERT into users (username, email, firstName, lastName, pwd, user_role) VALUES
+('root', 'root@randomdomain.com', 'Root', 'User', '$2b$10$BDdwqWMjNmW0qq6aYwznwuDvf9zpzDHPyRYGr0aSSqOVu7lI31hJC', 'admin'),
+('jschlatt','bigguy@randomdomain.com', 'Jschlatt', 'Guy', '$2b$10$IjANtci8587mKmgEp7eB8OiMZzHFv9GbMIe.fjidGf.sJxo5mR2k6', 'user'),
+('jgoldberg', 'jgoldberg@randomdomain.com', 'J', 'Goldberg', '$2b$10$edfjfT0vf.1yfEjTX9w70./Jc8gempURz4SMqPsfL6WMsgZmBnzQC', 'editor'),
+('bob', 'bob@randomdomain.com', 'Bob', 'Builder', '$2b$10$phXIlRblLuToff58E9vT2ut6OE0tvOUOyj5DRYNBc65mTbyZUA/sW', 'spectator');
 
 CREATE TABLE IF NOT EXISTS notes
 (
