@@ -34,7 +34,12 @@ const userSlice = createSlice({
       window.localStorage.setItem('user', JSON.stringify({...state, accessToken: null}));
     },
     clearUser: (state) => {
-      state = initialState;
+      state.username = null;
+      state.email = null;
+      state.firstname = null;
+      state.lastname = null;
+      state.role = null;
+      state.accessToken = null;
       window.localStorage.removeItem('user');
     },
   },

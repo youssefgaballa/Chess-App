@@ -43,6 +43,12 @@ export default function NavBar() {
             <li className="h-full">
               <Link to="/Profile" state={{ from: location }} className="flex items-center h-full p-5 hover:bg-green-500 " >Profile</Link>
             </li>}
+          {
+            user.role === 'admin' &&
+            <li className="h-full">
+              <Link to="/Admin" state={{ from: location }} className="flex items-center h-full p-5 hover:bg-green-500 " >Admin</Link>
+            </li>
+          }
           
           {username &&
             <li className="h-full">

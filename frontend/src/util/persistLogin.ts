@@ -1,6 +1,6 @@
 import { useEffect } from "react";
-import { selectUser, setUser, type UserState } from "../users/userSlice";
-import { useDispatch, useSelector } from "react-redux";
+import {  setUser, type UserState } from "../users/userSlice";
+import { useDispatch } from "react-redux";
 import { getNewAccessToken } from "./RefreshToken";
 
 // TODO: put this fct in hood directory and rename file to usePersistLogin.ts

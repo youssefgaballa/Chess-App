@@ -10,6 +10,7 @@ import { Routes, Route } from "react-router";
 import { Map } from './components/Map';
 import { usePersistLogin } from './util/persistLogin';
 import Profile from './components/Profile';
+import { Admin } from './components/Admin';
 
 
 function App() {
@@ -25,7 +26,9 @@ function App() {
 
   usePersistLogin();
 
-
+  // TODO: protect routes based on role
+  // since users can just type in the url and go to a protected route
+  // even without the link being visible, we need to protect the route itself.
   return (
     <>
       <NavBar />
@@ -46,6 +49,8 @@ function App() {
           element={<Map />} />
         <Route path='/Profile'
           element={<Profile />} />
+        <Route path='/Admin'
+          element={<Admin />} />S
       </Routes>
     </>
   )
