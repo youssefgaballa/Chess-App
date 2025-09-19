@@ -1,5 +1,5 @@
 import { getNewAccessToken as getNewAccessToken } from "../util/RefreshToken";
-import  { useAuth } from "../state/AuthorizationContext";
+import  { useAuth } from "../users/userAuthContext";
 import { useEffect } from "react";
 import { customAxios } from "./customAxios";
 

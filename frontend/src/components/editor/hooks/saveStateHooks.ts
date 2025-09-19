@@ -9,6 +9,8 @@ export const usePublishMutation = (title: string,
       mutationFn: async (text: string) => {
         console.log("--usePublishMutation--");
         console.log("userAuth in usePublishMutation: ", userAuth);
+        console.log("title in usePublishMutation: ", title);
+        console.log("text in usePublishMutation: ", text);
         const { data } = await customAxios.post(`http://localhost:5000/data/${title}`, { text }, {
           headers: {
             authorization: `bearer ${userAuth.accessToken}`
@@ -23,6 +25,7 @@ export const useUpdateMutation = (title: string,
   userAuth: { username: string, role: string, accessToken: string }) => {
   return useMutation({
     mutationFn: async (text: string) => {
+      console.log("--useUpdateMutation--");
       const { data } = await customAxios.patch(`http://localhost:5000/data/${title}`, { text }, {
         headers: {
           authorization: `bearer ${userAuth.accessToken}`
@@ -30,10 +33,11 @@ export const useUpdateMutation = (title: string,
       });
       return data;
     },
+
   });
 };
 
-export const useGetNotesQuery = (title: string, userAuth: { username: string, role: string, accessToken: string }) => {
+export const useGetNotesQuery = (published: boolean, title:string,userAuth: { username: string, role: string, accessToken: string }) => {
     return useQuery({
       queryKey: ["get-data"],
       queryFn: async () => {
@@ -42,7 +46,7 @@ export const useGetNotesQuery = (title: string, userAuth: { username: string, ro
         const { data } = await customAxios.get(`http://localhost:5000/data/${title}`);
         return data;
       },
-      enabled: !!userAuth?.accessToken && title !== "", // Only run the query if accessToken is available and title is not empty
+      enabled: !!userAuth?.accessToken && published, // Only run the query if accessToken is available and title is not empty
       staleTime: 0, // 0 milliseconds
       retry: 10 // Retry up to 10 times on failure
     });

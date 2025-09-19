@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router"
 import {  useEffect } from "react";
-import  { useAuth } from "../state/AuthorizationContext";
-
+import  { useAuth } from "../users/userAuthContext";
+//
 export default function NavBar() {
   const location = useLocation();
   const { userAuth, setUserAuth } = useAuth();
@@ -33,6 +33,10 @@ export default function NavBar() {
           {!userAuth.username &&
             <li className="h-full">
             <Link to="/Login" state={{ from: location }} className="flex items-center h-full p-5 hover:bg-green-500 " >Login</Link>
+            </li>}
+          {userAuth.username &&
+            <li className="h-full">
+              <Link to="/Profile" state={{ from: location }} className="flex items-center h-full p-5 hover:bg-green-500 " >Profile</Link>
             </li>}
           
           {userAuth.username &&

@@ -10,9 +10,11 @@ const notesRouter: Router = express.Router();
 notesRouter.get("/data/:title", async (req, res) => {
   console.log("-----/data----");
   const title = req.params.title;
+  const username = res.locals.username;
   const results = await client
-    .query("SELECT content FROM notes WHERE title = $1", [title])
+    .query("SELECT content FROM notes WHERE title = $1 AND owner_id = (SELECT user_id FROM users WHERE username = $2)", [title, username])
     .then((payload) => {
+      console.log("payload.rows: ", payload.rows);
       return payload.rows;
     })
     .catch(() => {
@@ -27,10 +29,10 @@ notesRouter.get("/data", async (req, res) => {
   //const accessToken = req.query.access_token?.toString();
   const accessToken = req.headers?.authorization?.split(' ')[1];
   const refreshToken = req.cookies?.jwt;
+  //console.log("req.local.username: ", res.locals.username);
   // const username = req.headers?.username;
   // console.log("username from headers: ", username);
-  //console.log("username from body: ", req.body.username);
-  //console.log("res.locals.username: ", res.locals.username);
+  const username = res.locals.username;
   // console.log("refresh token: ", refreshToken);
   // console.log("access token: ", accessToken);
   if (!accessToken) {
@@ -39,8 +41,9 @@ notesRouter.get("/data", async (req, res) => {
   }
  
   const results = await client
-    .query("SELECT * FROM notes")
+    .query("SELECT * FROM notes, users where notes.owner_id = users.user_id AND users.username = $1", [username])
     .then((payload) => {
+      console.log("payload.rows: ", payload.rows);
       return payload.rows;
     })
     .catch(() => {
@@ -51,13 +54,23 @@ notesRouter.get("/data", async (req, res) => {
 
 //PUBLISH new note
 notesRouter.post("/data/:title", async (req, res) => {
+  console.log("-----/data POST----");
   const { text: newText } = req.body;
   //console.log("text = " + newText);
   const title = req.params.title;
+  const username = res.locals.username;
   // setTimeout(() => {
   //   res.send({ status: true });//
   // }, 2000);
-  const result = await client.query("INSERT INTO notes (content, title) VALUES ($1, $2) RETURNING *", [newText, title]);
+  const owner_id = await client
+    .query("SELECT user_id FROM users WHERE username = $1", [username])
+    .then((payload) => {
+      
+      return payload.rows[0].user_id;
+    });
+  console.log("owner_id: ", owner_id);
+  const result = await client.query("INSERT INTO notes (content, title, owner_id) VALUES ($1, $2, $3) RETURNING *", [newText, title, owner_id]);
+  console.log("result: ", result);
   res.send(result.rows[0]);
 
 });

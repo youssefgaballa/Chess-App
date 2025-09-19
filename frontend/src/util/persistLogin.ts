@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useAuth, type AuthContextType } from "../state/AuthorizationContext";
+import { useAuth, type AuthContextType } from "../users/userAuthContext";
 
 // TODO: put this fct in hood directory and rename file to usePersistLogin.ts
 // Make sure that on every page uses this hook, the query is only enabled

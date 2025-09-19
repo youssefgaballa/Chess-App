@@ -9,6 +9,7 @@ import { RegisterUser } from './components/RegisterUser';
 import { Routes, Route } from "react-router";
 import { Map } from './components/Map';
 import { usePersistLogin } from './util/persistLogin';
+import Profile from './components/Profile';
 
 
 function App() {
@@ -42,7 +43,9 @@ function App() {
         <Route path="/Login"
           element={<LoginUser />} />
         <Route path="/Map"
-          element={<Map /> } />
+          element={<Map />} />
+        <Route path='/Profile'
+          element={<Profile />} />
       </Routes>
     </>
   )

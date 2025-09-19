@@ -17,7 +17,7 @@ import { SaveStatePlugin } from './plugins/SaveStatePlugin';
 import { useGetNotesQuery, usePublishMutation, useUpdateMutation } from './hooks/saveStateHooks';
 import { useParams } from 'react-router';
 import type { UseQueryResult } from '@tanstack/react-query';
-import { useAuth } from '../../state/AuthorizationContext';
+import { useAuth } from '../../users/userAuthContext';
 import { usePersistLogin } from '../../util/persistLogin';
 import { axiosInterceptors } from '../../util/axiosInterceptors';
 
@@ -41,13 +41,14 @@ export default function Editor() {
   //
   const [title, setTitle] = useState(notesTitle);
   const [serializedNodes, setSerializedNodes] = React.useState("");
+  const [published, setPublished] = useState(false);
+
 
   const { mutateAsync: publishNotes, isPending: isPublishing } = usePublishMutation(title, userAuth);
   const { mutateAsync: updateNotes, isPending: isUpdating } = useUpdateMutation(title, userAuth);
+  //console.log("published = " + published);
+  const { data }: UseQueryResult<string> = useGetNotesQuery(published, title, userAuth );
 
-  const { data }: UseQueryResult<string> = useGetNotesQuery(title, userAuth );
-
-  const [published, setPublished] = useState(false);
   //console.log("serializedNodes = " + serializedNodes);
 
   const onPublish = () => {
@@ -56,6 +57,7 @@ export default function Editor() {
   }
 
   const onUpdate = () => {
+    console.log("onUpdate called");
     updateNotes(serializedNodes);
   }
 
@@ -69,8 +71,6 @@ export default function Editor() {
       console.log("data = " + data.toString());
       setSerializedNodes(data);
     }
-
-
     //setPublished(true);
   }, [data]);
   //TODO: add placeholder while data is fetching for published notes
@@ -78,7 +78,9 @@ export default function Editor() {
     <div className="max-w-[50rem] h-[50%] mx-auto bg-white rounded-lg ">
       <LexicalComposer initialConfig={initialConfig}>
         <ToolbarPlugin />
-        {<input type="text" className="border border-black w-full" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)}/>}
+        {<input type="text" className={published ? 'w-full text-center mb-[4px]' : 'w-full text-center border border-black mb-[4px]'}
+           placeholder="Title" disabled={published}
+          value={title} onChange={(e) => setTitle(e.target.value)} />}
         <RichTextPlugin
           contentEditable={
             <ContentEditable
@@ -96,7 +98,8 @@ export default function Editor() {
         {!published && <button onClick={onPublish} className={`size-15 rounded-lg hover:bg-gray-100 ${isPublishing ? 'bg-gray-300 font-bold' : ''}`}>
           {isPublishing ? "Publishing..." : "Publish"}
         </button>}
-        <button onClick={onUpdate} className={`size-15 rounded-lg hover:bg-gray-100 ${isUpdating ? 'bg-gray-300 font-bold' : ''}`}>
+        <button onClick={onUpdate} disabled={isUpdating}
+          className={`size-15 rounded-lg hover:bg-gray-100 ${isUpdating ? 'bg-gray-300 font-bold' : ''}`}>
           {isUpdating ? "Updating..." : "Update"}
         </button>
       </LexicalComposer>
