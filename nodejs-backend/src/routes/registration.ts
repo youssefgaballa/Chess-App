@@ -7,9 +7,15 @@ const registrationRouter: Router = express.Router();
 
 //Register new user
 registrationRouter.post('/registration', async (req, res) => {
-
-  const { username: newUsername, email: newEmail, password: newPassword, role: newRole } = req.body;
-  //const { "username": newUsername } = req.body;
+  console.log("----/registration");
+  const { username: newUsername, email: newEmail, firstName: newFirstName,
+    lastName: newLastName, password: newPassword, role: newRole } = req.body;
+  // console.log("username: ", newUsername);
+  // console.log("email: ", newEmail);
+  // console.log("firstName: ", newFirstName);
+  // console.log("lastName: ", newLastName);
+  // console.log("password: ", newPassword);
+  // console.log("role: ", newRole);
   if (!newUsername || !newPassword) {
     res.status(400).json({'Client Error': 'Username and password are required.'})
     return;
@@ -44,8 +50,10 @@ registrationRouter.post('/registration', async (req, res) => {
   }
   const hashedPwd = await hash(newPassword, 10);
 
-   const result = await client.query("INSERT INTO users (username, email, pwd, user_role) VALUES ($1, $2, $3, $4) RETURNING *", [newUsername, newEmail, hashedPwd, newRole])
-     .catch(() => {
+  const result = await client.query("INSERT INTO users (username, email, firstName, lastName, pwd, user_role) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
+    [newUsername, newEmail, newFirstName, newLastName, hashedPwd, newRole])
+     .catch((error) => {
+       console.error("Error executing query:", error);
        throw new Error("Query failed");
      });
    res.send(result.rows);

@@ -30,6 +30,14 @@ export const RegisterUser = () => {
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [emailFocus, setEmailFocus] = useState(false);
 
+  const [firstName, setFirstName] = useState('');
+  const [isFirstNameValid, setIsFirstNameValid] = useState(true);
+  const [firstNameFocus, setFirstNameFocus] = useState(false);
+
+  const [lastName, setLastName] = useState('');
+  const [isLastNameValid, setIsLastNameValid] = useState(true);
+  const [lastNameFocus, setLastNameFocus] = useState(false);
+
   const [password, setPassword] = useState('');
   const [isPasswordValid, setIsPasswordValid] = useState(false);
   const [passwordFocus, setPasswordFocus] = useState(false);
@@ -39,6 +47,8 @@ export const RegisterUser = () => {
   const [isConfirmPasswordValid, setIsConfirmPasswordValid] = useState(false);
   const [confirmPasswordFocus, setConfirmPasswordFocus] = useState(false);
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
+
+  const [role, setRole] = useState('user'); // default role is 'user'
 
 
   const [errorMessage, setErrorMessage] = useState('');
@@ -75,6 +85,20 @@ export const RegisterUser = () => {
     setEmail(event.target.value);
     //console.log("email = " + email);
   }
+  const changeFirstName = (event: ChangeEvent<HTMLInputElement>) => {
+    setFirstName(event.target.value);
+    const match = /^[A-Za-z]{1,}$/.test(event.target.value);
+    setIsFirstNameValid(match);
+    //console.log("firstName = " + firstName);
+  }
+
+  const changeLastName = (event: ChangeEvent<HTMLInputElement>) => {
+    setLastName(event.target.value);
+    const match = /^[A-Za-z]{1,}$/.test(event.target.value);
+    setIsLastNameValid(match);
+    //console.log("lastName = " + lastName);
+  }
+
 
   const changePassword = (event: ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
@@ -89,8 +113,8 @@ export const RegisterUser = () => {
   const handleSubmit = async (event: React.FormEvent) => {
     //console.log("handleSubmit()");
     event.preventDefault();
- 
-    const reqBody = { username, email, password, role: 'user' };
+
+    const reqBody = { username, email, firstName, lastName, password, role };
     //console.log(reqBody);
     const response = await axios.post('http://localhost:5000/registration', reqBody).catch((error) => {
       console.log(error);
@@ -104,7 +128,10 @@ export const RegisterUser = () => {
       return;
     });
     console.log(response);
-    navigate('/login', { replace: true });
+    if (!errorMessage && response?.status === 200) {
+      //console.log("successful registration");
+      navigate('/login', { replace: true });
+    }
   };
 
   return (
@@ -115,8 +142,9 @@ export const RegisterUser = () => {
         <form onSubmit={handleSubmit} className='flex flex-col items-center justify-start text-center mt-[3%] mb-[3%] w-full h-[85%]'>
           <span className='font-bold text-5xl mb-[3%]'>User Registration</span><br />
           <span className='text-xl'>Sign up for a free user account or login.</span><br />
+
           <label htmlFor='username'>Username: <span className='text-red-500'>*</span></label>
-          <input type='text' onChange={(event) => changeUsername(event)} onFocus={() => setUsernameFocus(true)} onBlur={() => setUsernameFocus(false)}
+          <input id='username' type='text' onChange={(event) => changeUsername(event)} onFocus={() => setUsernameFocus(true)} onBlur={() => setUsernameFocus(false)}
             required className=" focus:outline-none border border-black rounded-md" />
           {isUsernameValid ? <span hidden={username ? false : true} ><Check style={{ fill: 'green' }} /></span>
             : <span hidden={username ? false : true} ><Error style={{ fill: 'red' }} /></span>}
@@ -131,7 +159,7 @@ export const RegisterUser = () => {
           }
 
           <label htmlFor='email'>Email: <span className='text-red-500'>*</span></label>
-          <input type='text' onChange={(event) => changeEmail(event)} onFocus={() => setEmailFocus(true)} onBlur={() => setEmailFocus(false)}
+          <input id='email' type='text' onChange={(event) => changeEmail(event)} onFocus={() => setEmailFocus(true)} onBlur={() => setEmailFocus(false)}
             required className=" focus:outline-none border border-black rounded-md" />
           {isEmailValid ? <span hidden={email ? false : true} ><Check style={{ fill: 'green' }} /></span>
             : <span hidden={email ? false : true} ><Error style={{ fill: 'red' }} /></span>}
@@ -144,9 +172,38 @@ export const RegisterUser = () => {
             </div>
           }
 
+
+          <label htmlFor='firstName'>First Name: <span className='text-red-500'>*</span></label>
+          <input id='firstName' type='text' onChange={(event) => changeFirstName(event)} onFocus={() => setFirstNameFocus(true)} onBlur={() => setFirstNameFocus(false)}
+            required className=" focus:outline-none border border-black rounded-md" />
+          {isFirstNameValid ? <span hidden={firstName ? false : true} ><Check style={{ fill: 'green' }} /></span>
+            : <span hidden={firstName ? false : true} ><Error style={{ fill: 'red' }} /></span>}
+          {firstNameFocus && firstName && !isFirstNameValid &&
+            <div className='flex justify-center'>
+              <div className='text-center text-xl bg-red-300 w-[20vw] rounded-md p-[2%] mt-[1%]'>
+                Invalid First Name:<br />
+                First Name must be at least 1 character long and can only contain letters.
+              </div>
+            </div>
+          }
+
+          <label htmlFor='lastName'>Last Name: <span className='text-red-500'>*</span></label>
+          <input id='lastName' type='text' onChange={(event) => changeLastName(event)} onFocus={() => setLastNameFocus(true)} onBlur={() => setLastNameFocus(false)}
+            required className=" focus:outline-none border border-black rounded-md" />
+          {isLastNameValid ? <span hidden={lastName ? false : true} ><Check style={{ fill: 'green' }} /></span>
+            : <span hidden={lastName ? false : true} ><Error style={{ fill: 'red' }} /></span>}
+          {lastNameFocus && lastName && !isLastNameValid &&
+            <div className='flex justify-center'>
+              <div className='text-center text-xl bg-red-300 w-[20vw] rounded-md p-[2%] mt-[1%]'>
+                Invalid Last Name:<br />
+                Last Name must be at least 1 character long and can only contain letters.
+              </div>
+            </div>
+          }
+
           <label htmlFor='password'>Password: <span className='text-red-500'>*</span></label>
           <div className='relative'>
-            <input type={isPasswordVisible ? 'text' : 'password'} onChange={(event) => changePassword(event)}
+            <input id='password' type={isPasswordVisible ? 'text' : 'password'} onChange={(event) => changePassword(event)}
               onFocus={() => setPasswordFocus(true)} onBlur={() => setPasswordFocus(false)}
               required className="focus:outline-none border border-black rounded-md" />
             <button className='' onClick={() => setIsPasswordVisible(!isPasswordVisible)} type='button'>
@@ -167,7 +224,7 @@ export const RegisterUser = () => {
           }
           <label htmlFor='confirmPassword'>Confirm Password: <span className='text-red-500'>*</span></label>
           <div className='relative'>
-            <input type={isConfirmPasswordVisible ? 'text' : 'password'} onChange={(event) => changeConfirmPassword(event)}
+            <input id='confirmPassword' type={isConfirmPasswordVisible ? 'text' : 'password'} onChange={(event) => changeConfirmPassword(event)}
               onFocus={() => setConfirmPasswordFocus(true)} onBlur={() => setConfirmPasswordFocus(false)}
               required className=" focus:outline-none border border-black rounded-md" />
             <button className='' onClick={() => setIsConfirmPasswordVisible(!isConfirmPasswordVisible)} type='button'>
@@ -185,6 +242,15 @@ export const RegisterUser = () => {
               </div>
             </div>
           }
+
+          <label htmlFor='role'>Role:</label>
+          <select id='role' value={role} onChange={(event) => setRole(event.target.value)} required className="focus:outline-none border border-black rounded-md">
+            <option value="user">User</option>
+            <option value="admin">Admin</option>
+            <option value="editor">Editor</option>
+            <option value="gamer">Gamer</option>
+            <option value="spectator">Spectator</option>
+          </select>
 
           {/* && <div className='flex justify-center mt-[3%] text-xl'><div className='bg-gray-400 w-[60%] rounded-xl'><Info /><br />
             The <span className='text-red-500'>*</span> denotes a required field.</div></div> */}
