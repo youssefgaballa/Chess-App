@@ -1,7 +1,6 @@
 import { Link, useLocation } from "react-router";
 import { useGetAllNotesQuery } from "./editor/hooks/notesHooks";
 import { axiosInterceptors } from "../util/axiosInterceptors";
-import { usePersistLogin } from "../util/persistLogin";
 import { useSelector } from "react-redux";
 import { selectUser } from "../users/userSlice";
 //import Editor from "./editor/Editor";
@@ -13,7 +12,6 @@ export const Notes = () => {
   axiosInterceptors();
   const user = useSelector(selectUser);
   
-  usePersistLogin();
   const { data } = useGetAllNotesQuery(user.accessToken);
 
   console.log("data from useGetAllNotesQuery: ", data);

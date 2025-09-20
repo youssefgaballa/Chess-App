@@ -23,8 +23,9 @@ export const LoginUser = () => {
   }
   const navigate = useNavigate();
   const location = useLocation();
+
   const from = location.state?.from?.pathname ? ((location.state.from.pathname == "/Registration")
-    ? "/" : location.state.from.pathname) : "/";
+    ? "/" : (location.state.from.pathname == "/Login") ? "/" : location.state?.from?.pathname) : "/";
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     //console.log("handleSubmit called");

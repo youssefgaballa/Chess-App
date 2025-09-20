@@ -1,10 +1,8 @@
-import { usePersistLogin } from "../util/persistLogin";
 import { useSelector } from "react-redux";
 import { selectUser } from "../users/userSlice";
 
 // use react redux
 export default function Profile() {
-  usePersistLogin();
   const user = useSelector(selectUser);
   //console.log("user from redux store: ", user);
 

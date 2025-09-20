@@ -17,7 +17,6 @@ import { SaveStatePlugin } from './plugins/SaveStatePlugin';
 import { useGetNotesQuery, usePublishMutation, useUpdateMutation } from './hooks/notesHooks';
 import { useParams } from 'react-router';
 import type { UseQueryResult } from '@tanstack/react-query';
-import { usePersistLogin } from '../../util/persistLogin';
 import { axiosInterceptors } from '../../util/axiosInterceptors';
 import { useSelector } from 'react-redux';
 import { selectUser } from '../../users/userSlice';
@@ -35,7 +34,6 @@ export default function Editor() {
   }
   const user = useSelector(selectUser);
   axiosInterceptors();
-  usePersistLogin();
   const params = useParams();
   const notesTitle = params.title?.replaceAll('-', ' ') || "";
   // useState to manage title

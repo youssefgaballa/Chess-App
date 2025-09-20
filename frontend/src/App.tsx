@@ -15,7 +15,7 @@ function App() {
   // users schema allows owning notes
   //TODO: show message that route is blocked if not authorized.
   // Note that this conditional routing can be overridden by refreshing the page (which clears the context state)
-
+  //console.log("App component mounted");
   usePersistLogin();
 
   // TODO: protect routes based on role

@@ -2,7 +2,7 @@ import { Link, useLocation, useNavigate } from "react-router"
 import {  useEffect } from "react";
 import { clearUser, selectUser } from "../users/userSlice";
 import { useDispatch, useSelector } from "react-redux";
-//
+//TODO: add timer that logs out user after some time of inactivity
 export default function NavBar() {
   const location = useLocation();
   const navigate = useNavigate();

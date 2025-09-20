@@ -17,9 +17,9 @@ export const usePersistLogin = () => {
     //console.log("----Home component mounted");
     
     const loadHandler = async () => {
-      // console.log("---load event triggered");
+      //console.log("---load event triggered");
       const persistedUser: UserState = JSON.parse(window.localStorage.getItem('user')!);
-      // console.log("persistedUser from localStorage: ", persistedUser);
+      // console.log("persistedUser: ", persistedUser);
       const accessToken = await getNewAccessToken(persistedUser.username!);
       // console.log("accessToken from getNewAccessToken: ", accessToken);
       dispatch(setUser({...persistedUser, accessToken}));

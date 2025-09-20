@@ -3,10 +3,13 @@ import { selectUser } from "../../users/userSlice";
 import { Navigate, Outlet } from "react-router";
 
 export const AdminRoutesWrapper = () => {
-  const user = useSelector(selectUser);
+  // console.log("AdminRoutesWrapper mounted");
+   const user = useSelector(selectUser);
+  
 
   return ((user.role === 'admin') ?
     <Outlet />
-    : <Navigate to="/Unauthorized" replace />
+    : 
+    <Navigate to="/Unauthorized" replace />
   )
 };

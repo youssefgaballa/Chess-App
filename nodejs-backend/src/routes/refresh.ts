@@ -10,12 +10,14 @@ const refreshRouter: Router = express.Router();
 refreshRouter.post('/refresh', async (req, res) => {
   console.log("----/refresh");
   const refreshToken = req.cookies?.refreshToken;
-  console.log("refreshToken", refreshToken);
+  const username = req.body?.username;
+  // console.log("username", username);
+  // console.log("refreshToken", refreshToken);
   // if (!cookies?.jwt) {
   //   return res.status(401).json({ 'Client Error': 'No refresh token in cookies, please login again' });
   // }
   // const refreshToken = cookies.jwt;
-  const username = res.locals.username;
+  // const username = res.locals.username;
   //console.log("foundUser: ", foundUser);
   if (!username) {
     return res.status(403).json({ 'Client Error': 'No user found for provided refresh token, please login again' });

@@ -22,9 +22,9 @@ app.use(cookieParser());
 // });
 app.use('/', registrationRouter);
 app.use('/', authenticationRouter);
-app.use("/", usersRouter);
 app.use('/', refreshRouter);
 app.use('/', verifyAccessTokenRouter)
+app.use("/", usersRouter);
 app.use("/", notesRouter);//
 
 // app.use('/', require('cookie-parser')());

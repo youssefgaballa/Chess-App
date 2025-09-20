@@ -13,11 +13,16 @@ import { ProfileRoutesWrapper } from "./ProfileRoutesWrapper"
 import Profile from "../Profile"
 import { AdminRoutesWrapper } from "./AdminRoutesWrapper"
 import { Admin } from "../Admin"
+import { selectUser } from "../../users/userSlice"
+import { useSelector } from "react-redux"
 
 export const AppRoutes = () => {
+  //console.log("AppRoutes mounted");
+  const user = useSelector(selectUser);
 
-  return (
-    <>
+
+  return (<>
+    {user.username ? (
       <Routes>
         <Route path='*' element={<NotFound />} />
         <Route path="/" element={<Home />} />
@@ -47,6 +52,30 @@ export const AppRoutes = () => {
             element={<Admin />} />
         </Route>
       </Routes>
-    </>
-  )
-}
+    ) : (
+      <Routes>
+        <Route path='*' element={<NotFound />} />
+        <Route path="/" element={<Home />} />
+        <Route path='/Unauthorized' element={<Unauthorized />} />
+        <Route path="/Registration"
+          element={<RegisterUser />} />
+        <Route path="/Login"
+          element={<LoginUser />} />
+
+        <Route path="/Notes" element={<div></div>} />
+        <Route path="/Notes/Editor/:title"
+            element={<div></div>} />
+        <Route path="/Notes/Editor"
+          element={<div></div>} />
+        <Route path="/Map"
+          element={<div></div>} />
+        <Route path='/Profile'
+            element={<div></div>} />
+        <Route path='/Admin'
+            element={<div></div>} />
+      </Routes>
+    )}
+  </>
+  );
+
+};
