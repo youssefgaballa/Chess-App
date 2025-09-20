@@ -1,6 +1,6 @@
 import express, { Router } from "express";
 import client from "../database/index.ts";
-import { compare } from 'bcrypt';
+import { compare, hash } from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 const {sign} = jwt;

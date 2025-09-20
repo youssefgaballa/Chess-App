@@ -39,7 +39,13 @@ app.use("/", notesRouter);//
     console.log(`Server is listening on port ${process.env.BACKEND_PORT}.`);
   });
   //console.log(client.connectionParameters);
-  const results = await client
+  const users = await client
+    .query("SELECT * FROM users")
+    .then((payload) => {
+      return payload.rows;
+    });
+  console.log("users:", users);
+  const notes = await client
     .query("SELECT * FROM notes")
     .then((payload) => {
       return payload.rows;
@@ -47,7 +53,7 @@ app.use("/", notesRouter);//
     .catch(() => {
       throw new Error("Query failed");
     });
-  console.log(results);
+  console.log("notes:", notes);
 
   
 })().catch((e) => { console.error(e); });

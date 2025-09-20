@@ -7,6 +7,7 @@
 # jschlatt's password is 1242353453234
 # jgoldberg's password is 24325
 # bob's password is 252453
+# gamer's password is 442232
 
 ###
 # GET all users

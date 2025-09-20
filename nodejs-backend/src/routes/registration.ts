@@ -7,11 +7,7 @@ const registrationRouter: Router = express.Router();
 
 //Register new user
 registrationRouter.post('/registration', async (req, res) => {
-  //const hash3 = await hash('252453', 10);
-  //const hash4 = await hash('332252', 10);
 
-  //console.log("hash4: " + hash4);
-  //console.log("hash3: " + hash3);
   const { username: newUsername, email: newEmail, password: newPassword, role: newRole } = req.body;
   //const { "username": newUsername } = req.body;
   if (!newUsername || !newPassword) {

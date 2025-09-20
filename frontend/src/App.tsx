@@ -1,16 +1,8 @@
 import './App.css'
-import Editor from './components/editor/Editor';
-import { Home } from './components/Home';
-import { LoginUser } from './components/LoginUser';
 import NavBar from './components/Navbar';
-import { Notes } from './components/Notes';
-import { NotFound } from './components/NotFound';
-import { RegisterUser } from './components/RegisterUser';
-import { Routes, Route } from "react-router";
-import { Map } from './components/Map';
+import { AppRoutes } from './components/routes/AppRoutes';
 import { usePersistLogin } from './util/persistLogin';
-import Profile from './components/Profile';
-import { Admin } from './components/Admin';
+
 
 
 function App() {
@@ -32,26 +24,7 @@ function App() {
   return (
     <>
       <NavBar />
-      <Routes>
-        <Route path='*' element={<NotFound/>}/>
-        <Route path="/" element={<Home />} />
-
-        <Route path="/Notes" element={<Notes />} />
-        <Route path="/Notes/Editor/:title"
-          element={<Editor />} />
-        <Route path="/Notes/Editor"
-          element={<Editor />} />
-        <Route path="/Registration"
-          element={<RegisterUser />} />
-        <Route path="/Login"
-          element={<LoginUser />} />
-        <Route path="/Map"
-          element={<Map />} />
-        <Route path='/Profile'
-          element={<Profile />} />
-        <Route path='/Admin'
-          element={<Admin />} />S
-      </Routes>
+      <AppRoutes />
     </>
   )
 }
