@@ -43,10 +43,6 @@ registrationRouter.post('/registration', async (req, res) => {
     return;
   }
   const hashedPwd = await hash(newPassword, 10);
-  // const hash1 = await hash('12432543234', 10);
-  // const hash2 = await hash('1242353453234', 10);
-  // console.log("hash1: " + hash1);
-  // console.log("hash2: " + hash2);
 
    const result = await client.query("INSERT INTO users (username, email, pwd, user_role) VALUES ($1, $2, $3, $4) RETURNING *", [newUsername, newEmail, hashedPwd, newRole])
      .catch(() => {

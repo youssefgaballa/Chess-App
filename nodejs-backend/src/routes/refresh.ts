@@ -1,7 +1,7 @@
 import express, { Router } from "express";
 import client from "../database/index.ts";
 import jwt from 'jsonwebtoken';
-const { verify } = jwt;
+const { verify, sign } = jwt;
 
 //TODO, put stuff in controller
 
@@ -15,20 +15,19 @@ refreshRouter.post('/refresh', async (req, res) => {
   //   return res.status(401).json({ 'Client Error': 'No refresh token in cookies, please login again' });
   // }
   // const refreshToken = cookies.jwt;
-  const response = await client.query("SELECT username FROM users WHERE refresh_token = $1", [refreshToken])
-  const foundUser = response.rows[0];
+  const username = res.locals.username;
   //console.log("foundUser: ", foundUser);
-  if (!foundUser) {
+  if (!username) {
     return res.status(403).json({ 'Client Error': 'No user found for provided refresh token, please login again' });
   }
 
   verify(refreshToken, `${process.env.REFRESH_TOKEN_SECRET}`, (err: any, decoded: any) => {
     //console.log("decoded: ",decoded);
-    if (err || foundUser.username !== decoded.username) {
+    if (err || username !== decoded.username) {
       //console.log("err from verify in /refresh: ", err);
       return res.status(403).json({ 'Client Error': 'Invalid refresh token, please login again' });
     }
-    const accessToken = jwt.sign({ username: decoded.username },
+    const accessToken = sign({ username: decoded.username },
       `${process.env.ACCESS_TOKEN_SECRET}`, { expiresIn: '25s' });
     console.log("new access token: ", accessToken);
     res.json({ accessToken });

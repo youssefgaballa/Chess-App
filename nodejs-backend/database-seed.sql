@@ -6,8 +6,6 @@ CREATE TABLE IF NOT EXISTS users
     firstName text,
     lastName text,
     pwd text NOT NULL,
-    refresh_token text,
-    valid_util timestamp,
     user_role text,
     CONSTRAINT users_pkey PRIMARY KEY (user_id)
 );

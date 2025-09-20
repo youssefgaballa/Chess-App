@@ -38,11 +38,7 @@ authenticationRouter.post('/authentication', async (req, res) => {
     const refreshToken = sign({ username: foundUser.username },
       `${process.env.REFRESH_TOKEN_SECRET}`, { expiresIn: '24h' });
     
-    const result = await client
-      .query("UPDATE users SET refresh_token = $1 WHERE username = $2 RETURNING *", [refreshToken, foundUser.username])
-      .catch(() => {
-        throw new Error("Query failed");
-      });
+    
     const rolesResult = await client
       .query("SELECT user_role FROM users WHERE username = $1", [foundUser.username])
       .then((payload) => { 
