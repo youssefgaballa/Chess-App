@@ -61,6 +61,7 @@ usersRouter.delete('/users/:username', async (req, res) => {
     .catch(() => {
       throw new Error("Query failed");
     });
+  console.log("result: ", result);
   res.send(result);
 });
 

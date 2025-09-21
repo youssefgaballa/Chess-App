@@ -2,7 +2,6 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { customAxios } from "../../../util/customAxios";
 
 
-
 export const usePublishMutation = (title: string, accessToken: string | null) => {
     return useMutation({
       mutationFn: async (text: string) => {
@@ -49,7 +48,22 @@ export const useGetNotesQuery = (published: boolean, title: string, accessToken:
       retry: 10 // Retry up to 10 times on failure
     });
 };
-  
+
+export const useGetUserNotesQuery = (username: string | null, accessToken: string | null ) => {
+  return useQuery({
+    queryKey: ["get-user-notes"],
+    queryFn: async () => {
+      // console.log("--useGetUserNotesQuery--");
+      const response = await customAxios.get(`http://localhost:5000/data/user/${username}`, { withCredentials: true });
+      // console.log("data from useGetUserNotesQuery: ", response.data);
+      return response.data;
+    },
+    enabled: !!accessToken && !!username, // Only run the query if accessToken is available and username is not empty
+    staleTime: 0, // 0 milliseconds
+    retry: 10 // Retry up to 10 times on failure
+  });
+};
+
 export const useGetAllNotesQuery = (accessToken: string | null ) => {
   return useQuery({
     queryKey: ["get-all-data"],

@@ -52,6 +52,22 @@ notesRouter.get("/data", async (req, res) => {
   res.send(results);
 });
 
+notesRouter.get("/data/user/:username", async (req, res) => {
+  const username = req.params.username;
+  console.log("----/data/user/:username ", username);
+  const results = await client
+    .query("SELECT * FROM notes WHERE owner_id = (SELECT user_id FROM users WHERE username = $1)", [username])
+    .then((payload) => {
+      //console.log("payload.rows: ", payload.rows);
+      return payload.rows;
+    })
+    .catch(() => {
+      throw new Error("Query failed");
+    });
+  console.log(results);
+  res.send(results);
+});
+
 //PUBLISH new note
 notesRouter.post("/data/:title", async (req, res) => {
   console.log("-----/data POST----");

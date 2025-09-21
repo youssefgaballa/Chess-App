@@ -20,7 +20,7 @@ INSERT into users (username, email, firstName, lastName, pwd, user_role) VALUES
 CREATE TABLE IF NOT EXISTS notes
 (
     id serial,
-    title text UNIQUE,
+    title text,
     content text,
     owner_id integer, 
     CONSTRAINT notes_pkey PRIMARY KEY (id),
@@ -28,5 +28,11 @@ CREATE TABLE IF NOT EXISTS notes
 );
 
 INSERT INTO notes(content, title, owner_id) VALUES
- ('Notes 1 ', 'Example 1 Notes', 1),
- ('Notes 2', 'Example 2 Notes', 2);
+ ('root Notes 1 ', 'Example 1 Notes', 1),
+ ('root Notes 2 ', 'Example 2 Notes', 1),
+ ('root Notes 3 ', 'Example 3 Notes', 1),
+ ('jschlatt Notes 1', 'Example 1 Notes', 2),
+ ('jschlatt Notes 2', 'Example 2 Notes', 2),
+ ('jgoldberg Notes 1', 'Example 1 Notes', 3),
+ ('gamer Notes 1', 'Example 1 Notes', 4),
+ ('bob Notes 1', 'Example 1 Notes', 5);
