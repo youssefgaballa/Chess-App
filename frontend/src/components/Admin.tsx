@@ -1,23 +1,26 @@
 import { useSelector } from "react-redux";
 import { useDeleteUserMutation, useGetAllUsersQuery } from "../users/usersHooks";
-import { selectUser } from "../users/userSlice";
+import { selectUser, type UserState } from "../users/userSlice";
 import { axiosInterceptors } from "../util/axiosInterceptors";
 import {  useQueryClient } from "@tanstack/react-query";
 import {  useEffect, useState } from "react";
 import { useGetUserNotesQuery } from "./editor/hooks/notesHooks";
+import { EditUser } from "./EditUser";
 
+export type currentUserType = Omit<UserState, "accessToken">;
 //TODO: add modal to update user.
 //TODO: add infinite scroll to user list.
 export const Admin = () => {
   const user = useSelector(selectUser);
   axiosInterceptors();
-  const [selectedUser, setSelectedUser] = useState<string | null>(null);
+  const [selectedUser, setSelectedUser] = useState<currentUserType | null>(null);
   const [selectedUserIndex, setSelectedUserIndex] = useState<number | null>(null);
+  const [showModal, setShowModal] = useState(false);
   const queryClient = useQueryClient();
   const { data } = useGetAllUsersQuery(user.accessToken);
   const { mutateAsync: deleteUser, isPending: isDeleting } = useDeleteUserMutation();
 
-  const { data: notesData } = useGetUserNotesQuery(selectedUser, user.accessToken);
+  const { data: notesData } = useGetUserNotesQuery(selectedUser?.username, user.accessToken);
 
   console.log("notesData: ", notesData);
   // const createModal = () => {
@@ -41,19 +44,28 @@ export const Admin = () => {
     
   }
 
-  const setOnClick = (index: number, username: string) => {
+  const setOnClick = (index: number, user: {
+    user_id: number,
+    username: string, email: string, firstname: string,
+    lastname: string, user_role: string
+  }) => {
     setSelectedUserIndex(index);
-    setSelectedUser(username);
+    setSelectedUser({
+      username: user.username, email: user.email,
+      firstname: user.firstname, lastname: user.lastname, role: user.user_role
+    });
     if (index !== selectedUserIndex) {
       queryClient.invalidateQueries({ queryKey: ["get-user-notes"] });
     }
-    console.log("selectedUserIndex: ", selectedUserIndex);
-    console.log("index: ", index);
+    // console.log("selectedUserIndex: ", selectedUserIndex);
+    // console.log("index: ", index);
+    console.log("selectedUser: ", selectedUser);
   }
 
     return (
-
       <div className='flex w-full h-auto '>
+        {showModal && <EditUser setShowModal={setShowModal} selectedUser={selectedUser} />}  
+
         <div className='w-[20vw] h-[100vh]'></div>
         <div className='flex flex-col  text-center mt-[2%] mr-[2%] w-[30vw] h-full '>
           {
@@ -61,7 +73,7 @@ export const Admin = () => {
               username: string, email: string, firstname: string,
               lastname: string, user_role: string
             }, index: number) => (
-              <div key={index} onClick={() => setOnClick(index, currentUser.username)}
+              <div key={index} onClick={() => setOnClick(index, currentUser)}
                 className={selectedUserIndex == index ? 'flex flex-col items-center text-center w-[30vw] h-auto  p-[5%] mb-[3%] text-2xl rounded-xl shadow-lg border border-green-500 overflow-auto'
                   : 'flex flex-col items-center text-center w-[30vw] h-auto  p-[5%] mb-[3%] text-2xl rounded-xl shadow-lg border border-black overflow-auto'}>
                 <h1>User ID: {currentUser.user_id}</h1>
@@ -72,7 +84,12 @@ export const Admin = () => {
                 <h1>Role: {currentUser.user_role}</h1>
                 <button onClick={() => deleteHandler(currentUser.username)}
                   className="m-[3%] p-[1%] w-[50%] border border-black rounded-lg hover:bg-red-500 hover:text-white">{isDeleting ? 'Deleting...' : 'Delete User'}</button>
-                <button className=" w-[50%] border border-black rounded-lg hover:bg-blue-500 hover:text-white">Update User</button>
+                <button onClick={(event) => {
+                  event.stopPropagation();
+                  setShowModal(true);
+                }} className=" w-[50%] border border-black rounded-lg hover:bg-blue-500 hover:text-white">
+                  Update User
+                </button>
               </div>
             ))
           }

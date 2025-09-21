@@ -49,7 +49,7 @@ export const useGetNotesQuery = (published: boolean, title: string, accessToken:
     });
 };
 
-export const useGetUserNotesQuery = (username: string | null, accessToken: string | null ) => {
+export const useGetUserNotesQuery = (username: string | null | undefined, accessToken: string | null ) => {
   return useQuery({
     queryKey: ["get-user-notes"],
     queryFn: async () => {
