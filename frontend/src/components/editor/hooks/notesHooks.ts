@@ -53,7 +53,7 @@ export const useGetUserNotesQuery = (username: string | null | undefined, access
   return useQuery({
     queryKey: ["get-user-notes"],
     queryFn: async () => {
-      // console.log("--useGetUserNotesQuery--");
+       console.log("--useGetUserNotesQuery--");
       const response = await customAxios.get(`http://localhost:5000/data/user/${username}`, { withCredentials: true });
       // console.log("data from useGetUserNotesQuery: ", response.data);
       return response.data;

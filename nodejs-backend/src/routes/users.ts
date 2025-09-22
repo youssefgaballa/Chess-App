@@ -1,5 +1,6 @@
 import express, { Router } from "express";
 import client from "../database/index.ts";
+import { hash } from "bcrypt";
 
 const usersRouter: Router = express.Router();
 //TODO; put actual requests in controller
@@ -48,9 +49,24 @@ usersRouter.get('/users', async (req, res) => {
 
 // update email
 usersRouter.patch("/users/:username", async (req, res) => {
-  const { email: newEmail } = req.body;
+  const { username: newUsername, email: newEmail, firstName: newFirstName, lastName: newLastName,
+    password: newPassword, role: newRole
+  } = req.body;
+  const hashedPwd = await hash(newPassword, 10);
+  // console.log("req.body: ", req.body);
+  // console.log("newUsername: ", newUsername);
+  // console.log("newEmail: ", newEmail);
+  // console.log("newFirstName: ", newFirstName);
+  // console.log("newLastName: ", newLastName);
+  // console.log("newPassword: ", newPassword);
+  // console.log("newRole: ", newRole);
   const username = req.params.username;
-  const results = await client.query("UPDATE users SET email = $1 WHERE username = $2 RETURNING *", [newEmail, username]);
+  console.log("username from params: ", username);
+  const results = await client.query("UPDATE users SET username = $1, email = $2, firstName = $3, lastName = $4, pwd = $5, user_role = $6 WHERE username = $7 RETURNING *",
+    [newUsername, newEmail, newFirstName, newLastName, hashedPwd, newRole, username]).catch(() => {
+      throw new Error("Query failed");
+    });
+  console.log("results/rows[0]: ", results.rows[0]);
   res.send(results.rows[0]);
 });
 

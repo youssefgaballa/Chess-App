@@ -17,31 +17,36 @@ export const Admin = () => {
   const [selectedUserIndex, setSelectedUserIndex] = useState<number | null>(null);
   const [showModal, setShowModal] = useState(false);
   const queryClient = useQueryClient();
+
   const { data } = useGetAllUsersQuery(user.accessToken);
   const { mutateAsync: deleteUser, isPending: isDeleting } = useDeleteUserMutation();
+  console.log("selectedUser: ", selectedUser);
+  const { data: notesData } = useGetUserNotesQuery(selectedUser?.username ? selectedUser.username : "", user.accessToken);
 
-  const { data: notesData } = useGetUserNotesQuery(selectedUser?.username, user.accessToken);
+  //console.log("notesData: ", notesData);
 
-  console.log("notesData: ", notesData);
-  // const createModal = () => {
-  //   const modalRoot = document.getElementById('modal-root');
-  //   if (modalRoot) {
-  //     const modalElement = document.createElement('div');
-  //   }
-  // }
   useEffect(() => {
     setSelectedUser(null);
+    // console.log("useEffect called");
+    // console.log("selectedUser: ", selectedUser);
+    // console.log("selectedUser.username: ", selectedUser?.username);
+    // console.log("selectedUserIndex: ", selectedUserIndex);
+    console.log("notesData: ", notesData);
   }, [data, notesData]);
 
   const deleteHandler = (username: string) => {
-    console.log("delete user with username: ", username);
+    // console.log("delete user with username: ", username);
     if (username === user.username) {
       alert("You cannot delete yourself!");
       return;
     }
-    deleteUser(username);
-    queryClient.invalidateQueries({ queryKey: ["get-all-users"] });
-    
+    deleteUser(username).then(() => {
+      queryClient.invalidateQueries({ queryKey: ["get-all-users"] });
+     });
+    setSelectedUser(null);
+
+    // setSelectedUser(null);
+    // setSelectedUserIndex(null);
   }
 
   const setOnClick = (index: number, user: {
@@ -56,10 +61,11 @@ export const Admin = () => {
     });
     if (index !== selectedUserIndex) {
       queryClient.invalidateQueries({ queryKey: ["get-user-notes"] });
+
     }
     // console.log("selectedUserIndex: ", selectedUserIndex);
     // console.log("index: ", index);
-    console.log("selectedUser: ", selectedUser);
+  
   }
 
     return (
@@ -74,7 +80,7 @@ export const Admin = () => {
               lastname: string, user_role: string
             }, index: number) => (
               <div key={index} onClick={() => setOnClick(index, currentUser)}
-                className={selectedUserIndex == index ? 'flex flex-col items-center text-center w-[30vw] h-auto  p-[5%] mb-[3%] text-2xl rounded-xl shadow-lg border border-green-500 overflow-auto'
+                className={selectedUserIndex === index ? 'flex flex-col items-center text-center w-[30vw] h-auto  p-[5%] mb-[3%] text-2xl rounded-xl shadow-lg border border-green-500 overflow-auto'
                   : 'flex flex-col items-center text-center w-[30vw] h-auto  p-[5%] mb-[3%] text-2xl rounded-xl shadow-lg border border-black overflow-auto'}>
                 <h1>User ID: {currentUser.user_id}</h1>
                 <h1>Username: {currentUser.username}</h1>
@@ -87,6 +93,10 @@ export const Admin = () => {
                 <button onClick={(event) => {
                   event.stopPropagation();
                   setShowModal(true);
+                  setSelectedUser({
+                    username: currentUser.username, email: currentUser.email,
+                    firstname: currentUser.firstname, lastname: currentUser.lastname, role: currentUser.user_role
+                  })
                 }} className=" w-[50%] border border-black rounded-lg hover:bg-blue-500 hover:text-white">
                   Update User
                 </button>

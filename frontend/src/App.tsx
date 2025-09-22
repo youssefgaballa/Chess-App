@@ -1,7 +1,10 @@
+import { useEffect } from 'react';
 import './App.css'
 import NavBar from './components/Navbar';
 import { AppRoutes } from './components/routes/AppRoutes';
 import { usePersistLogin } from './util/persistLogin';
+import { useLocation } from 'react-router';
+import { useQueryClient } from '@tanstack/react-query';
 
 
 
@@ -16,7 +19,16 @@ function App() {
   //TODO: show message that route is blocked if not authorized.
   // Note that this conditional routing can be overridden by refreshing the page (which clears the context state)
   //console.log("App component mounted");
+  const location = useLocation();
+  const queryClient = useQueryClient();
+
   usePersistLogin();
+  useEffect(() => {
+    console.log("location path changed: ", location.pathname);
+    queryClient.invalidateQueries({ queryKey: ["get-user-notes"] }).then(() => {
+      console.log("invalidated get-user-notes query");
+    });
+  }, [location.pathname]);
 
   // TODO: protect routes based on role
   // since users can just type in the url and go to a protected route
