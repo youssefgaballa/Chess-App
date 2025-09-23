@@ -8,7 +8,7 @@ import { EditorRoutesWrapper } from "./EditorRoutesWrapper"
 import { Notes } from "../Notes"
 import Editor from "../editor/Editor"
 import { MapRoutesWrapper } from "./MapRoutesWrapper"
-import { Map } from "../Map"
+import {  MapComponent } from "../Map"
 import { ProfileRoutesWrapper } from "./ProfileRoutesWrapper"
 import Profile from "../Profile"
 import { AdminRoutesWrapper } from "./AdminRoutesWrapper"
@@ -41,7 +41,7 @@ export const AppRoutes = () => {
         </Route>
         <Route element={<MapRoutesWrapper />}>
           <Route path="/Map"
-            element={<Map />} />
+            element={<MapComponent />} />
         </Route>
         <Route element={<ProfileRoutesWrapper />}>
           <Route path='/Profile'
