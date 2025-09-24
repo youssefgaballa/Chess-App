@@ -15,6 +15,7 @@ import { AdminRoutesWrapper } from "./AdminRoutesWrapper"
 import { Admin } from "../Admin"
 import { selectUser } from "../../users/userSlice"
 import { useSelector } from "react-redux"
+import { ChessBoardWrapper } from "../chess/ChessBoardWrapper"
 
 export const AppRoutes = () => {
   //console.log("AppRoutes mounted");
@@ -31,6 +32,8 @@ export const AppRoutes = () => {
           element={<RegisterUser />} />
         <Route path="/Login"
           element={<LoginUser />} />
+        <Route path="/Chess"
+          element={<ChessBoardWrapper />} />
 
         <Route element={<EditorRoutesWrapper />}>
           <Route path="/Notes" element={<Notes />} />
@@ -60,7 +63,9 @@ export const AppRoutes = () => {
         <Route path="/Registration"
           element={<RegisterUser />} />
         <Route path="/Login"
-          element={<LoginUser />} />
+            element={<LoginUser />} />
+          <Route path="/Chess"
+            element={<ChessBoardWrapper />} />
 
         <Route path="/Notes" element={<div></div>} />
         <Route path="/Notes/Editor/:title"

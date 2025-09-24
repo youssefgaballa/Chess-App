@@ -1,0 +1,9 @@
+Frontend:
+-Create Chamption chess pieces that can fight boss pieces that also have powers
+-Tower defence mode (chess pieces move automatically). shoot pawns out of rooks.
+-Players can join a 2 player game and turn it into a 3 player, etc game.
+-Pieces can randomly fall from other games (when they're killed) into a current game (can track
+the id of the piece and who it belonged to)
+-add more custom chess pieces
+-Add battle royale mode
+- n x n chess board.

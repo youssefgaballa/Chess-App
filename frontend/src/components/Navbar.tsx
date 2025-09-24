@@ -21,6 +21,9 @@ export default function NavBar() {
           <li className="mr-auto h-full">
             <Link to="/" state={{ from: location }} className="flex items-center h-full p-5 hover:bg-green-500 ">Home</Link>
           </li>
+          <li className="h-full">
+            <Link to="/Chess" state={{ from: location }} className="flex items-center h-full p-5 hover:bg-green-500 ">Chess</Link>
+          </li>
           {username &&
             <li className="h-full">
               <Link to="/Notes" state={{ from: location }} className="flex items-center h-full p-5 hover:bg-green-500 ">Notes</Link>

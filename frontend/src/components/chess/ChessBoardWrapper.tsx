@@ -1,0 +1,17 @@
+import  ChessBoard8x8  from "./ChessBoard8x8"
+
+export const Colors = {
+  'light/dark': ["#f0d9b5", "#b58863"],
+  'blue/green': ["#a0c4ff", "#b5fbc0"],
+  'red/black': ["#ffadad", "#9d0208"],
+  'purple/yellow': ["#cdb4db", "#fdffb6"]
+}
+
+export const ChessBoardWrapper = () => {
+  const colors = Colors['light/dark'];
+
+  return (
+    <ChessBoard8x8 colors={colors} />
+  );
+
+} 
