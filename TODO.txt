@@ -7,3 +7,12 @@ the id of the piece and who it belonged to)
 -add more custom chess pieces
 -Add battle royale mode
 - n x n chess board.
+
+Backend: 
+create C# Backend
+add serverside rendering
+Authentication, Authorization, Message queues (RabbitMQ), kafka, streams, security,
+fix api tests so that correct authorization headers are passed (as if logged in)
+
+General: Js-docs, tests, dev-environments, kubernetes  
+

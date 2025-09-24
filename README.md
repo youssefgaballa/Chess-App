@@ -4,6 +4,6 @@ Uses React, Nodejs, Express, Postgres.
 Can create Notes,
 ### TODO: 
 General: Js-docs, tests, dev-environments, kubernetes  
-Frontend: tanstack-query, react rtk  
+Frontend: 
 Backend: Authentication, Authorization, Message queues (RabbitMQ), kafka, streams, security,
 fix api tests so that correct authorization headers are passed (as if logged in)

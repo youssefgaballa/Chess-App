@@ -1,0 +1,34 @@
+import ChessPiece, { type ChessColor, type ChessPosition } from "./chessPiece";
+
+export const Rook = ({ color, position }: { color: ChessColor, position: ChessPosition }) => {
+const rook = new ChessPiece("rook", color, position, 50, 600, 75);
+
+  return (
+    <svg x={rook.boardPosition.x} y={rook.boardPosition.y}
+      width={rook.tileSize} height={rook.tileSize} style={{ overflow: 'visible' }}>
+      <g transform={`scale(${rook.tileSize / 35})`}>
+        <path d={rook.pathData[0]} style={{strokeLinecap: 'butt'}}/>
+        <path d={rook.pathData[1]} style={{ strokeLinecap: 'butt' }} />
+        <path d={rook.pathData[2]} style={{ strokeLinecap: 'butt' }} />
+        <path d={rook.pathData[3]} style={{ strokeLinecap: 'butt', strokeLinejoin: 'miter' }} />
+        <path d={rook.pathData[4]} style={{ strokeLinecap: 'butt' }} />
+        <path d={rook.pathData[5]} style={{ strokeLinecap: 'butt' }} />
+        <path d={rook.pathData[6]} style={{
+          fill: 'none', stroke: '#ffffff', strokeWidth: "1", strokeLinejoin: 'miter'
+        }} />
+        <path d={rook.pathData[7]} style={{
+          fill: 'none', stroke: '#ffffff', strokeWidth: "1", strokeLinejoin: 'miter'
+        }} />
+        <path d={rook.pathData[8]} style={{
+          fill: 'none', stroke: '#ffffff', strokeWidth: "1", strokeLinejoin: 'miter'
+        }} />
+        <path d={rook.pathData[9]} style={{
+          fill: 'none', stroke: '#ffffff', strokeWidth: "1", strokeLinejoin: 'miter'
+        }} />
+        <path d={rook.pathData[10]} style={{
+          fill: 'none', stroke: '#ffffff', strokeWidth: "1", strokeLinejoin: 'miter'
+        }} />
+      </g>
+    </svg>
+  );
+}
