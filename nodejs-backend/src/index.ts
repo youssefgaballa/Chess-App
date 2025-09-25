@@ -9,6 +9,9 @@ import authenticationRouter from "./routes/authentication.ts";
 import refreshRouter from "./routes/refresh.ts";
 import cookieParser from "cookie-parser";
 import verifyAccessTokenRouter from "./routes/verifyAccessToken.ts";
+import { Server } from "socket.io";
+import { createServer } from "http";
+import { create } from "domain";
 
 const app = express();
 
@@ -28,9 +31,6 @@ app.use("/", usersRouter);
 app.use("/", notesRouter);//
 
 // app.use('/', require('cookie-parser')());
-
-
-
 
 (async () => {
   await client.connect();
@@ -57,4 +57,34 @@ app.use("/", notesRouter);//
 
   
 })().catch((e) => { console.error(e); });
+
+// const httpServer = app.listen(4000, () => {
+//   console.log("HTTP Server running on port 4000");
+// }); 
+const httpServer = createServer(app);
+
+
+const io = new Server(httpServer, {
+  cors: {
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
+});
+
+io.on("connection", (socket) => {
+  console.log("a user connected:", socket.id);
+
+  socket.on("chat message", (msg) => {
+    console.log("chat message received:", msg);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("a user disconnected:", socket.id);
+  });
+});
+httpServer.listen(process.env.HTTP_PORT, () => {
+  console.log(`HTTP Server running on http://localhost:${process.env.HTTP_PORT}`);
+});
+
 

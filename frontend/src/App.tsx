@@ -5,7 +5,7 @@ import { AppRoutes } from './components/routes/AppRoutes';
 import { usePersistLogin } from './util/persistLogin';
 import { useLocation } from 'react-router';
 import { useQueryClient } from '@tanstack/react-query';
-
+import { useSocket } from './util/socketManager';
 
 
 function App() {
@@ -29,6 +29,8 @@ function App() {
       console.log("invalidated get-user-notes query");
     });
   }, [location.pathname]);
+
+  useSocket();
 
   // TODO: protect routes based on role
   // since users can just type in the url and go to a protected route

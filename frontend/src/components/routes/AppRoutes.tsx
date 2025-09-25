@@ -16,6 +16,7 @@ import { Admin } from "../Admin"
 import { selectUser } from "../../users/userSlice"
 import { useSelector } from "react-redux"
 import { ChessBoardWrapper } from "../chess/ChessBoardWrapper"
+import { ChatRoom } from "../ChatRoom"
 
 export const AppRoutes = () => {
   //console.log("AppRoutes mounted");
@@ -61,12 +62,12 @@ export const AppRoutes = () => {
         <Route path="/" element={<Home />} />
         <Route path='/Unauthorized' element={<Unauthorized />} />
         <Route path="/Registration"
-          element={<RegisterUser />} />
+            element={<RegisterUser />} />
         <Route path="/Login"
             element={<LoginUser />} />
-          <Route path="/Chess"
+        <Route path="/Chess"
             element={<ChessBoardWrapper />} />
-
+        <Route path='/Chat' element={<ChatRoom />} />
         <Route path="/Notes" element={<div></div>} />
         <Route path="/Notes/Editor/:title"
             element={<div></div>} />
