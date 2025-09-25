@@ -5,7 +5,7 @@ export const Pawn = ({ color, position }: { color: ChessColor, position: ChessPo
 
   return (
     <svg x={pawn.boardPosition.x} y={pawn.boardPosition.y}
-      width={pawn.tileSize} height={pawn.tileSize} style={{ overflow: 'visible' }}>
+      width={pawn.tileSize} height={pawn.tileSize} style={{ overflow: 'visible' }} onClick={() => console.log(`Pawn at ${position} clicked`)}>
 
       <path d={pawn.pathData[0]} fill={pawn.color}
         transform={`scale(${pawn.tileSize / 35})`} />
