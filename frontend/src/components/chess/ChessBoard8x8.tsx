@@ -7,7 +7,7 @@ import { Rook } from "./Rook";
 import { Queen } from "./Queen";
 import { King } from "./King";
 import { useDispatch, useSelector } from "react-redux";
-import { selectBoardState, setInitialBoard, movePiece, movePieceReplace } from "./chessSlice";
+import { selectBoardState, setInitialBoard, movePiece } from "./chessSlice";
 import { SelectedColors } from "./ChessBoardWrapper";
 
 
@@ -48,7 +48,7 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
       const to = pos;
       setIsPieceSelected(null);
       // Update piece positions
-      dispatch(movePiece({ from, to }));
+      dispatch(movePiece({ from, to, replace: false }));
       
     }
   }
@@ -58,7 +58,7 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
     if (!isPieceSelected) {
       setIsPieceSelected(pos);
     } else {
-      dispatch(movePieceReplace({ from: isPieceSelected, to: pos }));
+      dispatch(movePiece({ from: isPieceSelected, to: pos, replace: true }));
       setIsPieceSelected(null);
     }
   }
