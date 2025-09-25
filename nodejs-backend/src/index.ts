@@ -53,7 +53,7 @@ app.use("/", notesRouter);//
     .catch(() => {
       throw new Error("Query failed");
     });
-  console.log("notes:", notes);
+  //console.log("notes:", notes);
 
   
 })().catch((e) => { console.error(e); });

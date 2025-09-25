@@ -41,16 +41,135 @@ const chessBoardSlice = createSlice({
       const { from, to } = action.payload;
       const fromIndex = state.pieces.findIndex(p => p.position === from);
       const toIndex = state.pieces.findIndex(p => p.position === to);
+      const fromPiece = state.pieces[fromIndex];
       if (fromIndex === -1) {
         // No piece at the source position
         return;
       }
-      if (state.pieces[fromIndex].color !== state.turn) {
+      if (fromPiece.color !== state.turn) {
         console.log("Not your turn!");
         return;
       }
       // Case: taking a free square
       if (fromIndex !== -1 && toIndex === -1) {
+        console.log("Moving to a free square!");
+        switch (fromPiece.type) {
+          case "pawn": {
+            // Pawns can only move forward
+            const direction = fromPiece.color === "white" ? 1 : -1;
+            const spacesMoved = (to[1].charCodeAt(0) - from[1].charCodeAt(0));
+            
+            console.log("spacesMoved:", spacesMoved, "direction:", direction);
+            console.log("spacesMoved !== direction && spacesMoved !== direction*2: ", spacesMoved !== direction && spacesMoved !== direction*2);
+            console.log("to[0] == from[0]: ", to[0] == from[0]);
+            if (to[0] == from[0] && spacesMoved !== direction && spacesMoved !== direction*2) {
+              console.log("Invalid move for pawn!");
+              return;
+            }
+            break;
+          } case "knight": {
+            const fileDiff = to[0].charCodeAt(0) - from[0].charCodeAt(0);
+            const rankDiff = to[1].charCodeAt(0) - from[1].charCodeAt(0);
+            if (!(Math.abs(fileDiff) === 2 && Math.abs(rankDiff) === 1)
+              && !(Math.abs(fileDiff) === 1 && Math.abs(rankDiff) === 2)) {
+              console.log("Invalid move for knight!");
+              return;
+            }
+            
+            break;
+          } case "bishop": {
+            const fileDiff = to[0].charCodeAt(0) - from[0].charCodeAt(0);
+            const rankDiff = to[1].charCodeAt(0) - from[1].charCodeAt(0);
+            console.log("fileDiff:", fileDiff, "rankDiff:", rankDiff);
+            if (Math.abs(fileDiff) !== Math.abs(rankDiff)) {
+              console.log("Invalid move for bishop!");
+              return;
+            }
+            for (let i = 1; i < Math.abs(fileDiff); i++) {
+              const intermediateSquare = String.fromCharCode(from[0].charCodeAt(0) + i * Math.sign(fileDiff))
+                + String.fromCharCode(from[1].charCodeAt(0) + i * Math.sign(rankDiff));
+              console.log(`intermediateSquare at iteration ${i}:`, intermediateSquare);
+              if (state.pieces.some(p => p.position === intermediateSquare)) {
+                console.log("Invalid move for bishop! intermediate square occupied:", intermediateSquare);
+                return;
+              }
+            }
+            break;
+          } case "rook": {
+            const fileDiff = to[0].charCodeAt(0) - from[0].charCodeAt(0);
+            const rankDiff = to[1].charCodeAt(0) - from[1].charCodeAt(0);
+            console.log("fileDiff:", fileDiff, "rankDiff:", rankDiff);
+            if (fileDiff !== 0 && rankDiff !== 0) {
+              console.log("Invalid move for rook!");
+              return;
+            }
+        
+            const step = fileDiff !== 0 ? Math.sign(fileDiff) : Math.sign(rankDiff);
+            const direction = fileDiff !== 0 ? 'file' : 'rank';
+            const maxDiff = Math.max(Math.abs(fileDiff), Math.abs(rankDiff));
+            console.log("step:", step, "direction:", direction, "maxDiff:", maxDiff);
+            for (let i = 1; i < maxDiff; i++) {
+              if (direction === 'file' && fileDiff === 0) break;
+              if (direction === 'rank' && rankDiff === 0) break;
+              const intermediateSquare = direction === 'file'
+                ? String.fromCharCode(from[0].charCodeAt(0) + i * step) + from[1]
+                : from[0] + String.fromCharCode(from[1].charCodeAt(0) + i * step);
+              console.log(`intermediateSquare at iteration ${i}:`, intermediateSquare);
+              if (state.pieces.some(p => p.position === intermediateSquare)) {
+                console.log("Invalid move for rook! intermediate square occupied:", intermediateSquare);
+                return;
+              }
+            }
+            break;
+          } case "queen": {
+            const fileDiff = to[0].charCodeAt(0) - from[0].charCodeAt(0);
+            const rankDiff = to[1].charCodeAt(0) - from[1].charCodeAt(0);
+            console.log("fileDiff:", fileDiff, "rankDiff:", rankDiff);
+            if (Math.abs(fileDiff) !== Math.abs(rankDiff) && (fileDiff !== 0 && rankDiff !== 0)) {
+              console.log("Invalid move for Queen!");
+              return;
+            }
+            if (fileDiff === 0 || rankDiff === 0) {// Case: Rook-like move
+              const step = fileDiff !== 0 ? Math.sign(fileDiff) : Math.sign(rankDiff);
+              const direction = fileDiff !== 0 ? 'file' : 'rank';
+              const maxDiff = Math.max(Math.abs(fileDiff), Math.abs(rankDiff));
+              console.log("step:", step, "direction:", direction, "maxDiff:", maxDiff);
+              for (let i = 1; i < maxDiff; i++) {
+                if (direction === 'file' && fileDiff === 0) break;
+                if (direction === 'rank' && rankDiff === 0) break;
+                const intermediateSquare = direction === 'file'
+                  ? String.fromCharCode(from[0].charCodeAt(0) + i * step) + from[1]
+                  : from[0] + String.fromCharCode(from[1].charCodeAt(0) + i * step);
+                console.log(`intermediateSquare at iteration ${i}:`, intermediateSquare);
+                if (state.pieces.some(p => p.position === intermediateSquare)) {
+                  console.log("Invalid move for Queen! intermediate square occupied:", intermediateSquare);
+                  return;
+                }
+              }
+            } else if (Math.abs(fileDiff) === Math.abs(rankDiff)) {// Case: Bishop-like move
+              for (let i = 1; i < Math.abs(fileDiff); i++) {
+                const intermediateSquare = String.fromCharCode(from[0].charCodeAt(0) + i * Math.sign(fileDiff))
+                  + String.fromCharCode(from[1].charCodeAt(0) + i * Math.sign(rankDiff));
+                console.log(`intermediateSquare at iteration ${i}:`, intermediateSquare);
+                if (state.pieces.some(p => p.position === intermediateSquare)) {
+                  console.log("Invalid move for Queen! intermediate square occupied:", intermediateSquare);
+                  return;
+                }
+              }
+            }
+            
+            break;
+          } case "king": {
+            const fileDiff = Math.abs(to[0].charCodeAt(0) - from[0].charCodeAt(0));
+            const rankDiff = Math.abs(to[1].charCodeAt(0) - from[1].charCodeAt(0));
+            console.log("fileDiff:", fileDiff, "rankDiff:", rankDiff);
+            if (fileDiff > 1 || rankDiff > 1) {
+              console.log("Invalid move for king!");
+              return;
+            }
+            break;
+          }
+        }
         // Move the piece
         state.pieces[fromIndex].position = to;
         // Change turn
@@ -64,22 +183,142 @@ const chessBoardSlice = createSlice({
       // console.log("movePieceReplace from:", state.pieces[fromIndex].position, "to:", to, "fromIndex:", fromIndex, "toIndex:", toIndex);
       // console.log("from piece ", state.pieces[fromIndex]);
       // console.log("to piece ", state.pieces[toIndex]);
+      const fromPiece = state.pieces[fromIndex];
+      const toPiece = state.pieces[toIndex];
       if (fromIndex === -1 || toIndex === -1) {
         // No piece at the source or destination position
         console.log("No piece at the source or destination position");
         return;
       }
-      if (state.pieces[fromIndex].color !== state.turn) {
+      if (fromPiece.color !== state.turn) {
         console.log("Not your turn!");
         return;
       }
-      if (state.pieces[fromIndex].color === state.pieces[toIndex].color) {
+      if (fromPiece.color === toPiece.color) {
         console.log("Cannot take your own piece!");
         return;
       }
+      
       // Case: taking an opponent's piece
       if (fromIndex !== -1 && toIndex !== -1) {
         console.log("Taking opponent's piece!");
+        switch (fromPiece.type) {
+          case "pawn": {
+            // Pawns can only move forward diagonally when taking a piece
+            // spacesMoved should be +-1, direction should be +-1, fileDiff should be 1
+            const direction = fromPiece.color === "white" ? 1 : -1;
+            const spacesMoved = (to[1].charCodeAt(0) - from[1].charCodeAt(0));
+            const fileDiff = Math.abs(to[0].charCodeAt(0) - from[0].charCodeAt(0));
+            console.log("direction:", direction, "spacesMoved:", spacesMoved, "fileDiff:", fileDiff);
+            if (spacesMoved !== direction || fileDiff !== 1) {
+              console.log("Invalid move for pawn when taking a piece!");
+              return;
+            }
+            break;
+          } case "knight": {
+            const fileDiff = to[0].charCodeAt(0) - from[0].charCodeAt(0);
+            const rankDiff = to[1].charCodeAt(0) - from[1].charCodeAt(0);
+            if (!(Math.abs(fileDiff) === 2 && Math.abs(rankDiff) === 1)
+              && !(Math.abs(fileDiff) === 1 && Math.abs(rankDiff) === 2)) {
+              console.log("Invalid move for knight!");
+              return;
+            }
+
+            break;
+          } case "bishop": {
+            const fileDiff = to[0].charCodeAt(0) - from[0].charCodeAt(0);
+            const rankDiff = to[1].charCodeAt(0) - from[1].charCodeAt(0);
+            console.log("fileDiff:", fileDiff, "rankDiff:", rankDiff);
+            if (Math.abs(fileDiff) !== Math.abs(rankDiff)) {
+              console.log("Invalid move for bishop!");
+              return;
+            }
+            for (let i = 1; i < Math.abs(fileDiff); i++) {
+              const intermediateSquare = String.fromCharCode(from[0].charCodeAt(0) + i * Math.sign(fileDiff))
+                + String.fromCharCode(from[1].charCodeAt(0) + i * Math.sign(rankDiff));
+              console.log(`intermediateSquare at iteration ${i}:`, intermediateSquare);
+              if (state.pieces.some(p => p.position === intermediateSquare)) {
+                console.log("Invalid move for bishop! intermediate square occupied:", intermediateSquare);
+                return;
+              }
+            }
+            break;
+          } case "rook": {
+            const fileDiff = to[0].charCodeAt(0) - from[0].charCodeAt(0);
+            const rankDiff = to[1].charCodeAt(0) - from[1].charCodeAt(0);
+            console.log("fileDiff:", fileDiff, "rankDiff:", rankDiff);
+            if (fileDiff !== 0 && rankDiff !== 0) {
+              console.log("Invalid move for rook!");
+              return;
+            }
+
+            const step = fileDiff !== 0 ? Math.sign(fileDiff) : Math.sign(rankDiff);
+            const direction = fileDiff !== 0 ? 'file' : 'rank';
+            const maxDiff = Math.max(Math.abs(fileDiff), Math.abs(rankDiff));
+            console.log("step:", step, "direction:", direction, "maxDiff:", maxDiff);
+            for (let i = 1; i < maxDiff; i++) {
+              if (direction === 'file' && fileDiff === 0) break;
+              if (direction === 'rank' && rankDiff === 0) break;
+              const intermediateSquare = direction === 'file'
+                ? String.fromCharCode(from[0].charCodeAt(0) + i * step) + from[1]
+                : from[0] + String.fromCharCode(from[1].charCodeAt(0) + i * step);
+              console.log(`intermediateSquare at iteration ${i}:`, intermediateSquare);
+              if (state.pieces.some(p => p.position === intermediateSquare)) {
+                console.log("Invalid move for rook! intermediate square occupied:", intermediateSquare);
+                return;
+              }
+            }
+            break;
+          } case "queen": {
+            const fileDiff = to[0].charCodeAt(0) - from[0].charCodeAt(0);
+            const rankDiff = to[1].charCodeAt(0) - from[1].charCodeAt(0);
+            console.log("fileDiff:", fileDiff, "rankDiff:", rankDiff);
+            if (Math.abs(fileDiff) !== Math.abs(rankDiff) && (fileDiff !== 0 && rankDiff !== 0)) {
+              console.log("Invalid move for Queen!");
+              return;
+            }
+            if (fileDiff === 0 || rankDiff === 0) {// Case: Rook-like move
+              const step = fileDiff !== 0 ? Math.sign(fileDiff) : Math.sign(rankDiff);
+              const direction = fileDiff !== 0 ? 'file' : 'rank';
+              const maxDiff = Math.max(Math.abs(fileDiff), Math.abs(rankDiff));
+              console.log("step:", step, "direction:", direction, "maxDiff:", maxDiff);
+              for (let i = 1; i < maxDiff; i++) {
+                if (direction === 'file' && fileDiff === 0) break;
+                if (direction === 'rank' && rankDiff === 0) break;
+                const intermediateSquare = direction === 'file'
+                  ? String.fromCharCode(from[0].charCodeAt(0) + i * step) + from[1]
+                  : from[0] + String.fromCharCode(from[1].charCodeAt(0) + i * step);
+                console.log(`intermediateSquare at iteration ${i}:`, intermediateSquare);
+                if (state.pieces.some(p => p.position === intermediateSquare)) {
+                  console.log("Invalid move for Queen! intermediate square occupied:", intermediateSquare);
+                  return;
+                }
+              }
+            } else if (Math.abs(fileDiff) === Math.abs(rankDiff)) {// Case: Bishop-like move
+              for (let i = 1; i < Math.abs(fileDiff); i++) {
+                const intermediateSquare = String.fromCharCode(from[0].charCodeAt(0) + i * Math.sign(fileDiff))
+                  + String.fromCharCode(from[1].charCodeAt(0) + i * Math.sign(rankDiff));
+                console.log(`intermediateSquare at iteration ${i}:`, intermediateSquare);
+                if (state.pieces.some(p => p.position === intermediateSquare)) {
+                  console.log("Invalid move for Queen! intermediate square occupied:", intermediateSquare);
+                  return;
+                }
+              }
+            }
+
+            break;
+          } case "king": {
+            // Kings can only move one square in any direction
+            const fileDiff = Math.abs(to[0].charCodeAt(0) - from[0].charCodeAt(0));
+            const rankDiff = Math.abs(to[1].charCodeAt(0) - from[1].charCodeAt(0));
+            console.log("fileDiff:", fileDiff, "rankDiff:", rankDiff);
+            if (fileDiff > 1 || rankDiff > 1) {
+              console.log("Invalid move for king!");
+              return;
+            }
+            break;
+          }
+        }
         // Move the piece
         state.pieces[fromIndex].position = to;
         // Remove the opponent's piece
