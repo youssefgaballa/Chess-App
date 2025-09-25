@@ -5,7 +5,14 @@ export const Colors = {
   'blue/green': ["#a0c4ff", "#b5fbc0"],
   'red/black': ["#ffadad", "#9d0208"],
   'purple/yellow': ["#cdb4db", "#fdffb6"]
-}
+};
+
+export const SelectedColors = {
+  'green': "#7d9568",
+  'red': "#ff0000",
+  'blue': "#0000ff",
+  'yellow': "#ffff00"
+};
 
 export const ChessBoardWrapper = () => {
   const colors = Colors['light/dark'];

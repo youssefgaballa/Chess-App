@@ -1,11 +1,11 @@
 import ChessPiece, { type ChessColor, type ChessPosition } from "./chessPiece";
 
-export const Knight = ({ color, position }: { color: ChessColor, position: ChessPosition }) => {
+export const Knight = ({ color, position, onClick }: { color: ChessColor, position: ChessPosition, onClick: (pos: ChessPosition) => void }) => {
 const knight = new ChessPiece("knight", color, position, 50, 600, 75);
 
   return (
     <svg x={knight.boardPosition.x+5} y={knight.boardPosition.y+7}
-      width={knight.tileSize} height={knight.tileSize} style={{ overflow: 'visible' }}>
+      width={knight.tileSize} height={knight.tileSize} style={{ overflow: 'visible' }} onClick={() => onClick(position)}>
       <g style={{
         stroke: 'black', fill: 'none', fillOpacity: '1', fillRule: 'evenodd', strokeWidth: '1.5', strokeLinecap: 'round',
         strokeLinejoin: 'round', strokeMiterlimit: '4', strokeDasharray: 'none', strokeOpacity: '1'
