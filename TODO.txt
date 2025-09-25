@@ -1,5 +1,6 @@
 Frontend:
--Create Chamption chess pieces that can fight boss pieces that also have powers
+-Ability to create custom chess pieces that can fight other chess pieces that also have powers.
+- Boss chess pieces
 -Tower defence mode (chess pieces move automatically). shoot pawns out of rooks.
 -Players can join a 2 player game and turn it into a 3 player, etc game.
 -Pieces can randomly fall from other games (when they're killed) into a current game (can track
@@ -15,4 +16,5 @@ Authentication, Authorization, Message queues (RabbitMQ), kafka, streams, securi
 fix api tests so that correct authorization headers are passed (as if logged in)
 
 General: Js-docs, tests, dev-environments, kubernetes  
+
 
