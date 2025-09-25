@@ -13,7 +13,6 @@ import { SelectedColors } from "./ChessBoardWrapper";
 
 const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
   const dispatch = useDispatch();
-
   const boardSize = 700; // 700px x 700px
   const tileSize = 75;
   const padding = 50;
@@ -42,13 +41,23 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
   const updatePiecePosition = (pos: ChessPosition) => {
     console.log("updatePiecePosition:", pos);
     if (!isPieceSelected) {
+      const isPieceAtPos = board.pieces.find(p => p.position === pos);
+      if (isPieceAtPos) {
+        setIsPieceSelected(pos);
+      }
       return;
     } else {
       const from = isPieceSelected;
       const to = pos;
       setIsPieceSelected(null);
       // Update piece positions
-      dispatch(movePiece({ from, to, replace: false }));
+      const isPieceAtPos = board.pieces.find(p => p.position === pos);
+      if (isPieceAtPos) {
+        dispatch(movePiece({ from, to, replace: true }));
+
+      } else {
+        dispatch(movePiece({ from, to, replace: false }));
+      }
       
     }
   }

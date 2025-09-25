@@ -1,8 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { ChessColor, ChessPieceType, ChessPosition } from "./chessPiece";
 
-export type ChessBoardState = {
-  pieces: { type: ChessPieceType; color: ChessColor; position: ChessPosition }[];
+export type ChessBoardState = { // hasMoved is mostly relevant for pawns and castling
+  pieces: {
+    type: ChessPieceType; color: ChessColor;
+    position: ChessPosition, isCaptured: boolean, hasMoved: boolean
+  }[];
   turn?: ChessColor;
 };
 
@@ -17,22 +20,38 @@ const chessBoardSlice = createSlice({
   reducers: {
     setInitialBoard: (state) => {
       state.pieces = [
-        { type: "pawn", color: "white", position: "a2" }, { type: "pawn", color: "white", position: "b2" },
-        { type: "pawn", color: "white", position: "c2" }, { type: "pawn", color: "white", position: "d2" },
-        { type: "pawn", color: "white", position: "e2" }, { type: "pawn", color: "white", position: "f2" },
-        { type: "pawn", color: "white", position: "g2" }, { type: "pawn", color: "white", position: "h2" },
-        { type: "rook", color: "white", position: "a1" }, { type: "knight", color: "white", position: "b1" },
-        { type: "bishop", color: "white", position: "c1" }, { type: "queen", color: "white", position: "d1" },
-        { type: "king", color: "white", position: "e1" }, { type: "bishop", color: "white", position: "f1" },
-        { type: "knight", color: "white", position: "g1" }, { type: "rook", color: "white", position: "h1" },
-        { type: "pawn", color: "black", position: "a7" }, { type: "pawn", color: "black", position: "b7" },
-        { type: "pawn", color: "black", position: "c7" }, { type: "pawn", color: "black", position: "d7" },
-        { type: "pawn", color: "black", position: "e7" }, { type: "pawn", color: "black", position: "f7" },
-        { type: "pawn", color: "black", position: "g7" }, { type: "pawn", color: "black", position: "h7" },
-        { type: "rook", color: "black", position: "a8" }, { type: "knight", color: "black", position: "b8" },
-        { type: "bishop", color: "black", position: "c8" }, { type: "queen", color: "black", position: "d8" },
-        { type: "king", color: "black", position: "e8" }, { type: "bishop", color: "black", position: "f8" },
-        { type: "knight", color: "black", position: "g8" }, { type: "rook", color: "black", position: "h8" },
+        { type: "pawn", color: "white", position: "a2", isCaptured: false, hasMoved: false },
+        { type: "pawn", color: "white", position: "b2", isCaptured: false, hasMoved: false },
+        { type: "pawn", color: "white", position: "c2", isCaptured: false, hasMoved: false },
+        { type: "pawn", color: "white", position: "d2", isCaptured: false, hasMoved: false },
+        { type: "pawn", color: "white", position: "e2", isCaptured: false, hasMoved: false },
+        { type: "pawn", color: "white", position: "f2", isCaptured: false, hasMoved: false },
+        { type: "pawn", color: "white", position: "g2", isCaptured: false, hasMoved: false },
+        { type: "pawn", color: "white", position: "h2", isCaptured: false, hasMoved: false },
+        { type: "rook", color: "white", position: "a1", isCaptured: false, hasMoved: false },
+        { type: "knight", color: "white", position: "b1", isCaptured: false, hasMoved: false },
+        { type: "bishop", color: "white", position: "c1", isCaptured: false, hasMoved: false },
+        { type: "queen", color: "white", position: "d1", isCaptured: false, hasMoved: false },
+        { type: "king", color: "white", position: "e1", isCaptured: false, hasMoved: false },
+        { type: "bishop", color: "white", position: "f1", isCaptured: false, hasMoved: false },
+        { type: "knight", color: "white", position: "g1", isCaptured: false, hasMoved: false },
+        { type: "rook", color: "white", position: "h1", isCaptured: false, hasMoved: false },
+        { type: "pawn", color: "black", position: "a7", isCaptured: false, hasMoved: false },
+        { type: "pawn", color: "black", position: "b7", isCaptured: false, hasMoved: false },
+        { type: "pawn", color: "black", position: "c7", isCaptured: false, hasMoved: false },
+        { type: "pawn", color: "black", position: "d7", isCaptured: false, hasMoved: false },
+        { type: "pawn", color: "black", position: "e7", isCaptured: false, hasMoved: false },
+        { type: "pawn", color: "black", position: "f7", isCaptured: false, hasMoved: false },
+        { type: "pawn", color: "black", position: "g7", isCaptured: false, hasMoved: false },
+        { type: "pawn", color: "black", position: "h7", isCaptured: false, hasMoved: false },
+        { type: "rook", color: "black", position: "a8", isCaptured: false, hasMoved: false },
+        { type: "knight", color: "black", position: "b8", isCaptured: false, hasMoved: false },
+        { type: "bishop", color: "black", position: "c8", isCaptured: false, hasMoved: false },
+        { type: "queen", color: "black", position: "d8", isCaptured: false, hasMoved: false },
+        { type: "king", color: "black", position: "e8", isCaptured: false, hasMoved: false },
+        { type: "bishop", color: "black", position: "f8", isCaptured: false, hasMoved: false },
+        { type: "knight", color: "black", position: "g8", isCaptured: false, hasMoved: false },
+        { type: "rook", color: "black", position: "h8", isCaptured: false, hasMoved: false },
       ]
       state.turn = "white";
       //window.localStorage.setItem('user', JSON.stringify({ ...state, accessToken: null }));
@@ -86,9 +105,15 @@ const chessBoardSlice = createSlice({
             
               console.log("spacesMoved:", spacesMoved, "direction:", direction);
               console.log("spacesMoved !== direction && spacesMoved !== direction*2: ", spacesMoved !== direction && spacesMoved !== direction * 2);
-              console.log("to[0] == from[0]: ", to[0] == from[0]);
-              if (to[0] == from[0] && spacesMoved !== direction && spacesMoved !== direction * 2) {
+              console.log("to[0] == from[0]: ", to[0] !== from[0]);
+              if (to[0] === from[0] && spacesMoved !== direction && spacesMoved !== direction * 2) {
                 console.log("Invalid move for pawn!");
+                return;
+              } else if (to[0] !== from[0]) {
+                console.log("Invalid move for pawn!");
+                return;
+              } else if (fromPiece.hasMoved && spacesMoved === direction * 2) {
+                console.log("Invalid move for pawn! Cant move 2 spaces if already moved once");
                 return;
               }
             }
@@ -207,6 +232,7 @@ const chessBoardSlice = createSlice({
         state.pieces.splice(toIndex, 1);
       }
       // Change turn
+      fromPiece.hasMoved = true;
       state.turn = state.turn === "white" ? "black" : "white";
     },
     clearBoard: (state) => {
