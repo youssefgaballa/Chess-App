@@ -57,6 +57,37 @@ const chessBoardSlice = createSlice({
         state.turn = state.turn === "white" ? "black" : "white";
       }
     },
+    movePieceReplace: (state, action: { payload: { from: ChessPosition; to: ChessPosition } }) => {
+      const { from, to } = action.payload;
+      const fromIndex = state.pieces.findIndex(p => p.position === from);
+      const toIndex = state.pieces.findIndex(p => p.position === to);
+      // console.log("movePieceReplace from:", state.pieces[fromIndex].position, "to:", to, "fromIndex:", fromIndex, "toIndex:", toIndex);
+      // console.log("from piece ", state.pieces[fromIndex]);
+      // console.log("to piece ", state.pieces[toIndex]);
+      if (fromIndex === -1 || toIndex === -1) {
+        // No piece at the source or destination position
+        console.log("No piece at the source or destination position");
+        return;
+      }
+      if (state.pieces[fromIndex].color !== state.turn) {
+        console.log("Not your turn!");
+        return;
+      }
+      if (state.pieces[fromIndex].color === state.pieces[toIndex].color) {
+        console.log("Cannot take your own piece!");
+        return;
+      }
+      // Case: taking an opponent's piece
+      if (fromIndex !== -1 && toIndex !== -1) {
+        console.log("Taking opponent's piece!");
+        // Move the piece
+        state.pieces[fromIndex].position = to;
+        // Remove the opponent's piece
+        state.pieces.splice(toIndex, 1);
+        // Change turn
+        state.turn = state.turn === "white" ? "black" : "white";
+      }
+    },
     clearBoard: (state) => {
       state.pieces = [];
       state.turn = "white";
@@ -66,5 +97,5 @@ const chessBoardSlice = createSlice({
 });
 
 export const selectBoardState = (state: { chessBoard: typeof initialState }) => state.chessBoard;
-export const { setInitialBoard, clearBoard, movePiece } = chessBoardSlice.actions;
+export const { setInitialBoard, clearBoard, movePiece, movePieceReplace } = chessBoardSlice.actions;
 export default chessBoardSlice.reducer;

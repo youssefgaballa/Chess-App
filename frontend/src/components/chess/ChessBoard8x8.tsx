@@ -1,5 +1,5 @@
-import { useLayoutEffect, useRef, useState } from "react";
-import ChessPiece, { type ChessPosition } from "./chessPiece";
+import { useLayoutEffect, useState } from "react";
+import { type ChessPosition } from "./chessPiece";
 import { Pawn } from "./Pawn";
 import { Knight } from "./Knight";
 import { Bishop } from "./Bishop";
@@ -7,7 +7,7 @@ import { Rook } from "./Rook";
 import { Queen } from "./Queen";
 import { King } from "./King";
 import { useDispatch, useSelector } from "react-redux";
-import { selectBoardState, setInitialBoard, movePiece } from "./chessSlice";
+import { selectBoardState, setInitialBoard, movePiece, movePieceReplace } from "./chessSlice";
 import { SelectedColors } from "./ChessBoardWrapper";
 
 
@@ -40,9 +40,9 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
     dispatch(setInitialBoard());
   }
   const updatePiecePosition = (pos: ChessPosition) => {
-    console.log("Move piece for position:", pos);
+    console.log("updatePiecePosition:", pos);
     if (!isPieceSelected) {
-      setIsPieceSelected(pos);
+      return;
     } else {
       const from = isPieceSelected;
       const to = pos;
@@ -52,7 +52,17 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
       
     }
   }
-  
+
+  const onPieceClick = (pos: ChessPosition) => {
+    console.log("Piece clicked at position:", pos);
+    if (!isPieceSelected) {
+      setIsPieceSelected(pos);
+    } else {
+      dispatch(movePieceReplace({ from: isPieceSelected, to: pos }));
+      setIsPieceSelected(null);
+    }
+  }
+
 
   useLayoutEffect(() => {
     if (isPieceSelected) {
@@ -93,40 +103,40 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
           });
           })}
           {whitePawnPieces?.map((piece, index) => (
-            <Pawn key={index} color="white" position={piece.position} onClick={updatePiecePosition} />
+            <Pawn key={index} color="white" position={piece.position} onClick={onPieceClick} />
           ))}
           {blackPawnPieces?.map((piece, index) => (
-            <Pawn key={index} color="black" position={piece.position} onClick={updatePiecePosition} />
+            <Pawn key={index} color="black" position={piece.position} onClick={onPieceClick} />
           ))}
           {whiteKnightPieces?.map((piece, index) => (
-            <Knight key={index} color="white" position={piece.position} onClick={updatePiecePosition} />
+            <Knight key={index} color="white" position={piece.position} onClick={onPieceClick} />
           ))}
           {blackKnightPieces?.map((piece, index) => (
-            <Knight key={index} color="black" position={piece.position} onClick={updatePiecePosition} />
+            <Knight key={index} color="black" position={piece.position} onClick={onPieceClick} />
           ))}
           {whiteBishopPieces?.map((piece, index) => (
-            <Bishop key={index} color="white" position={piece.position} onClick={updatePiecePosition} />
+            <Bishop key={index} color="white" position={piece.position} onClick={onPieceClick} />
           ))}
           {blackBishopPieces?.map((piece, index) => (
-            <Bishop key={index} color="black" position={piece.position} onClick={updatePiecePosition} />
+            <Bishop key={index} color="black" position={piece.position} onClick={onPieceClick} />
           ))}
           {whiteRookPieces?.map((piece, index) => (
-            <Rook key={index} color="white" position={piece.position} onClick={updatePiecePosition} />
+            <Rook key={index} color="white" position={piece.position} onClick={onPieceClick} />
           ))}
           {blackRookPieces?.map((piece, index) => (
-            <Rook key={index} color="black" position={piece.position} onClick={updatePiecePosition} />
+            <Rook key={index} color="black" position={piece.position} onClick={onPieceClick} />
           ))}
           {whiteQueenPieces?.map((piece, index) => (
-            <Queen key={index} color="white" position={piece.position} onClick={updatePiecePosition} />
+            <Queen key={index} color="white" position={piece.position} onClick={onPieceClick} />
           ))}
           {blackQueenPieces?.map((piece, index) => (
-            <Queen key={index} color="black" position={piece.position} onClick={updatePiecePosition} />
+            <Queen key={index} color="black" position={piece.position} onClick={onPieceClick} />
           ))}
           {whiteKingPieces?.map((piece, index) => (
-            <King key={index} color="white" position={piece.position} onClick={updatePiecePosition} />
+            <King key={index} color="white" position={piece.position} onClick={onPieceClick} />
           ))}
           {blackKingPieces?.map((piece, index) => (
-            <King key={index} color="black" position={piece.position} onClick={updatePiecePosition} />
+            <King key={index} color="black" position={piece.position} onClick={onPieceClick} />
           ))}
       </svg>
       <button onClick={startGame} className="mt-4 p-2 bg-blue-500 text-white rounded hover:bg-blue-600">Start Game</button>
