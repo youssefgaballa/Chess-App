@@ -10,7 +10,7 @@ services:
       - "${BACKEND_PORT}:${BACKEND_PORT}"
       - "${HTTP_PORT}:${HTTP_PORT}"
     env_file:
-      - ./nodejs-backend/example.env
+   
       - ./.env
     develop:
       watch: 
@@ -31,7 +31,7 @@ services:
     image: postgres:14.1-alpine
     restart: on-failure:3
     env_file:
-      - ./nodejs-backend/example.env
+      - ./.env
     ports:
       - "${POSTGRES_PORT}:${POSTGRES_PORT}"
     volumes:

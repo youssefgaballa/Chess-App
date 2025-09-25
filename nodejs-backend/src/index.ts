@@ -17,7 +17,7 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }))
-app.use(cors({ credentials: true, origin: ['http://localhost:5173'] }));
+app.use(cors({ credentials: true, origin: [`http://localhost:${process.env.FRONTEND_PORT}`] }));
 app.use(cookieParser());
 // app.use((req, res, next) => {//
 //   console.log(`${req.method} ${req.path}`);
@@ -64,9 +64,10 @@ app.use("/", notesRouter);//
 const httpServer = createServer(app);
 
 
+
 const io = new Server(httpServer, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: `http://localhost:${process.env.FRONTEND_PORT}`,
     methods: ["GET", "POST"],
     credentials: true,
   },

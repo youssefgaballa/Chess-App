@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import {io} from "socket.io-client";
 
-const SOCKET_URL = "http://localhost:4000"; // Replace with your server URL
+const SOCKET_URL = `http://localhost:${import.meta.env.VITE_HTTP_PORT}`; // Replace with your server URL
 const socket = io(SOCKET_URL, { withCredentials: true });
 
 export const useSocket = () => {

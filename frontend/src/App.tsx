@@ -6,7 +6,7 @@ import { usePersistLogin } from './util/persistLogin';
 import { useLocation } from 'react-router';
 import { useQueryClient } from '@tanstack/react-query';
 import { useSocket } from './util/socketManager';
-
+/// <reference types="node" />
 
 function App() {
   //TODO:
