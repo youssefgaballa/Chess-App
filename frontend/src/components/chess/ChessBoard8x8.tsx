@@ -19,19 +19,6 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
   const isCapital = true; // Change to true if you want capital letters for columns
   const [isPieceSelected, setIsPieceSelected] = useState<ChessPosition | null>(null);
   const board = useSelector(selectBoardState);
-  const whitePawnPieces = board.pieces.filter(p => p.type === "pawn" && p.color === "white");
-  const whiteKnightPieces = board.pieces.filter(p => p.type === "knight" && p.color === "white");
-  const whiteBishopPieces = board.pieces.filter(p => p.type === "bishop" && p.color === "white");
-  const whiteRookPieces = board.pieces.filter(p => p.type === "rook" && p.color === "white");
-  const whiteQueenPieces = board.pieces.filter(p => p.type === "queen" && p.color === "white");
-  const whiteKingPieces = board.pieces.filter(p => p.type === "king" && p.color === "white");
-  
-  const blackPawnPieces = board.pieces.filter(p => p.type === "pawn" && p.color === "black");
-  const blackKnightPieces = board.pieces.filter(p => p.type === "knight" && p.color === "black");
-  const blackBishopPieces = board.pieces.filter(p => p.type === "bishop" && p.color === "black");
-  const blackRookPieces = board.pieces.filter(p => p.type === "rook" && p.color === "black");
-  const blackQueenPieces = board.pieces.filter(p => p.type === "queen" && p.color === "black");
-  const blackKingPieces = board.pieces.filter(p => p.type === "king" && p.color === "black");
 
   const startGame = () => {
     console.log("Game started!");
@@ -111,42 +98,27 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
             );
           });
           })}
-          {whitePawnPieces?.map((piece, index) => (
-            <Pawn key={index} color="white" position={piece.position} onClick={onPieceClick} />
-          ))}
-          {blackPawnPieces?.map((piece, index) => (
-            <Pawn key={index} color="black" position={piece.position} onClick={onPieceClick} />
-          ))}
-          {whiteKnightPieces?.map((piece, index) => (
-            <Knight key={index} color="white" position={piece.position} onClick={onPieceClick} />
-          ))}
-          {blackKnightPieces?.map((piece, index) => (
-            <Knight key={index} color="black" position={piece.position} onClick={onPieceClick} />
-          ))}
-          {whiteBishopPieces?.map((piece, index) => (
-            <Bishop key={index} color="white" position={piece.position} onClick={onPieceClick} />
-          ))}
-          {blackBishopPieces?.map((piece, index) => (
-            <Bishop key={index} color="black" position={piece.position} onClick={onPieceClick} />
-          ))}
-          {whiteRookPieces?.map((piece, index) => (
-            <Rook key={index} color="white" position={piece.position} onClick={onPieceClick} />
-          ))}
-          {blackRookPieces?.map((piece, index) => (
-            <Rook key={index} color="black" position={piece.position} onClick={onPieceClick} />
-          ))}
-          {whiteQueenPieces?.map((piece, index) => (
-            <Queen key={index} color="white" position={piece.position} onClick={onPieceClick} />
-          ))}
-          {blackQueenPieces?.map((piece, index) => (
-            <Queen key={index} color="black" position={piece.position} onClick={onPieceClick} />
-          ))}
-          {whiteKingPieces?.map((piece, index) => (
-            <King key={index} color="white" position={piece.position} onClick={onPieceClick} />
-          ))}
-          {blackKingPieces?.map((piece, index) => (
-            <King key={index} color="black" position={piece.position} onClick={onPieceClick} />
-          ))}
+          {
+            board.pieces.map((p, index) => {
+              switch(p.type) {
+                case "pawn":
+                  return (<Pawn key={index} color={p.color} position={p.position} onClick={onPieceClick} />);
+                case "knight":
+                  return (<Knight key={index} color={p.color} position={p.position} onClick={onPieceClick} />);
+                case "bishop":
+                  return (<Bishop key={index} color={p.color} position={p.position} onClick={onPieceClick} />);
+                case "rook":
+                  return (<Rook key={index} color={p.color} position={p.position} onClick={onPieceClick} />);
+                case "queen":
+                  return (<Queen key={index} color={p.color} position={p.position} onClick={onPieceClick} />);
+                case "king":
+                  return (<King key={index} color={p.color} position={p.position} onClick={onPieceClick} />);
+                default:
+                  return null;
+              }
+            })
+          }
+          
       </svg>
       <button onClick={startGame} className="mt-4 p-2 bg-blue-500 text-white rounded hover:bg-blue-600">Start Game</button>
 
