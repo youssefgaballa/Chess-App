@@ -351,12 +351,19 @@ const chessBoardSlice = createSlice({
         switch (piece.type) {
           case "pawn": {
             const direction = piece.color === "white" ? 1 : -1;
-            for (let i = 1; i <= 2; i++) {
-              const nextPos = piece.position[0] + (parseInt(piece.position[1]) + i * direction).toString() as ChessPosition;
-              if (state.pieces.some(p => p.position === nextPos)) {
-                break; // Blocked by another piece
+            if (!piece.hasMoved) {
+              for (let i = 1; i <= 2; i++) {
+                const nextPos = piece.position[0] + (parseInt(piece.position[1]) + i * direction).toString() as ChessPosition;
+                if (state.pieces.some(p => p.position === nextPos)) {
+                  break; // Blocked by another piece
+                }
+                piece.validMoves = piece.validMoves.concat([nextPos]);
               }
-              piece.validMoves = piece.validMoves.concat([nextPos]);
+            } else {
+              const nextPos = piece.position[0] + (parseInt(piece.position[1]) + direction).toString() as ChessPosition;
+              if (!state.pieces.some(p => p.position === nextPos)) {
+                piece.validMoves = piece.validMoves.concat([nextPos]);
+              }
             }
             const diagLeft = String.fromCharCode(piece.position[0].charCodeAt(0) - 1) + (parseInt(piece.position[1]) + direction).toString() as ChessPosition;
             const diagRight = String.fromCharCode(piece.position[0].charCodeAt(0) + 1) + (parseInt(piece.position[1]) + direction).toString() as ChessPosition;
