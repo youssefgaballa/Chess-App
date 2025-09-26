@@ -467,10 +467,68 @@ const chessBoardSlice = createSlice({
                 }
               }
             });
-            console.log("Replace moves for bishop at", piece.position, ":", piece.replaceMoves);
+            //console.log("Replace moves for bishop at", piece.position, ":", piece.replaceMoves);
             break;
           } case "rook": {
+            let rookMoves: ChessPosition[] = [];
+            // Horizontal and vertical moves in all four directions
+            for (let i = 1; i < 8; i++) {
+              rookMoves.push(
+                String.fromCharCode(piece.position[0].charCodeAt(0) + i) + piece.position[1] as ChessPosition,
+                String.fromCharCode(piece.position[0].charCodeAt(0) - i) + piece.position[1] as ChessPosition,
+                String.fromCharCode(piece.position[0].charCodeAt(0)) + String.fromCharCode(piece.position[1].charCodeAt(0) + i) as ChessPosition,
+                String.fromCharCode(piece.position[0].charCodeAt(0)) + String.fromCharCode(piece.position[1].charCodeAt(0) - i) as ChessPosition
+              );
+            }
+            rookMoves = rookMoves.filter(pos => pos[0] >= 'a' && pos[0] <= 'h' && pos[1] >= '1' && pos[1] <= '8'); // filter out positions that are off the board
+            //console.log("rookMoves:", rookMoves);
+            const freeMoves = rookMoves.filter(move => {
+              // Check if the path to the move is clear
+              const fileDiff = move[0].charCodeAt(0) - piece.position[0].charCodeAt(0);
+              const rankDiff = move[1].charCodeAt(0) - piece.position[1].charCodeAt(0);
 
+              const stepX = Math.sign(fileDiff);
+              const stepY = Math.sign(rankDiff);
+              // if (move == 'a3' || move == 'b2') {
+              //   console.log("fileDiff:", fileDiff, "rankDiff:", rankDiff);
+              //   console.log("stepX:", stepX, "stepY:", stepY);
+              // }
+              let clearPath = true;
+              for (let j = 1; j <= Math.max(Math.abs(fileDiff), Math.abs(rankDiff)); j++) {
+                const currPos = String.fromCharCode(piece.position[0].charCodeAt(0) + j * stepX)
+                  + String.fromCharCode(piece.position[1].charCodeAt(0) + j * stepY);
+                if (state.pieces.some(p => p.position === currPos)) {
+                  clearPath = false;
+                  break;
+                }
+              }
+              if (clearPath) {
+                return move;
+              }
+            });
+            console.log("freeMoves:", freeMoves);
+            piece.validMoves = freeMoves;
+            // console.log("Valid moves for rook at", piece.position, ":", piece.validMoves);
+            piece.replaceMoves = rookMoves.filter(move => {
+              if (state.pieces.some(p => p.position === move && p.color !== piece.color)) {
+                const fileDiff = piece.position[0].charCodeAt(0) - move[0].charCodeAt(0);
+                const rankDiff = piece.position[1].charCodeAt(0) - move[1].charCodeAt(0);
+                const stepX = Math.sign(fileDiff);
+                const stepY = Math.sign(rankDiff);
+
+                const intermediateMovePos = String.fromCharCode(move.charCodeAt(0) +  stepX)
+                  + String.fromCharCode(move.charCodeAt(1) + stepY);
+                if (move == 'a8') {
+                  console.log("fileDiff:", fileDiff, "rankDiff:", rankDiff);
+                  console.log("intermediateMovePos for rook replace move a5:", intermediateMovePos);
+                }
+
+                if ((!state.pieces.some(p => p.position === intermediateMovePos) || intermediateMovePos == piece.position)) {
+                  return move; // Can move to a square occupied by a piece of the opposite color
+                }
+              }
+            });
+            console.log("Replace moves for rook at", piece.position, ":", piece.replaceMoves);
             break;
           } case "queen": {
 
