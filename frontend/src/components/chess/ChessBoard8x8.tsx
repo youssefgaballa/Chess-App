@@ -1,4 +1,4 @@
-import { useLayoutEffect, useState } from "react";
+import {  useState } from "react";
 import { type ChessPosition } from "./chessPiece";
 import { Pawn } from "./Pawn";
 import { Knight } from "./Knight";
@@ -55,7 +55,7 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
 
   const onPieceClick = (pos: ChessPosition) => {
     //console.log("Piece clicked at position:", pos);
-    const pieceAtPos = board.pieces.find(p => p.position === pos);
+    //const pieceAtPos = board.pieces.find(p => p.position === pos);
     if (!selectedPos) {
       //if (!pieceAtPos) return; // should never occur since this listens to piece clicks
       dispatch(setValidMoves({ piecePos: pos }));
@@ -128,20 +128,20 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
                   </text> : null}
                   <rect key={`${row}-${col}`} onClick={() => updatePiecePosition(String.fromCharCode(97 + col) + (8 - row) as ChessPosition)}
                   x={padding + col * tileSize} y={padding + row * tileSize} width={tileSize} height={tileSize} overflow={'visible'}
-                    fill={canReplace ? SelectedColors['green'] : fill}/>
+                    fill={canReplace ? SelectedColors['green'] : fill} opacity={canReplace ? 0.8 : 1} />
                   {validMoves && validMoves.includes(pos) && !pieceAtPos &&
                     <circle key={`circle-${row}-${col}`} cx={padding + col * tileSize + tileSize / 2} cy={padding + row * tileSize + tileSize / 2}
-                      r={10} fill={SelectedColors['green']} />}
+                    r={10} fill={SelectedColors['green']} opacity={0.8} />}
                   {canReplace && pieceAtPos &&
                     <>
                     <defs>
-                    <clipPath id={`clip`}>
+                    <clipPath id={`clip-${row}-${col}`}>
                       <circle key={`circle-${row}-${col}`} cx={padding + col * tileSize + tileSize / 2} cy={padding + row * tileSize + tileSize / 2}
                           r={42} fill={fill} />
                       </clipPath>
                     </defs>
                     <rect id={`rect-${row}-${col}`} key={`rect-container-${row}-${col}`}  x={padding + col * tileSize} y={padding + row * tileSize} width={tileSize} height={tileSize}
-                      fill={fill} overflow={'visible'} clipPath={`url(#clip)`} />
+                      fill={fill} overflow={'visible'} clipPath={`url(#clip-${row}-${col})`} />
                   {/* <use href={`#rect-${row}-${col}`} clipPath={`url(#clip)`} fill={fill} /> */}
                   </>
                   }
