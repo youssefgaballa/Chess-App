@@ -159,7 +159,7 @@ const chessBoardSlice = createSlice({
       //window.localStorage.setItem('user', JSON.stringify({ ...state, accessToken: null }));
     },
     movePiece: (state, action: { payload: { from: ChessPosition; to: ChessPosition, replace: boolean } }) => {
-      // console.log("movePiece action.payload:", action.payload);
+      console.log("movePiece action.payload:", action.payload);
       const { from, to, replace } = action.payload;
       const fromIndex = state.pieces.findIndex(p => p.position === from);
       const toIndex = state.pieces.findIndex(p => p.position === to);
@@ -185,37 +185,39 @@ const chessBoardSlice = createSlice({
           return;
         }
       }
-      console.log("from piece ", fromPiece, "to piece ", toPiece);
-      console.log("fromIndex:", fromIndex, "toIndex:", toIndex);
-      if (fromIndex !== -1 && toIndex === -1) {
+      // console.log("from piece ", fromPiece, "to piece ", toPiece);
+      // console.log("fromIndex:", fromIndex, "toIndex:", toIndex);
+      //console.log("fromPiece.type:", fromPiece.type);
+      if (fromIndex !== -1) {
         switch (fromPiece.type) {
           case "pawn": {
+            //console.log("case pawn");
             if (replace) {
               // Pawns can only move forward diagonally when taking a piece
               // spacesMoved should be +-1, direction should be +-1, fileDiff should be 1s
               const direction = fromPiece.color === "white" ? 1 : -1;
               const spacesMoved = (to[1].charCodeAt(0) - from[1].charCodeAt(0));
               const fileDiff = Math.abs(to[0].charCodeAt(0) - from[0].charCodeAt(0));
-              // console.log("direction:", direction, "spacesMoved:", spacesMoved, "fileDiff:", fileDiff);
+              //  console.log("direction:", direction, "spacesMoved:", spacesMoved, "fileDiff:", fileDiff);
               if (spacesMoved !== direction || fileDiff !== 1) {
-                // console.log("Invalid move for pawn when taking a piece!");
+                //  console.log("Invalid move for pawn when taking a piece!");
                 return;
               }
             } else {
               // Pawns can only move forward
               const direction = fromPiece.color === "white" ? 1 : -1;
-              const spacesMoved = (to[1].charCodeAt(0) - from[1].charCodeAt(0));
+              const spacesToMove = (to[1].charCodeAt(0) - from[1].charCodeAt(0));
             
-              // console.log("spacesMoved:", spacesMoved, "direction:", direction);
-              // console.log("spacesMoved !== direction && spacesMoved !== direction*2: ", spacesMoved !== direction && spacesMoved !== direction * 2);
+              // console.log("spacesToMove:", spacesToMove, "direction:", direction);
+              // console.log("spacesToMove !== direction && spacesToMove !== direction*2: ", spacesToMove !== direction && spacesToMove !== direction * 2);
               // console.log("to[0] == from[0]: ", to[0] !== from[0]);
-              if (to[0] === from[0] && spacesMoved !== direction && spacesMoved !== direction * 2) {
+              if (to[0] === from[0] && spacesToMove !== direction && spacesToMove !== direction * 2) {
                 // console.log("Invalid move for pawn!");
                 return;
               } else if (to[0] !== from[0]) {
                 // console.log("Invalid move for pawn!");
                 return;
-              } else if (fromPiece.hasMoved && spacesMoved === direction * 2) {
+              } else if (fromPiece.hasMoved && spacesToMove === direction * 2) {
                 // console.log("Invalid move for pawn! Cant move 2 spaces if already moved once");
                 return;
               }

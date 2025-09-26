@@ -13,8 +13,8 @@ the id of the piece and who it belonged to)
 -pointer-environmentsp
 -flip board
 -accessibility
--gray future moves. fix no listener on circle
--fix pawn future moves
+-gray future moves.
+- fix duplicate logic in chessSlice.ts
 
 Backend: 
 -add serverside rendering
