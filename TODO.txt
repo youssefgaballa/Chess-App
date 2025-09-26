@@ -8,16 +8,20 @@ the id of the piece and who it belonged to)
 -add more custom chess pieces
 -Add battle royale mode
 - n x n chess board.
+-hover on a piece to show all its previous moves (hover for about 2 seconds)
+-undo redo chessboard
+-pointer-environmentsp
+-flip board
 -accessibility
 
 Backend: 
-create C# Backend
-add serverside rendering
-Authentication, Authorization, Message queues (RabbitMQ), kafka, streams, security,
-fix api tests so that correct authorization headers are passed (as if logged in)
+-add serverside rendering
+- Authentication, Authorization, Message queues (RabbitMQ), kafka, streams, security,
+-fix api tests so that correct authorization headers are passed (as if logged in)
 - Replicate backend in .NET, spring boot, etc.
 
-General: Js-docs, tests, dev-environments, kubernetes  
+General: 
+-Js-docs, tests, dev-environments, kubernetes  
 
 
 
