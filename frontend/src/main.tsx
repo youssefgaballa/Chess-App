@@ -8,6 +8,11 @@ import { store } from './util/reduxStore.ts';
 
 const queryClient = new QueryClient();
 
+// if (import.meta.hot) {
+//   import.meta.hot.on('vite:beforeFullReload', () => {
+//     throw '(skipping full reload)';
+//   });
+// }
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

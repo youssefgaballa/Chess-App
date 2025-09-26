@@ -334,6 +334,7 @@ const chessBoardSlice = createSlice({
         // console.log("removing piece at toIndex:", toIndex);
         //state.pieces.splice(toIndex, 1);
         toPiece.isCaptured = true;
+        fromPiece.replaceMoves = fromPiece.replaceMoves.filter(pos => pos !== to);
       }
       // Change turn
       fromPiece.hasMoved = true;

@@ -131,7 +131,8 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
                     fill={canReplace ? SelectedColors['green'] : fill} opacity={canReplace ? 0.8 : 1} />
                   {validMoves && validMoves.includes(pos) && !pieceAtPos &&
                     <circle key={`circle-${row}-${col}`} cx={padding + col * tileSize + tileSize / 2} cy={padding + row * tileSize + tileSize / 2}
-                    r={10} fill={SelectedColors['green']} opacity={0.8} />}
+                      r={10} fill={SelectedColors['green']} opacity={0.8} onClick={() => updatePiecePosition(String.fromCharCode(97 + col) + (8 - row) as ChessPosition)} />
+                  }
                   {canReplace && pieceAtPos &&
                     <>
                     <defs>
@@ -141,7 +142,7 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
                       </clipPath>
                     </defs>
                     <rect id={`rect-${row}-${col}`} key={`rect-container-${row}-${col}`}  x={padding + col * tileSize} y={padding + row * tileSize} width={tileSize} height={tileSize}
-                      fill={fill} overflow={'visible'} clipPath={`url(#clip-${row}-${col})`} />
+                      fill={fill} overflow={'visible'} clipPath={`url(#clip-${row}-${col})`} onClick={() => updatePiecePosition(String.fromCharCode(97 + col) + (8 - row) as ChessPosition)}/>
                   {/* <use href={`#rect-${row}-${col}`} clipPath={`url(#clip)`} fill={fill} /> */}
                   </>
                   }
