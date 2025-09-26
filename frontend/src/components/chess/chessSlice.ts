@@ -159,7 +159,7 @@ const chessBoardSlice = createSlice({
       //window.localStorage.setItem('user', JSON.stringify({ ...state, accessToken: null }));
     },
     movePiece: (state, action: { payload: { from: ChessPosition; to: ChessPosition, replace: boolean } }) => {
-      console.log("movePiece action.payload:", action.payload);
+      // console.log("movePiece action.payload:", action.payload);
       const { from, to, replace } = action.payload;
       const fromIndex = state.pieces.findIndex(p => p.position === from);
       const toIndex = state.pieces.findIndex(p => p.position === to);
@@ -649,7 +649,32 @@ const chessBoardSlice = createSlice({
             });
             break;
           } case "king": {
-
+            // king can move one square in any direction
+            // Starting from the right of the current position an moving counter-clockwise, the possible moves are:
+            const kingMoves: ChessPosition[] = [
+              String.fromCharCode(piece.position[0].charCodeAt(0) + 1) + piece.position[1] as ChessPosition,
+              String.fromCharCode(piece.position[0].charCodeAt(0) + 1) + String.fromCharCode(piece.position[1].charCodeAt(0) + 1) as ChessPosition,
+              piece.position[0] + String.fromCharCode(piece.position[1].charCodeAt(0) + 1) as ChessPosition,
+              String.fromCharCode(piece.position[0].charCodeAt(0) - 1) + String.fromCharCode(piece.position[1].charCodeAt(0) + 1) as ChessPosition,
+              String.fromCharCode(piece.position[0].charCodeAt(0) - 1) + piece.position[1] as ChessPosition,
+              String.fromCharCode(piece.position[0].charCodeAt(0) - 1) + String.fromCharCode(piece.position[1].charCodeAt(0) - 1) as ChessPosition,
+              piece.position[0] + String.fromCharCode(piece.position[1].charCodeAt(0) - 1) as ChessPosition,
+              String.fromCharCode(piece.position[0].charCodeAt(0) + 1) + String.fromCharCode(piece.position[1].charCodeAt(0) - 1) as ChessPosition,
+            ].filter(pos => pos[0] >= 'a' && pos[0] <= 'h' && pos[1] >= '1' && pos[1] <= '8'); // filter out positions that are off the board
+            //console.log("kingMoves:", kingMoves);
+            const freeMoves = kingMoves.filter(move => {
+              if (!state.pieces.some(p => p.position === move)) {
+                return move; // Can move to an empty square
+              }
+            });
+            //console.log("freeMoves for king:", freeMoves);
+            piece.validMoves = freeMoves;
+            piece.replaceMoves = kingMoves.filter(move => {
+              if (state.pieces.some(p => p.position === move && p.color !== piece.color)) {
+                return move; // Can move to a square occupied by a piece of the opposite color
+              }
+            });
+            console.log("replaceMoves for king at", piece.position, ":", piece.replaceMoves);
             break;
           } default: break;
         }
