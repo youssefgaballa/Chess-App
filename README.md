@@ -14,6 +14,7 @@ Then run the following commands when in the root directory.
 \$ npm i  
 \$ cd ..  
 \$ docker compose -f docker-compose-nodejs.yml up --watch --build  
+In a new terminal:  
 \$ cd frontend  
 \$ npm i  
 \$ npm run dev  
