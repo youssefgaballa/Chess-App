@@ -16,6 +16,7 @@ the id of the piece and who it belonged to)
 -gray future moves if it's not you're move + add premoves.
 - fix duplicate logic in chessSlice.ts
 - rename updatePiecePosition, validMoves
+- make sure setvalid moves is called only once per piece per move.
 
 Backend: 
 -add serverside rendering

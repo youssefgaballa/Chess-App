@@ -470,8 +470,8 @@ const chessBoardSlice = createSlice({
                 return move; // Can move to a square occupied by a piece of the opposite color
               }
             });
-            // console.log("Valid moves for knight at", piece.position, ":", piece.validMoves);
-            // console.log("Replace moves for knight at", piece.position, ":", piece.replaceMoves);
+             //console.log("Valid moves for knight at", piece.position, ":", piece.validMoves);
+             //console.log("Replace moves for knight at", piece.position, ":", piece.replaceMoves);
             break;
           } case "bishop": {
             let bishopMoves: ChessPosition[] = [];
@@ -509,6 +509,7 @@ const chessBoardSlice = createSlice({
               if (clearPath) {
                 return move;
               }
+              state.lastMove = state.lastMove
             });
             //console.log("freeMoves:", freeMoves);
             piece.validMoves = freeMoves;
