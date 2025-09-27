@@ -401,7 +401,7 @@ const chessBoardSlice = createSlice({
       }
       // Change turn
       fromPiece.hasMoved = true;
-      state.lastMove = { from: fromPiece.position, fromIndex: fromIndex, to: to, toIndex: toIndex, replace };
+      state.lastMove = { from: from, fromIndex: toIndex, to: to, toIndex: fromIndex, replace };
       //state.turn = state.turn === "white" ? "black" : "white";
     },
     setValidMoves: (state, action: { payload: {pieceIndex: number} }) => {

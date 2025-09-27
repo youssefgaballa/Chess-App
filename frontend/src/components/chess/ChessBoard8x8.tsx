@@ -19,6 +19,7 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
   const isCapital = true; // Change to true if you want capital letters for columns
   const [selectedPieceIndex, setSelectedPieceIndex] = useState<number | null>(null);
   const board = useSelector(selectBoardState);
+  const [toggleKingInCheck, setToggleKingInCheck] = useState(false);
   const startGame = () => {
     //console.log("Game started!");
 
@@ -93,8 +94,9 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
     }
     if (yourKing && yourKing.isChecked) {
       // console.log("Your king is in check in useLayoutEffect:", yourKing);
-      // console.log("board.turn in useLayoutEffect:", board.turn);
+       //console.log("King is still in check:", board);
       // defer to next useLayoutEffect to handle
+      setToggleKingInCheck(!toggleKingInCheck);
     } else if (board.lastMove) {
       dispatch(setTurn({ color: board.turn === "white" ? "black" : "white" }));
 
@@ -119,17 +121,18 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
       // console.log("board.turn in useLayoutEffect:", board.turn);
       dispatch(setTurn({ color: board.turn === "white" ? "black" : "white" }));
     } else if (yourKing && yourKing.isChecked && board.isKingCheckedLastMove) {
-      //dispatch(setTurn({ color: board.turn === "white" ? "black" : "white" }));
 
       // console.log("board.kingIsCheckedLastMove", board.isKingCheckedLastMove);
-      // console.log("Your king is still in check in useLayoutEffect:", yourKing);
+      //console.log("Your king is still in check in useLayoutEffect:", yourKing);
 
       const lastMove = board.lastMove;
       // console.log("lastMove:", lastMove);
       dispatch(movePiece({ from: lastMove?.to!, fromIndex: lastMove?.toIndex!, to: lastMove?.from!, toIndex: lastMove?.fromIndex!, replace: lastMove?.replace!, undo: true }));
       
     }
-  }, [yourKing?.isChecked]);
+  }, [yourKing?.isChecked, toggleKingInCheck]);
+
+
 
 
   return (
