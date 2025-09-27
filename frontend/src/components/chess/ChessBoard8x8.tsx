@@ -7,7 +7,7 @@ import { Rook } from "./Rook";
 import { Queen } from "./Queen";
 import { King } from "./King";
 import { useDispatch, useSelector } from "react-redux";
-import { selectBoardState, setInitialBoard, movePiece, setValidMoves } from "./chessSlice";
+import { selectBoardState, setInitialBoard, movePiece, setValidMoves, isKingInCheck, setTurn } from "./chessSlice";
 import { SelectedColors } from "./ChessBoardWrapper";
 
 
@@ -19,7 +19,6 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
   const isCapital = true; // Change to true if you want capital letters for columns
   const [selectedPos, setSelectedPos] = useState<ChessPosition | null>(null);
   const board = useSelector(selectBoardState);
-
 
   //console.log("Board state:", board);
   const startGame = () => {
@@ -43,14 +42,49 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
       setSelectedPos(null);
       // Update piece positions
       const pieceAtPos = board.pieces.find(p => p.position === to);
+      const yourKing = board.pieces.find(p => p.type === 'king' && p.color === board.turn);
+      // console.log("Your king before move:", yourKing);
+      const opponentKing = board.pieces.find(p => p.type === 'king' && p.color !== board.turn);
+      // console.log("Opponent king before move:", opponentKing);
+      // if (yourKing && yourKing.isChecked) {
+      //   console.log("Your king is in check!");
+      //   dispatch(movePiece({ from: selectedPos, to: pos, replace: true }));
+      //   dispatch(isKingInCheck({ pos: yourKing.position, color: yourKing.color }));
+      //   const yourKingAfterMove = board.pieces.find(p => p.type === 'king' && p.color === board.turn);
+      //   console.log("Your king after attempted move:", yourKingAfterMove);
+      //   return;
+      // }
       if (pieceAtPos) {
         dispatch(movePiece({ from, to, replace: true }));
-
       } else {
         dispatch(movePiece({ from, to, replace: false }));
       }
       dispatch(setValidMoves({ piecePos: to, }));
-  ;
+      //console.log("board.turn after move:", board.turn);
+      for (const p of board.pieces) {
+        //console.log("dispatching setValidMoves for:", p);
+
+        dispatch(setValidMoves({ piecePos: p.position }));
+      }
+      if (yourKing && opponentKing) {
+        dispatch(isKingInCheck({ pos: yourKing.position, color: yourKing.color }));
+        
+        dispatch(isKingInCheck({ pos: opponentKing.position, color: opponentKing.color }));
+
+      }
+      // if (yourKing && yourKing.isChecked) {
+      //   console.log("Your king is in check after move!");
+      //   console.log("pieceAtPos:", pieceAtPos);
+      //   console.log("from:", from, "To:", to);
+      //   if (pieceAtPos) {
+      //     dispatch(movePiece({ from: to, to: from, replace: true , undo: true}));
+
+      //   } else {
+      //     dispatch(movePiece({ from: to, to: from, replace: false, undo: true }));
+      //   }
+      // }
+      // console.log("Your king after move:", yourKing);
+      // console.log("Opponent king after move:", opponentKing);
     }
   }
 
@@ -60,30 +94,78 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
     //const pieceAtPos = board.pieces.find(p => p.position === pos);
     if (!selectedPos) {
       //if (!pieceAtPos) return; // should never occur since this listens to piece clicks
-      dispatch(setValidMoves({ piecePos: pos}));
+      dispatch(setValidMoves({ piecePos: pos }));
       setSelectedPos(pos);
     } else {
+      const yourKing = board.pieces.find(p => p.type === 'king' && p.color === board.turn);
+      // console.log("Your king before move:", yourKing);
+      const opponentKing = board.pieces.find(p => p.type === 'king' && p.color !== board.turn);
+      // console.log("Opponent king before move:", opponentKing);
+      // if (yourKing && yourKing.isChecked) {
+      //   console.log("Your king is in check!");
+      //   dispatch(movePiece({ from: selectedPos, to: pos, replace: true }));
+      //   dispatch(isKingInCheck({ pos: yourKing.position, color: yourKing.color }));
+      //   const yourKingAfterMove = board.pieces.find(p => p.type === 'king' && p.color === board.turn);
+      //   console.log("Your king after attempted move:", yourKingAfterMove);
+      //   return;
+      // }
       dispatch(movePiece({ from: selectedPos, to: pos, replace: true }));
       dispatch(setValidMoves({ piecePos: pos }));
 
       setSelectedPos(null);
+      //console.log("board.turn after move:", board.turn);
+      for (const p of board.pieces) {
+        //console.log("dispatching setValidMoves for:", p);
+        
+        dispatch(setValidMoves({ piecePos: p.position}));
+      }
+      if (yourKing && opponentKing) {
+        dispatch(isKingInCheck({ pos: yourKing.position, color: yourKing.color }));
+        dispatch(isKingInCheck({ pos: opponentKing.position, color: opponentKing.color }));
+
+      }
+      // if (yourKing && yourKing.isChecked) {
+      //   console.log("Your king is in check after move!");
+
+      //     dispatch(movePiece({ from: pos, to: selectedPos, replace: true, undo: true }));
+
+      // }
+      // console.log("Your king after move:", yourKing);
+      // console.log("Opponent king after move:", opponentKing);
+
 
     }
   }
 
 
   useLayoutEffect(() => {
-    const newReplaceMoves = board.newReplaceMoves;
-    //console.log("newReplaceMoves:", newReplaceMoves);
-      for (const p of newReplaceMoves) {
-        console.log("dispatching setValidMoves for:", p);
-        dispatch(setValidMoves({ piecePos: p, noRecursion: true }) );
+    //const opponentKing = board.pieces.find(p => p.type === 'king' && p.color === board.turn);
+    // console.log("Your king in useLayoutEffect:", yourKing);
+    console.log("board.turn in useLayoutEffect:", board.turn);
+    const yourKing= board.pieces.find(p => p.type === 'king' && p.color === board.turn);
+    console.log("yourKing king in useLayoutEffect:", yourKing);
+    console.log("yourKing.isChecked in useLayoutEffect:", yourKing?.isChecked);
+    console.log("board.lastMove in useLayoutEffect:", board.lastMove);
+    if (yourKing && !yourKing.isChecked && board.lastMove) {
+      console.log("sucessfully unchecked your king in useLayoutEffect:", yourKing);
+      console.log("board.turn in useLayoutEffect:", board.turn);
+      dispatch(setTurn({ color: board.turn === "white" ? "black" : "white" }));
+    } else if (yourKing && yourKing.isChecked && board.isKingCheckedLastMove) {
+      //dispatch(setTurn({ color: board.turn === "white" ? "black" : "white" }));
+
+      console.log("board.kingIsCheckedLastMove", board.isKingCheckedLastMove);
+      console.log("Your king is still in check in useLayoutEffect:", yourKing);
+      const fromPiece = board.pieces.find(p => p.position === board.lastMove?.to);
+      const toPiece = board.pieces.find(p => p.position === board.lastMove?.from);
+      console.log("fromPiece:", fromPiece);
+      console.log("toPiece:", toPiece);
+
+      const lastMove = board.lastMove;
+      console.log("lastMove:", lastMove);
+      dispatch(movePiece({ from: lastMove?.to!, to: lastMove?.from!, replace: lastMove?.replace!, undo: true }));
+      
     }
-    // const allReplaceMoves = board.pieces.reduce((acc: ChessPosition[], p) => {
-    //   return acc.concat(p.replaceMoves);
-    // }, []);
-    //console.log("allReplaceMoves after update:", board.allReplaceMoves);
-  }, [board.newReplaceMoves]);
+  }, [board.lastMove]);
 
 
   return (
@@ -155,7 +237,7 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
                     isChecked &&
                     <>
                       <defs>
-                        <radialGradient id={`grad-${row}-${col}`} cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+                        <radialGradient id={`grad-${row}-${col}`} cx="50%" cy="50%" r="70%" fx="50%" fy="50%">
                           <stop offset="0%" style={{ stopColor: SelectedColors['red'], stopOpacity: 0.8 }} />
                           <stop offset="100%" style={{ stopColor: SelectedColors['red'], stopOpacity: 0 }} />
                         </radialGradient>
