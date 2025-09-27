@@ -43,48 +43,26 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
       // Update piece positions
       const pieceAtPos = board.pieces.find(p => p.position === to);
       const yourKing = board.pieces.find(p => p.type === 'king' && p.color === board.turn);
-      // console.log("Your king before move:", yourKing);
       const opponentKing = board.pieces.find(p => p.type === 'king' && p.color !== board.turn);
-      // console.log("Opponent king before move:", opponentKing);
-      // if (yourKing && yourKing.isChecked) {
-      //   console.log("Your king is in check!");
-      //   dispatch(movePiece({ from: selectedPos, to: pos, replace: true }));
-      //   dispatch(isKingInCheck({ pos: yourKing.position, color: yourKing.color }));
-      //   const yourKingAfterMove = board.pieces.find(p => p.type === 'king' && p.color === board.turn);
-      //   console.log("Your king after attempted move:", yourKingAfterMove);
-      //   return;
-      // }
+
       if (pieceAtPos) {
         dispatch(movePiece({ from, to, replace: true }));
       } else {
         dispatch(movePiece({ from, to, replace: false }));
       }
-      dispatch(setValidMoves({ piecePos: to, }));
-      //console.log("board.turn after move:", board.turn);
+
       for (const p of board.pieces) {
         //console.log("dispatching setValidMoves for:", p);
-
         dispatch(setValidMoves({ piecePos: p.position }));
       }
+
       if (yourKing && opponentKing) {
         dispatch(isKingInCheck({ pos: yourKing.position, color: yourKing.color }));
         
         dispatch(isKingInCheck({ pos: opponentKing.position, color: opponentKing.color }));
 
       }
-      // if (yourKing && yourKing.isChecked) {
-      //   console.log("Your king is in check after move!");
-      //   console.log("pieceAtPos:", pieceAtPos);
-      //   console.log("from:", from, "To:", to);
-      //   if (pieceAtPos) {
-      //     dispatch(movePiece({ from: to, to: from, replace: true , undo: true}));
 
-      //   } else {
-      //     dispatch(movePiece({ from: to, to: from, replace: false, undo: true }));
-      //   }
-      // }
-      // console.log("Your king after move:", yourKing);
-      // console.log("Opponent king after move:", opponentKing);
     }
   }
 
@@ -100,38 +78,20 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
       const yourKing = board.pieces.find(p => p.type === 'king' && p.color === board.turn);
       // console.log("Your king before move:", yourKing);
       const opponentKing = board.pieces.find(p => p.type === 'king' && p.color !== board.turn);
-      // console.log("Opponent king before move:", opponentKing);
-      // if (yourKing && yourKing.isChecked) {
-      //   console.log("Your king is in check!");
-      //   dispatch(movePiece({ from: selectedPos, to: pos, replace: true }));
-      //   dispatch(isKingInCheck({ pos: yourKing.position, color: yourKing.color }));
-      //   const yourKingAfterMove = board.pieces.find(p => p.type === 'king' && p.color === board.turn);
-      //   console.log("Your king after attempted move:", yourKingAfterMove);
-      //   return;
-      // }
+
       dispatch(movePiece({ from: selectedPos, to: pos, replace: true }));
-      dispatch(setValidMoves({ piecePos: pos }));
 
       setSelectedPos(null);
-      //console.log("board.turn after move:", board.turn);
       for (const p of board.pieces) {
         //console.log("dispatching setValidMoves for:", p);
-        
         dispatch(setValidMoves({ piecePos: p.position}));
       }
+
       if (yourKing && opponentKing) {
         dispatch(isKingInCheck({ pos: yourKing.position, color: yourKing.color }));
         dispatch(isKingInCheck({ pos: opponentKing.position, color: opponentKing.color }));
 
       }
-      // if (yourKing && yourKing.isChecked) {
-      //   console.log("Your king is in check after move!");
-
-      //     dispatch(movePiece({ from: pos, to: selectedPos, replace: true, undo: true }));
-
-      // }
-      // console.log("Your king after move:", yourKing);
-      // console.log("Opponent king after move:", opponentKing);
 
 
     }
@@ -275,7 +235,7 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
           
       </svg>
       <button onClick={startGame} className="mt-4 p-2 bg-blue-500 text-white rounded hover:bg-blue-600">Start Game</button>
-
+          <div>{board.turn}</div>
       </div>
 
     </>

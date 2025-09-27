@@ -754,7 +754,7 @@ const chessBoardSlice = createSlice({
         // console.log("p.position:", p.position);
         // console.log("p.color:", p.color);
         // console.log("p.validMoves.includes(king.position):", p.replaceMoves.includes(king.position));
-        return p.color !== color && p.replaceMoves.includes(king.position);
+        return p.color !== color && p.replaceMoves.includes(king.position) && p.isCaptured === false;
       });
       king.isChecked = isInCheck;
     }, 
