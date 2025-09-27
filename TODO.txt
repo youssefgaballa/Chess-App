@@ -13,8 +13,9 @@ the id of the piece and who it belonged to)
 -pointer-environmentsp
 -flip board
 -accessibility
--gray future moves.
+-gray future moves if it's not you're move + add premoves.
 - fix duplicate logic in chessSlice.ts
+- rename updatePiecePosition, validMoves
 
 Backend: 
 -add serverside rendering

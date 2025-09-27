@@ -1,13 +1,18 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { ChessColor, ChessPieceType, ChessPosition } from "./chessPiece";
+import { useDispatch } from "react-redux";
+import { all } from "axios";
 
 export type ChessBoardState = { // hasMoved is mostly relevant for pawns and castling
   pieces: {
     type: ChessPieceType; color: ChessColor;
     position: ChessPosition, isCaptured: boolean, hasMoved: boolean,
-    validMoves: ChessPosition[], replaceMoves: ChessPosition[]
+    validMoves: ChessPosition[], replaceMoves: ChessPosition[],
+    isChecked?: boolean
   }[];
   turn?: ChessColor;
+  newReplaceMoves: ChessPosition[];
+  allReplaceMoves: ChessPosition[];
 };
 
 const initialState: ChessBoardState = {
@@ -62,7 +67,7 @@ const initialState: ChessBoardState = {
     },
     {
       type: "king", color: "white", position: "e1",
-      isCaptured: false, hasMoved: false, validMoves: [], replaceMoves: []
+      isCaptured: false, hasMoved: false, validMoves: [], replaceMoves: [], isChecked: false
     },
     {
       type: "bishop", color: "white", position: "f1",
@@ -126,7 +131,7 @@ const initialState: ChessBoardState = {
     },
     {
       type: "king", color: "black", position: "e8",
-      isCaptured: false, hasMoved: false, validMoves: [], replaceMoves: []
+      isCaptured: false, hasMoved: false, validMoves: [], replaceMoves: [], isChecked: false
     },
     {
       type: "bishop", color: "black", position: "f8",
@@ -142,6 +147,8 @@ const initialState: ChessBoardState = {
     },
   ],
   turn: "white",
+  newReplaceMoves: [],
+  allReplaceMoves: [],
 };
 
 const chessBoardSlice = createSlice({
@@ -342,11 +349,16 @@ const chessBoardSlice = createSlice({
       fromPiece.hasMoved = true;
       state.turn = state.turn === "white" ? "black" : "white";
     },
-    setValidMoves: (state, action: { payload: { piecePos: ChessPosition } }) => {
-      const { piecePos } = action.payload;
+    setValidMoves: (state, action: { payload: { piecePos: ChessPosition, noRecursion?: boolean} }) => {
+      const { piecePos, noRecursion} = action.payload;
       const pieceIndex = state.pieces.findIndex(p => p.position === piecePos);
       const piece = state.pieces[pieceIndex];
-
+      const replaceBeforeUpdate = state.pieces.reduce((acc: ChessPosition[], p) => {
+        return acc.concat(p.replaceMoves);
+      }, []);
+      // if (piecePos == 'd4') {
+      //   //console.log("setValidMoves for d4, piece:", piece);
+      // } 
       // console.log("piece for setValidMoves:", piece);
       if (pieceIndex !== -1) {
         piece.validMoves = [];
@@ -470,7 +482,7 @@ const chessBoardSlice = createSlice({
                 //console.log("intermediateMovePos for bishop replace move:", intermediateMovePos);
                 // Ensure the path to the target piece is clear
                 if (intermediateMovePos == piece.position) {
-                  console.log("intermediateMovePos == piece.position", intermediateMovePos, piece.position);
+                  //console.log("intermediateMovePos == piece.position", intermediateMovePos, piece.position);
                 }
                 if ((!state.pieces.some(p => p.position === intermediateMovePos) || intermediateMovePos == piece.position)) {
                   if (piece.validMoves.includes(intermediateMovePos) === true) {
@@ -678,8 +690,57 @@ const chessBoardSlice = createSlice({
             break;
           } default: break;
         }
-      } 
-     
+      }
+      if (piecePos == 'e5') {
+        //console.log("!state.allReplaceMoves.some(move => move === piecePos):", !state.allReplaceMoves.some(move => move === piecePos));
+        console.log("piece.replaceMoves for e5:", piece.replaceMoves);
+      }
+      // if (!state.allReplaceMoves.some(move => move === piecePos)) {
+      //   console.log("concatting allReplaceMoves with piece.replaceMoves:", piece.replaceMoves);
+      //   state.allReplaceMoves = state.allReplaceMoves.concat(piece.replaceMoves);
+      // }
+      for (const pos of piece.replaceMoves) {
+        if (!state.allReplaceMoves.includes(pos)) {
+          state.allReplaceMoves.push(pos);
+        }
+      }
+      
+      console.log("state.allReplaceMoves:", Array.from(state.allReplaceMoves));
+      //console.log("noRecursion:", noRecursion);
+      if (!noRecursion) {
+        // console.log("allReplaceMovesBeforeUpdate:", replaceBeforeUpdate);
+
+        const allReplaceMovesAfterUpdate = state.pieces.reduce((acc: ChessPosition[], p) => {
+          return acc.concat(p.replaceMoves);
+        }, []);
+        // console.log("allReplaceMoves after update:", allReplaceMovesAfterUpdate);
+        const newReplaceMoves = allReplaceMovesAfterUpdate.filter(pos => {
+          if (!replaceBeforeUpdate.includes(pos)) {
+            return pos;
+          }
+          const findDuplicates = allReplaceMovesAfterUpdate.filter((p, index) => allReplaceMovesAfterUpdate.indexOf(p) !== index);
+          //console.log("findDuplicates:", findDuplicates);
+          if (findDuplicates.length >= 1) {
+            //console.log("Found duplicates:", findDuplicates);
+            return findDuplicates;
+          }
+        });
+        state.newReplaceMoves = newReplaceMoves;
+        //console.log("state.newReplaceMoves:", state.newReplaceMoves);
+      }
+
+      // if (allReplaceMovesAfterUpdate.includes(piecePos)) {
+      //   state.pieces.forEach(p => {
+      //     if (p.replaceMoves.includes(piecePos)) {
+      //       p.validMoves = p.validMoves.filter(m => m !== piecePos);
+      //     }
+      //   });
+      // }
+
+      //const clearedReplaceMoves = allReplaceMovesBeforeUpdate.filter(pos => !allReplaceMovesAfterUpdate.includes(pos));
+      //console.log("clearedReplaceMoves:", clearedReplaceMoves);
+      //const newReplaceMoves = allReplaceMovesAfterUpdate.filter(pos => !allReplaceMovesBeforeUpdate.includes(pos));
+      //console.log("newReplaceMoves:", newReplaceMoves);
     },
     clearBoard: (state) => {
       state.pieces = [];

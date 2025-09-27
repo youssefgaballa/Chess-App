@@ -1,4 +1,4 @@
-import {  useState } from "react";
+import {  useLayoutEffect, useState } from "react";
 import { type ChessPosition } from "./chessPiece";
 import { Pawn } from "./Pawn";
 import { Knight } from "./Knight";
@@ -20,7 +20,6 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
   const [selectedPos, setSelectedPos] = useState<ChessPosition | null>(null);
   const board = useSelector(selectBoardState);
 
-  
 
   //console.log("Board state:", board);
   const startGame = () => {
@@ -30,10 +29,11 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
   }
   const updatePiecePosition = (pos: ChessPosition) => {
     //console.log("updatePiecePosition:", pos);
+
     if (!selectedPos) {
       const pieceAtPos = board.pieces.find(p => p.position === pos);
       if (pieceAtPos) {
-        dispatch(setValidMoves({ piecePos: pos }));
+        dispatch(setValidMoves({ piecePos: pos}));
         setSelectedPos(pos);
       }
       return;
@@ -42,38 +42,48 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
       const to = pos;
       setSelectedPos(null);
       // Update piece positions
-      const pieceAtPos = board.pieces.find(p => p.position === pos);
+      const pieceAtPos = board.pieces.find(p => p.position === to);
       if (pieceAtPos) {
         dispatch(movePiece({ from, to, replace: true }));
 
       } else {
         dispatch(movePiece({ from, to, replace: false }));
       }
-      
+      dispatch(setValidMoves({ piecePos: to, }));
+  ;
     }
   }
 
   const onPieceClick = (pos: ChessPosition) => {
     //console.log("Piece clicked at position:", pos);
+
     //const pieceAtPos = board.pieces.find(p => p.position === pos);
     if (!selectedPos) {
       //if (!pieceAtPos) return; // should never occur since this listens to piece clicks
-      dispatch(setValidMoves({ piecePos: pos }));
+      dispatch(setValidMoves({ piecePos: pos}));
       setSelectedPos(pos);
     } else {
       dispatch(movePiece({ from: selectedPos, to: pos, replace: true }));
-      //dispatch(setValidMoves({ piecePos: pos }));
+      dispatch(setValidMoves({ piecePos: pos }));
+
       setSelectedPos(null);
+
     }
   }
 
 
-  // useLayoutEffect(() => {
-  //   if (selectedPos) {
-  //     //console.log("Piece selected:", selectedPos);
-  //     // Highlight the selected piece on the board
-  //   }
-  // },[selectedPos]);
+  useLayoutEffect(() => {
+    const newReplaceMoves = board.newReplaceMoves;
+    //console.log("newReplaceMoves:", newReplaceMoves);
+      for (const p of newReplaceMoves) {
+        console.log("dispatching setValidMoves for:", p);
+        dispatch(setValidMoves({ piecePos: p, noRecursion: true }) );
+    }
+    // const allReplaceMoves = board.pieces.reduce((acc: ChessPosition[], p) => {
+    //   return acc.concat(p.replaceMoves);
+    // }, []);
+    //console.log("allReplaceMoves after update:", board.allReplaceMoves);
+  }, [board.newReplaceMoves]);
 
 
   return (
@@ -105,17 +115,12 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
               let canReplace = false;
               if (selectedPos && board.pieces.find(p => p.position === selectedPos)?.replaceMoves.includes(pos)) {
                 canReplace = true;
-                //fill = SelectedColors['green'];
               }
-              // if (pos == 'b5') {
-              //   console.log("board.turn:", board.turn);
-              //   console.log("board.pieces.find(p => p.position === selectedPos): ", board.pieces.find(p => p.position === selectedPos));
-              //   console.log("board.pieces.find(p => p.position === selectedPos)?.replaceMoves.includes(pos): ", board.pieces.find(p => p.position === selectedPos)?.replaceMoves.includes(pos));
-              //   console.log("canReplace at b5:", canReplace);
-              //   console.log("selectedPos:", selectedPos);
-              //   console.log("pieceAtPos at b5:", pieceAtPos);
-              // }
-              //console.log(`Rendering tile at ${pos} with fill ${fill}`);
+
+              let isChecked = false;
+              if (pieceAtPos?.type === "king" && pieceAtPos.isChecked) {
+                isChecked = true;
+              }
               return (
               <>
                   { row == 0 ? <text key={`col-${col}`} x={padding + col * tileSize + tileSize / 2} y={row * tileSize + tileSize / 2}
@@ -143,9 +148,23 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
                     </defs>
                     <rect id={`rect-${row}-${col}`} key={`rect-container-${row}-${col}`}  x={padding + col * tileSize} y={padding + row * tileSize} width={tileSize} height={tileSize}
                       fill={fill} overflow={'visible'} clipPath={`url(#clip-${row}-${col})`} onClick={() => updatePiecePosition(String.fromCharCode(97 + col) + (8 - row) as ChessPosition)}/>
-                  {/* <use href={`#rect-${row}-${col}`} clipPath={`url(#clip)`} fill={fill} /> */}
-                  </>
+                    </>
+                    
                   }
+                  {
+                    isChecked &&
+                    <>
+                      <defs>
+                        <radialGradient id={`grad-${row}-${col}`} cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+                          <stop offset="0%" style={{ stopColor: SelectedColors['red'], stopOpacity: 0.8 }} />
+                          <stop offset="100%" style={{ stopColor: SelectedColors['red'], stopOpacity: 0 }} />
+                        </radialGradient>
+                      </defs>
+                      <circle key={`check-circle-${row}-${col}`} cx={padding + col * tileSize + tileSize / 2} cy={padding + row * tileSize + tileSize / 2}
+                        r={tileSize / 2} fill={`url(#grad-${row}-${col})`} />
+                    </>
+                  }
+
               </>
             );
           });
