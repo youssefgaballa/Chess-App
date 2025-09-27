@@ -17,7 +17,7 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
   const tileSize = 75;
   const padding = 50;
   const isCapital = true; // Change to true if you want capital letters for columns
-  const [selectedPos, setSelectedPos] = useState<ChessPosition | null>(null);
+  const [selectedPieceIndex, setSelectedPieceIndex] = useState<number | null>(null);
   const board = useSelector(selectBoardState);
   const startGame = () => {
     //console.log("Game started!");
@@ -26,24 +26,28 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
   }
   const updatePiecePosition = (pos: ChessPosition, pieceIndex: number) => {
     //console.log("updatePiecePosition:", pos);
-    if (!selectedPos) {
-      const pieceAtPos = board.pieces.find(p => p.position === pos);
-      if (pieceAtPos) {
-        dispatch(setValidMoves({ piecePos: pos, pieceIndex }));
-        setSelectedPos(pos);
+    //console.log("pieceIndex:", pieceIndex);
+    if (!selectedPieceIndex) {
+      if (pieceIndex !== -1) {
+        dispatch(setValidMoves({ pieceIndex }));
       }
-      return;
+  
+      setSelectedPieceIndex(pieceIndex);
     } else {
-      const from = selectedPos;
+      //const to = board.pieces[pieceIndex].position;
       const to = pos;
-      setSelectedPos(null);
+      const fromPiece = board.pieces[selectedPieceIndex];
+      const toPiece = board.pieces[pieceIndex];
+      setSelectedPieceIndex(null);
       // Update piece positions
-      const pieceAtPos = board.pieces.find(p => p.position === to);
-
-      if (pieceAtPos) {
-        dispatch(movePiece({ from, to, replace: true }));
+      //const pieceAtPos = board.pieces.find(p => p.position === to);
+      if (fromPiece?.position === undefined) {
+        return;
+      }
+      if (pieceIndex >= 0) {
+        dispatch(movePiece({ from: fromPiece.position, fromIndex: selectedPieceIndex, to: toPiece.position, toIndex: pieceIndex, replace: true }));
       } else {
-        dispatch(movePiece({ from, to, replace: false }));
+        dispatch(movePiece({ from: fromPiece.position, fromIndex: selectedPieceIndex, to: to, toIndex: pieceIndex, replace: false }));
       }
 
 
@@ -53,20 +57,21 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
   const onPieceClick = (pos: ChessPosition, pieceIndex: number) => {
     //console.log("Piece clicked at position:", pos);
 
-    //const pieceAtPos = board.pieces.find(p => p.position === pos);
-    if (!selectedPos) {
-      //if (!pieceAtPos) return; // should never occur since this listens to piece clicks
-      dispatch(setValidMoves({ piecePos: pos, pieceIndex }));
-      setSelectedPos(pos);
+    if (!selectedPieceIndex) {
+      dispatch(setValidMoves({pieceIndex }));
+      setSelectedPieceIndex(pieceIndex);
     } else {
-
-      dispatch(movePiece({ from: selectedPos, to: pos, replace: true }));
-
-      setSelectedPos(null);
+      const fromPiece = board.pieces[selectedPieceIndex];
+      const toPiece = board.pieces[pieceIndex];
+      dispatch(movePiece({
+        from: fromPiece.position, fromIndex: selectedPieceIndex,
+        to: toPiece.position, toIndex: pieceIndex, replace: true
+      }));
+      setSelectedPieceIndex(null);
     }
   }
-  const yourKing = board.pieces.find(p => p.type === 'king' && p.color === board.turn);
 
+  const yourKing = board.pieces.find(p => p.type === 'king' && p.color === board.turn);
   useLayoutEffect(() => {
     console.log("----First UseLayoutEffect:");
     console.log("board:", board);
@@ -76,7 +81,7 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
       // console.log("-------------Updating valid moves for piece at:", p.position);
       // console.log("p type:", p.type);
       if (!p.isCaptured) {
-        dispatch(setValidMoves({ piecePos: p.position, pieceIndex: i }));
+        dispatch(setValidMoves({pieceIndex: i }));
       }
     }
     const yourKing = board.pieces.find(p => p.type === 'king' && p.color === board.turn);
@@ -121,7 +126,7 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
 
       const lastMove = board.lastMove;
       // console.log("lastMove:", lastMove);
-      dispatch(movePiece({ from: lastMove?.to!, to: lastMove?.from!, replace: lastMove?.replace!, undo: true }));
+      dispatch(movePiece({ from: lastMove?.to!, fromIndex: lastMove?.toIndex!, to: lastMove?.from!, toIndex: lastMove?.fromIndex!, replace: lastMove?.replace!, undo: true }));
       
     }
   }, [yourKing?.isChecked]);
@@ -140,11 +145,13 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
               const pieceIndex = board.pieces.findIndex(p => {
                 return p.position === pos && p.isCaptured === false;
               });
+              const selectedPiecePos = selectedPieceIndex !== null ? board.pieces[selectedPieceIndex]?.position : null; 
               const pieceAtPos = board.pieces.find(p => p.position === pos);
               const validMoves: ChessPosition[] = [];
               
-              for (const piece of board.pieces) {
-                if (piece.position === selectedPos && piece.isCaptured === false) {
+              for (let i = 0; i < board.pieces.length; i++) {
+                const piece = board.pieces[i];
+                if (piece.position === selectedPiecePos && piece.isCaptured === false) {
                   validMoves.push(...piece.validMoves);
                 }
               }
@@ -152,15 +159,15 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
               
               
               if ((row + col) % 2 === 0) {
-                fill = (selectedPos === pos ? SelectedColors['green'] : colors[0]);
+                fill = (selectedPiecePos === pos ? SelectedColors['green'] : colors[0]);
               } else {
-                fill = (selectedPos === pos ? SelectedColors['green'] : colors[1]);
+                fill = (selectedPiecePos === pos ? SelectedColors['green'] : colors[1]);
               }
               let canReplace = false;
               const couldReplace = board.pieces.find(p => {
-                return p.position === selectedPos && p.isCaptured === false;
+                return p.position === selectedPiecePos && p.isCaptured === false;
               });
-              if (selectedPos && couldReplace && couldReplace.replaceMoves.includes(pos) && couldReplace.isCaptured === false) {
+              if (selectedPieceIndex && couldReplace && couldReplace.replaceMoves.includes(pos) && couldReplace.isCaptured === false) {
                 canReplace = true;
               }
 
@@ -222,17 +229,17 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
             board.pieces.map((p, index) => {
               switch(p.type) {
                 case "pawn":
-                  return (!p.isCaptured && <Pawn key={index} color={p.color} position={p.position} onClick={() => onPieceClick(p.position, index)} />);
+                  return (!p.isCaptured && <Pawn key={index} index={index} color={p.color} position={p.position} onClick={onPieceClick} />);
                 case "knight":
-                  return (!p.isCaptured && <Knight key={index} color={p.color} position={p.position} onClick={() => onPieceClick(p.position, index)} />);
+                  return (!p.isCaptured && <Knight key={index} index={index} color={p.color} position={p.position} onClick={onPieceClick} />);
                 case "bishop":
-                  return (!p.isCaptured && <Bishop key={index} color={p.color} position={p.position} onClick={() => onPieceClick(p.position, index)} />);
+                  return (!p.isCaptured && <Bishop key={index} index={index} color={p.color} position={p.position} onClick={onPieceClick} />);
                 case "rook":
-                  return (!p.isCaptured && <Rook key={index} color={p.color} position={p.position} onClick={() => onPieceClick(p.position, index)} />);
+                  return (!p.isCaptured && <Rook key={index} index={index} color={p.color} position={p.position} onClick={onPieceClick} />);
                 case "queen":
-                  return (!p.isCaptured && <Queen key={index} color={p.color} position={p.position} onClick={() => onPieceClick(p.position, index)} />);
+                  return (!p.isCaptured && <Queen key={index} index={index} color={p.color} position={p.position} onClick={onPieceClick} />);
                 case "king":
-                  return (!p.isCaptured && <King key={index} color={p.color} position={p.position} onClick={() => onPieceClick(p.position, index)} />);
+                  return (!p.isCaptured && <King key={index} index={index} color={p.color} position={p.position} onClick={onPieceClick} />);
                 default:
                   return null;
               }

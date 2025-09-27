@@ -1,11 +1,11 @@
 import ChessPiece, { type ChessColor, type ChessPosition } from "./chessPiece";
 
-export const Rook = ({ color, position, onClick }: { color: ChessColor, position: ChessPosition, onClick: (pos: ChessPosition) => void }) => {
+export const Rook = ({ index, color, position, onClick }: { index: number, color: ChessColor, position: ChessPosition, onClick: (pos: ChessPosition, index: number) => void }) => {
 const rook = new ChessPiece("rook", color, position, 50, 600, 75);
 
   return (
     <svg x={rook.boardPosition.x} y={rook.boardPosition.y}
-      width={rook.tileSize} height={rook.tileSize} style={{ overflow: 'visible' }} onClick={() => onClick(position)}>
+      width={rook.tileSize} height={rook.tileSize} style={{ overflow: 'visible' }} onClick={() => onClick(position, index)}>
       <g style={{
         stroke: 'black', fill: `${rook.color}`, fillOpacity: '1', opacity: '1', fillRule: 'evenodd', strokeWidth: '1.5', strokeLinecap: 'round',
         strokeLinejoin: 'round', strokeMiterlimit: '4', strokeDasharray: 'none', strokeOpacity: '1'

@@ -10,7 +10,7 @@ export type ChessBoardState = { // hasMoved is mostly relevant for pawns and cas
     isChecked?: boolean,
   }[];
   turn: ChessColor;
-  lastMove?: { from: ChessPosition; to: ChessPosition, replace: boolean };
+  lastMove?: { from: ChessPosition; fromIndex: number; to: ChessPosition; toIndex: number; replace: boolean };
   isKingCheckedLastMove: boolean;
 };
 
@@ -163,17 +163,16 @@ const chessBoardSlice = createSlice({
       state.turn = "white";
       //window.localStorage.setItem('user', JSON.stringify({ ...state, accessToken: null }));
     },
-    movePiece: (state, action: { payload: { from: ChessPosition; to: ChessPosition, replace: boolean, undo?: boolean } }) => {
-      // console.log("movePiece action.payload:", action.payload);
-      const { from, to, replace, undo } = action.payload;
-    
-      // console.log("fromPiece:", fromPiece, "toPiece:", toPiece);
+    movePiece: (state, action: { payload: { from: ChessPosition; fromIndex: number; to: ChessPosition; toIndex: number; replace: boolean; undo?: boolean } }) => {
+      //console.log("------movePiece:");
+      const { from, fromIndex, to, toIndex, replace, undo } = action.payload;
+      // console.log("piece.type:", piece?.type);
       
       if (undo !== undefined) {
-        console.log("undo: ", undo);
-        console.log("------from:", from, "to:", to);
+        // console.log("undo: ", undo);
+        // console.log("------from:", from, "to:", to);
 
-        const fromPiece = state.pieces.find(p => p.position === from && p.isCaptured === false);
+        const fromPiece = state.pieces[fromIndex];
 
         let toPiece = null;
         if (replace) {
@@ -182,14 +181,14 @@ const chessBoardSlice = createSlice({
         
         // console.log("fromPiece:", fromPiece, "toPiece:", toPiece);
         // console.log("fromIndex:", fromIndex, "toIndex:", toIndex);
-        console.log("fromPiece.position:", fromPiece?.position, "toPiece.position:", toPiece?.position);
-        console.log("replace:", replace);
+        // console.log("fromPiece.position:", fromPiece?.position, "toPiece.position:", toPiece?.position);
+        // console.log("replace:", replace);
         if (fromPiece && toPiece && replace) {
-          console.log("undoing move, moving piece back to:", to);
+          // console.log("undoing move, moving piece back to:", to);
           fromPiece.position = to;
-          console.log("fromPiece.position after undoing move:", fromPiece.position);
-          console.log("fromPiece.color:", fromPiece.color);
-          console.log("fromPiece.isCaptured:", fromPiece.isCaptured);
+          // console.log("fromPiece.position after undoing move:", fromPiece.position);
+          // console.log("fromPiece.color:", fromPiece.color);
+          // console.log("fromPiece.isCaptured:", fromPiece.isCaptured);
           toPiece.isCaptured = false;
         } else if (fromPiece) {
           fromPiece.position = to;
@@ -198,10 +197,13 @@ const chessBoardSlice = createSlice({
 
         return;
       }
-      const fromIndex = state.pieces.findIndex(p => p.position === from);
-      const toIndex = state.pieces.findIndex(p => p.position === to);
       const fromPiece = state.pieces[fromIndex];
       const toPiece = state.pieces[toIndex];
+      // if (fromIndex !== -1) {
+      //   console.log("fromPiece.position:", fromPiece.position);
+      //   console.log("fromPiece.type:", fromPiece.type);
+      //   console.log("fromPiece.color:", fromPiece.color);
+      // }
       if (fromIndex === -1) {
         // No piece at the source position
         return;
@@ -399,11 +401,11 @@ const chessBoardSlice = createSlice({
       }
       // Change turn
       fromPiece.hasMoved = true;
-      state.lastMove = { from, to, replace };
+      state.lastMove = { from: fromPiece.position, fromIndex: fromIndex, to: to, toIndex: toIndex, replace };
       //state.turn = state.turn === "white" ? "black" : "white";
     },
-    setValidMoves: (state, action: { payload: { piecePos: ChessPosition, pieceIndex: number} }) => {
-      const { piecePos, pieceIndex} = action.payload;
+    setValidMoves: (state, action: { payload: {pieceIndex: number} }) => {
+      const { pieceIndex} = action.payload;
       const piece = state.pieces[pieceIndex];
       // console.log("----setValidMoves called for piece at position:", piecePos);
       // console.log("pieceIndex:", pieceIndex);
