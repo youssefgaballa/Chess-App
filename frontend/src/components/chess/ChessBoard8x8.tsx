@@ -24,12 +24,12 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
 
     dispatch(setInitialBoard());
   }
-  const updatePiecePosition = (pos: ChessPosition) => {
+  const updatePiecePosition = (pos: ChessPosition, pieceIndex: number) => {
     //console.log("updatePiecePosition:", pos);
     if (!selectedPos) {
       const pieceAtPos = board.pieces.find(p => p.position === pos);
       if (pieceAtPos) {
-        dispatch(setValidMoves({ piecePos: pos}));
+        dispatch(setValidMoves({ piecePos: pos, pieceIndex }));
         setSelectedPos(pos);
       }
       return;
@@ -50,13 +50,13 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
     }
   }
 
-  const onPieceClick = (pos: ChessPosition) => {
+  const onPieceClick = (pos: ChessPosition, pieceIndex: number) => {
     //console.log("Piece clicked at position:", pos);
 
     //const pieceAtPos = board.pieces.find(p => p.position === pos);
     if (!selectedPos) {
       //if (!pieceAtPos) return; // should never occur since this listens to piece clicks
-      dispatch(setValidMoves({ piecePos: pos }));
+      dispatch(setValidMoves({ piecePos: pos, pieceIndex }));
       setSelectedPos(pos);
     } else {
 
@@ -70,10 +70,14 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
   useLayoutEffect(() => {
     console.log("----First UseLayoutEffect:");
     console.log("board:", board);
-
-    for (const p of board.pieces) {
-      //console.log("Updating valid moves for piece:", p);
-      dispatch(setValidMoves({ piecePos: p.position }));
+    console.log("board.lastMove:", board.lastMove);
+    for (let i = 0; i < board.pieces.length; i++) {
+      const p = board.pieces[i];
+      // console.log("-------------Updating valid moves for piece at:", p.position);
+      // console.log("p type:", p.type);
+      if (!p.isCaptured) {
+        dispatch(setValidMoves({ piecePos: p.position, pieceIndex: i }));
+      }
     }
     const yourKing = board.pieces.find(p => p.type === 'king' && p.color === board.turn);
     const opponentKing = board.pieces.find(p => p.type === 'king' && p.color !== board.turn);
@@ -133,6 +137,9 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
           {Array.from({ length: 8 }, (_, row) => {
             return Array.from({ length: 8 }, (_, col) => {
               const pos: ChessPosition = String.fromCharCode(97 + col) + (8 - row) as ChessPosition;
+              const pieceIndex = board.pieces.findIndex(p => {
+                return p.position === pos && p.isCaptured === false;
+              });
               const pieceAtPos = board.pieces.find(p => p.position === pos);
               const validMoves: ChessPosition[] = [];
               
@@ -150,7 +157,9 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
                 fill = (selectedPos === pos ? SelectedColors['green'] : colors[1]);
               }
               let canReplace = false;
-              const couldReplace = board.pieces.find(p => p.position === selectedPos);
+              const couldReplace = board.pieces.find(p => {
+                return p.position === selectedPos && p.isCaptured === false;
+              });
               if (selectedPos && couldReplace && couldReplace.replaceMoves.includes(pos) && couldReplace.isCaptured === false) {
                 canReplace = true;
               }
@@ -159,6 +168,7 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
               if (pieceAtPos?.type === "king" && pieceAtPos.isChecked) {
                 isChecked = true;
               }
+
               return (
               <>
                   { row == 0 ? <text key={`col-${col}`} x={padding + col * tileSize + tileSize / 2} y={row * tileSize + tileSize / 2}
@@ -169,12 +179,12 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
                     textAnchor="middle" dominantBaseline="middle">
                     {8 - row}
                   </text> : null}
-                  <rect key={`${row}-${col}`} onClick={() => updatePiecePosition(String.fromCharCode(97 + col) + (8 - row) as ChessPosition)}
+                  <rect key={`${row}-${col}`} onClick={() => updatePiecePosition(pos, pieceIndex)}
                   x={padding + col * tileSize} y={padding + row * tileSize} width={tileSize} height={tileSize} overflow={'visible'}
                     fill={canReplace ? SelectedColors['green'] : fill} opacity={canReplace ? 0.8 : 1} />
                   {validMoves && validMoves.includes(pos) && !pieceAtPos &&
                     <circle key={`circle-${row}-${col}`} cx={padding + col * tileSize + tileSize / 2} cy={padding + row * tileSize + tileSize / 2}
-                      r={10} fill={SelectedColors['green']} opacity={0.8} onClick={() => updatePiecePosition(String.fromCharCode(97 + col) + (8 - row) as ChessPosition)} />
+                      r={10} fill={SelectedColors['green']} opacity={0.8} onClick={() => updatePiecePosition(pos, pieceIndex)} />
                   }
                   {canReplace && pieceAtPos &&
                     <>
@@ -185,7 +195,7 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
                       </clipPath>
                     </defs>
                     <rect id={`rect-${row}-${col}`} key={`rect-container-${row}-${col}`}  x={padding + col * tileSize} y={padding + row * tileSize} width={tileSize} height={tileSize}
-                      fill={fill} overflow={'visible'} clipPath={`url(#clip-${row}-${col})`} onClick={() => updatePiecePosition(String.fromCharCode(97 + col) + (8 - row) as ChessPosition)}/>
+                      fill={fill} overflow={'visible'} clipPath={`url(#clip-${row}-${col})`} onClick={() => updatePiecePosition(pos, pieceIndex)}/>
                     </>
                     
                   }
@@ -212,17 +222,17 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
             board.pieces.map((p, index) => {
               switch(p.type) {
                 case "pawn":
-                  return (!p.isCaptured && <Pawn key={index} color={p.color} position={p.position} onClick={onPieceClick} />);
+                  return (!p.isCaptured && <Pawn key={index} color={p.color} position={p.position} onClick={() => onPieceClick(p.position, index)} />);
                 case "knight":
-                  return (!p.isCaptured && <Knight key={index} color={p.color} position={p.position} onClick={onPieceClick} />);
+                  return (!p.isCaptured && <Knight key={index} color={p.color} position={p.position} onClick={() => onPieceClick(p.position, index)} />);
                 case "bishop":
-                  return (!p.isCaptured && <Bishop key={index} color={p.color} position={p.position} onClick={onPieceClick} />);
+                  return (!p.isCaptured && <Bishop key={index} color={p.color} position={p.position} onClick={() => onPieceClick(p.position, index)} />);
                 case "rook":
-                  return (!p.isCaptured && <Rook key={index} color={p.color} position={p.position} onClick={onPieceClick} />);
+                  return (!p.isCaptured && <Rook key={index} color={p.color} position={p.position} onClick={() => onPieceClick(p.position, index)} />);
                 case "queen":
-                  return (!p.isCaptured && <Queen key={index} color={p.color} position={p.position} onClick={onPieceClick} />);
+                  return (!p.isCaptured && <Queen key={index} color={p.color} position={p.position} onClick={() => onPieceClick(p.position, index)} />);
                 case "king":
-                  return (!p.isCaptured && <King key={index} color={p.color} position={p.position} onClick={onPieceClick} />);
+                  return (!p.isCaptured && <King key={index} color={p.color} position={p.position} onClick={() => onPieceClick(p.position, index)} />);
                 default:
                   return null;
               }

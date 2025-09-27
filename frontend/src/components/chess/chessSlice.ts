@@ -402,11 +402,12 @@ const chessBoardSlice = createSlice({
       state.lastMove = { from, to, replace };
       //state.turn = state.turn === "white" ? "black" : "white";
     },
-    setValidMoves: (state, action: { payload: { piecePos: ChessPosition} }) => {
-      const { piecePos} = action.payload;
-      const pieceIndex = state.pieces.findIndex(p => p.position === piecePos);
+    setValidMoves: (state, action: { payload: { piecePos: ChessPosition, pieceIndex: number} }) => {
+      const { piecePos, pieceIndex} = action.payload;
       const piece = state.pieces[pieceIndex];
-
+      // console.log("----setValidMoves called for piece at position:", piecePos);
+      // console.log("pieceIndex:", pieceIndex);
+      // console.log("piece.type:", piece?.type);
       // if (piecePos == 'd4') {
       //   //console.log("setValidMoves for d4, piece:", piece);
       // } 
@@ -448,6 +449,9 @@ const chessBoardSlice = createSlice({
             //console.log("Calculating valid moves for knight at", piece.position);
             // knight moves in "L" shapes. if there are no pieces blocking the way, it can move to 8 possible positions
             // The possible moves are:
+            // console.log("Calculating valid moves for piece at", piece.position);
+            // console.log("piece.type:", piece.type);
+            // console.log("piece.color:", piece.color);
             const knightMoves: ChessPosition[] = [
               String.fromCharCode(piece.position[0].charCodeAt(0) + 1) + String.fromCharCode(piece.position[1].charCodeAt(0) + 2) as ChessPosition,
               String.fromCharCode(piece.position[0].charCodeAt(0) + 2) + String.fromCharCode(piece.position[1].charCodeAt(0) + 1) as ChessPosition,
@@ -459,7 +463,7 @@ const chessBoardSlice = createSlice({
               String.fromCharCode(piece.position[0].charCodeAt(0) - 1) + String.fromCharCode(piece.position[1].charCodeAt(0) + 2) as ChessPosition
             ].filter(pos => pos[0] >= 'a' && pos[0] <= 'h' && pos[1] >= '1' && pos[1] <= '8'); // filter out positions that are off the board
             //  if (state.pieces.some(p => p.position === move && p.color === piece.color)) {
-            //console.log("knightMoves:", knightMoves);
+            // console.log("knightMoves:", knightMoves);
             piece.validMoves = knightMoves.filter(move => {
               if (!state.pieces.some(p => p.position === move)) {
                 return move; // Can move to an empty square
@@ -470,8 +474,8 @@ const chessBoardSlice = createSlice({
                 return move; // Can move to a square occupied by a piece of the opposite color
               }
             });
-             //console.log("Valid moves for knight at", piece.position, ":", piece.validMoves);
-             //console.log("Replace moves for knight at", piece.position, ":", piece.replaceMoves);
+            // console.log("Valid moves for knight at", piece.position, ":", piece.validMoves);
+            //  console.log("Replace moves for knight at", piece.position, ":", piece.replaceMoves);
             break;
           } case "bishop": {
             let bishopMoves: ChessPosition[] = [];
