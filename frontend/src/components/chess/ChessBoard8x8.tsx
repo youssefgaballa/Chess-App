@@ -219,7 +219,7 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
               // const couldReplace = board.pieces.find(p => {
               //   return p.position === selectedPiecePos && p.isCaptured === false;
               // });
-              if (selectedPieceIndex && selectedPiece.replaceMoves.includes(pos) && pieceAtPos && pieceAtPos.color !== selectedPiece.color
+              if (selectedPieceIndex && (selectedPieceIndex  > -1) && selectedPiece.replaceMoves.includes(pos) && pieceAtPos && pieceAtPos.color !== selectedPiece.color
                 && pieceAtPos.isCaptured == false ) {
                 canReplace = true;
               }

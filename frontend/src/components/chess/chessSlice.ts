@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, current } from "@reduxjs/toolkit";
 import type { ChessColor, ChessPieceType, ChessPosition } from "./chessPiece";
 
 
@@ -494,11 +494,12 @@ const chessBoardSlice = createSlice({
                 return move; // Can move to an empty square
               }
             });
-            piece.replaceMoves = knightMoves.filter(move => {
-              if (state.pieces.some(p => p.position === move && p.color !== piece.color && p.isCaptured === false)) {
-                return move; // Can move to a square occupied by a piece of the opposite color
-              }
-            });
+            // piece.replaceMoves = knightMoves.filter(move => {
+            //   if (state.pieces.some(p => p.position === move && p.color !== piece.color && p.isCaptured === false)) {
+            //     return move; // Can move to a square occupied by a piece of the opposite color
+            //   }
+            // });
+            piece.replaceMoves = knightMoves;
             // console.log("Valid moves for knight at", piece.position, ":", piece.validMoves);
             //  console.log("Replace moves for knight at", piece.position, ":", piece.replaceMoves);
             break;
@@ -548,7 +549,7 @@ const chessBoardSlice = createSlice({
             piece.validMoves = freeMoves;
             // console.log("Valid moves for bishop at", piece.position, ":", piece.validMoves);
             piece.replaceMoves = bishopMoves.filter(move => {
-              if (state.pieces.some(p => p.position === move && p.color !== piece.color && p.isCaptured === false)) {
+              if (state.pieces.some(p => p.position === move && p.isCaptured === false)) {
                 const fileDiff = piece.position[0].charCodeAt(0) - move[0].charCodeAt(0);
                 const rankDiff = piece.position[1].charCodeAt(0) - move[1].charCodeAt(0);
                 const stepX = Math.sign(fileDiff);
@@ -621,7 +622,7 @@ const chessBoardSlice = createSlice({
             piece.validMoves = freeMoves;
             // console.log("Valid moves for rook at", piece.position, ":", piece.validMoves);
             piece.replaceMoves = rookMoves.filter(move => {
-              if (state.pieces.some(p => p.position === move && p.color !== piece.color && p.isCaptured === false)) {
+              if (state.pieces.some(p => p.position === move && p.isCaptured === false)) {
                 const fileDiff = piece.position[0].charCodeAt(0) - move[0].charCodeAt(0);
                 const rankDiff = piece.position[1].charCodeAt(0) - move[1].charCodeAt(0);
                 const stepX = Math.sign(fileDiff);
@@ -725,7 +726,7 @@ const chessBoardSlice = createSlice({
             //console.log("Valid moves for queen at", piece.position, ":", piece.validMoves);
             piece.replaceMoves = [...bishopMoves, ...rookMoves].filter(move => {
               // Check if the move is a valid replacement
-              if (state.pieces.some(p => p.position === move && p.color !== piece.color && p.isCaptured === false)) {
+              if (state.pieces.some(p => p.position === move && p.isCaptured === false)) {
                 const fileDiff = piece.position[0].charCodeAt(0) - move[0].charCodeAt(0);
                 const rankDiff = piece.position[1].charCodeAt(0) - move[1].charCodeAt(0);
                 const stepX = Math.sign(fileDiff);
@@ -759,31 +760,29 @@ const chessBoardSlice = createSlice({
               String.fromCharCode(piece.position[0].charCodeAt(0) + 1) + String.fromCharCode(piece.position[1].charCodeAt(0) - 1) as ChessPosition,
             ].filter(pos => pos[0] >= 'a' && pos[0] <= 'h' && pos[1] >= '1' && pos[1] <= '8'); // filter out positions that are off the board
             //console.log("kingMoves:", kingMoves);
-            const allOpponentFreeMoves = state.pieces.filter(p => p.color !== piece.color && p.isCaptured === false).flatMap(p => p.validMoves);
+            const allOpponentFreeMovesExceptPawns = state.pieces.filter(p => p.color !== piece.color && p.isCaptured === false && p.type !== 'pawn').flatMap(p => p.validMoves);
+            //const allOpponentPawnFreeMoves = state.pieces.filter(p => p.color !== piece.color && p.isCaptured === false && p.type === 'pawn').flatMap(p => p.validMoves);
+            // console.log("----:", state.pieces.filter(p => p.color !== piece.color && p.isCaptured === false && (p.type !== "pawn")).
+            //   flatMap(p => p.position + " validMoves: " + p.validMoves));
+            // console.log("allOpponentFreeMovesExceptPawns:", allOpponentFreeMovesExceptPawns);
             const allOpponentReplaceMoves = state.pieces.filter(p => p.color !== piece.color && p.isCaptured === false).flatMap(p => p.replaceMoves);
             //console.log("allFreeMoves by opponent pieces:", allFreeMoves);
             //console.log("allReplaceMoves by opponent pieces:", allReplaceMoves);
             const freeMoves = kingMoves.filter(move => {
               if (!state.pieces.some(p => p.position === move)
-                && allOpponentFreeMoves.includes(move) === false && allOpponentReplaceMoves.includes(move) === false) {
+                && allOpponentFreeMovesExceptPawns.includes(move) === false && allOpponentReplaceMoves.includes(move) === false) {
                 return move; // Can move to an empty square
               }
             });
             //console.log("freeMoves for king:", freeMoves);
             piece.validMoves = freeMoves;
-            const possibleReplaceMoves = kingMoves.filter(move => {
+            piece.replaceMoves = kingMoves.filter(move => {
               if (state.pieces.some(p => p.position === move && p.color !== piece.color && p.isCaptured === false)
                && allOpponentReplaceMoves.includes(move) === false) {
                 return move; // Can move to a square occupied by a piece of the opposite color
               }
             });
-            piece.replaceMoves = possibleReplaceMoves;
-            // for (const move of possibleReplaceMoves) {
-            //   // Check if the target piece is protected by another opponent piece
-            //   const isProtected = state.pieces.some(p => p.color !== piece.color && p.isCaptured === false
-            //     && p.replaceMoves.includes(move) && p.position !== piece.position);
-            // }
-            //console.log("replaceMoves for king at", piece.position, ":", piece.replaceMoves);
+
             break;
           } default: break;
         }
