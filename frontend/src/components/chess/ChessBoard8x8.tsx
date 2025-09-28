@@ -1,5 +1,5 @@
 import {  useLayoutEffect, useState } from "react";
-import { type ChessPieceType, type ChessPosition } from "./chessPiece";
+import {  type ChessPosition } from "./chessPiece";
 import { Pawn } from "./Pawn";
 import { Knight } from "./Knight";
 import { Bishop } from "./Bishop";
@@ -7,7 +7,7 @@ import { Rook } from "./Rook";
 import { Queen } from "./Queen";
 import { King } from "./King";
 import { useDispatch, useSelector } from "react-redux";
-import { selectBoardState, setInitialBoard, movePiece, setValidMoves, isKingInCheck, setTurn } from "./chessSlice";
+import { selectBoardState, setInitialBoard, movePiece, setValidMoves, isKingInCheck, setTurn, isKingCheckMated } from "./chessSlice";
 import { SelectedColors } from "./ChessBoardWrapper";
 
 
@@ -103,7 +103,8 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
       dispatch(setTurn({ color: board.turn === "white" ? "black" : "white" }));
       
     }
-   
+    dispatch(isKingCheckMated({ color: yourKing?.color! }));
+    dispatch(isKingCheckMated({ color: opponentKing?.color! }));
   }, [board.lastMove]);
 
   const yourKing = board.pieces.find(p => p.type === 'king' && p.color === board.turn);
@@ -304,7 +305,10 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
           
       </svg>
       <button onClick={startGame} className="mt-4 p-2 bg-blue-500 text-white rounded hover:bg-blue-600">Start Game</button>
-          <div>{board.turn}</div>
+        <div>Player turn: {board.turn}</div>
+        <div>Last move: {board.lastMove ? `${board.lastMove.from} to ${board.lastMove.to}` : 'N/A'}</div>
+        <div>{board.players['white'].isCheckmated ? 'White is checkmated!' : board.players['black'].isCheckmated ? 'Black is checkmated!' : ''}</div>
+
       </div>
 
     </>

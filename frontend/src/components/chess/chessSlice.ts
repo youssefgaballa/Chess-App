@@ -1,4 +1,4 @@
-import { createSlice, current } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import type { ChessColor, ChessPieceType, ChessPosition } from "./chessPiece";
 
 
@@ -802,6 +802,15 @@ const chessBoardSlice = createSlice({
       });
       king.isChecked = isInCheck;
     }, 
+    isKingCheckMated: (state, action: { payload: { color: ChessColor } }) => {
+      const { color } = action.payload;
+      const king = state.pieces.find(p => p.type === 'king' && p.color === color);
+      if (!king) return;
+      if (king.isChecked && king.validMoves.length === 0 && king.replaceMoves.length === 0) {
+        state.players[color].isCheckmated = true;
+        console.log(`${color} king is checkmated!`);
+      }
+    },
     setTurn: (state, action: { payload: { color: ChessColor } }) => {
       const { color } = action.payload;
       state.turn = color;
@@ -816,5 +825,5 @@ const chessBoardSlice = createSlice({
 });
 
 export const selectBoardState = (state: { chessBoard: typeof initialState }) => state.chessBoard;
-export const { setInitialBoard, clearBoard, movePiece, setValidMoves, isKingInCheck, setTurn } = chessBoardSlice.actions;
+export const { setInitialBoard, clearBoard, movePiece, setValidMoves, isKingInCheck, isKingCheckMated, setTurn } = chessBoardSlice.actions;
 export default chessBoardSlice.reducer;
