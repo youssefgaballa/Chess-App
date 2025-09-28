@@ -204,6 +204,9 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
                   validMoves.push(...piece.validMoves);
                 }
               }
+              // if (selectedPiecePos == 'd5')
+              // console.log("selectedPiecePos:", selectedPiecePos);
+              // console.log("validMoves for selected piece:", validMoves);
               let fill: string;
               
               
@@ -213,16 +216,16 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
                 fill = (selectedPiecePos === pos ? SelectedColors['green'] : colors[1]);
               }
               let canReplace = false;
-              const couldReplace = board.pieces.find(p => {
-                return p.position === selectedPiecePos && p.isCaptured === false;
-              });
-              if (selectedPieceIndex && couldReplace && couldReplace.replaceMoves.includes(pos) && couldReplace.isCaptured === false
-                && !(selectedPiece.type == ('pawn' as ChessPieceType))) {
+              // const couldReplace = board.pieces.find(p => {
+              //   return p.position === selectedPiecePos && p.isCaptured === false;
+              // });
+              if (selectedPieceIndex && selectedPiece.replaceMoves.includes(pos) && pieceAtPos && pieceAtPos.color !== selectedPiece.color
+                && pieceAtPos.isCaptured == false ) {
                 canReplace = true;
               }
-              if (selectedPieceIndex && selectedPiece.type == ("pawn" as ChessPieceType) && couldReplace && couldReplace.replaceMoves.includes(pos) && pieceAtPos) {
-                canReplace = true;
-              }
+              // if (selectedPieceIndex && selectedPiece.type == ("pawn" as ChessPieceType) && couldReplace && couldReplace.replaceMoves.includes(pos) && pieceAtPos) {
+              //   canReplace = true;
+              // }
 
               let isChecked = false;
               if (pieceAtPos?.type === "king" && pieceAtPos.isChecked) {
@@ -242,7 +245,7 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
                   <rect key={`${row}-${col}`} onClick={() => updatePiecePosition(pos, pieceIndex)}
                   x={padding + col * tileSize} y={padding + row * tileSize} width={tileSize} height={tileSize} overflow={'visible'}
                     fill={canReplace ? SelectedColors['green'] : fill} opacity={canReplace ? 0.8 : 1} />
-                  {validMoves && validMoves.includes(pos) && !pieceAtPos &&
+                  {validMoves && validMoves.includes(pos) && (!pieceAtPos || pieceAtPos.isCaptured == true) &&
                     <circle key={`circle-${row}-${col}`} cx={padding + col * tileSize + tileSize / 2} cy={padding + row * tileSize + tileSize / 2}
                       r={10} fill={SelectedColors['green']} opacity={0.8} onClick={() => updatePiecePosition(pos, pieceIndex)} />
                   }

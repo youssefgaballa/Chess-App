@@ -514,6 +514,8 @@ const chessBoardSlice = createSlice({
               );
             }
             bishopMoves = bishopMoves.filter(pos => pos[0] >= 'a' && pos[0] <= 'h' && pos[1] >= '1' && pos[1] <= '8'); // filter out positions that are off the board
+            // console.log("bishopMoves before filtering:", bishopMoves);
+
             const freeMoves = bishopMoves.filter(move => {
               // Check if the path to the move is clear
               const fileDiff = move[0].charCodeAt(0) - piece.position[0].charCodeAt(0);
@@ -523,19 +525,21 @@ const chessBoardSlice = createSlice({
               const stepX = Math.sign(fileDiff);
               const stepY = Math.sign(rankDiff);
               
-              // if (move == 'a3' || move == 'b2') {
-              //   console.log("fileDiff:", fileDiff, "rankDiff:", rankDiff);
-              //   console.log("stepX:", stepX, "stepY:", stepY);
-              // }
               let clearPath = true;
               for (let j = 1; j <= Math.abs(fileDiff); j++) {
                 const currPos: ChessPosition = String.fromCharCode(piece.position[0].charCodeAt(0) + j * stepX) + String.fromCharCode(piece.position[1].charCodeAt(0) + j * stepY) as ChessPosition;
-                if (state.pieces.some(p => p.position === currPos)) {
+                // console.log("--currPos for bishop move:", currPos);
+                if (state.pieces.some(p => {
+
+                  return p.position === currPos && p.isCaptured === false
+                })) {
+                  // console.log("clearPath = false;");
                   clearPath = false;
                   break;
                 }
               }
               if (clearPath) {
+                // console.log("clearPath true for move:", move);
                 return move;
               }
               state.lastMove = state.lastMove
@@ -776,7 +780,8 @@ const chessBoardSlice = createSlice({
             piece.replaceMoves = possibleReplaceMoves;
             // for (const move of possibleReplaceMoves) {
             //   // Check if the target piece is protected by another opponent piece
-
+            //   const isProtected = state.pieces.some(p => p.color !== piece.color && p.isCaptured === false
+            //     && p.replaceMoves.includes(move) && p.position !== piece.position);
             // }
             //console.log("replaceMoves for king at", piece.position, ":", piece.replaceMoves);
             break;
