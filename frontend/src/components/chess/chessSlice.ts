@@ -10,8 +10,16 @@ export type ChessBoardState = { // hasMoved is mostly relevant for pawns and cas
     isChecked?: boolean, isKingCheckedLastMove?: boolean
   }[];
   turn: ChessColor;
+  players: {
+    white: {
+      isCheckmated?: boolean;
+    },
+    black: {
+      isCheckmated?: boolean;
+    }
+  }
   lastMove?: { from: ChessPosition; fromIndex: number; to: ChessPosition; toIndex: number; replace: boolean };
-
+  isStalemate?: boolean;
 };
 
 const initialState: ChessBoardState = {
@@ -145,6 +153,15 @@ const initialState: ChessBoardState = {
       isCaptured: false, hasMoved: false, validMoves: [], replaceMoves: [],
     },
   ],
+  players: {
+    white: {
+      isCheckmated: false,
+    },
+    black: {
+      isCheckmated: false,
+    },
+  },
+  isStalemate: false,
   turn: "white",
 };
 
@@ -435,16 +452,22 @@ const chessBoardSlice = createSlice({
             }
             const diagLeft = String.fromCharCode(piece.position[0].charCodeAt(0) - 1) + (parseInt(piece.position[1]) + direction).toString() as ChessPosition;
             const diagRight = String.fromCharCode(piece.position[0].charCodeAt(0) + 1) + (parseInt(piece.position[1]) + direction).toString() as ChessPosition;
-            if (state.pieces.some(p => p.position === diagLeft && p.color !== piece.color && p.isCaptured === false)) {
-              if (piece.replaceMoves.includes(diagLeft) === false) {
-                piece.replaceMoves = piece.replaceMoves.concat([diagLeft]);
+            // if (state.pieces.some(p => p.position === diagLeft && p.color !== piece.color && p.isCaptured === false)) {
+            //   if (piece.replaceMoves.includes(diagLeft) === false) {
+            //     piece.replaceMoves = piece.replaceMoves.concat([diagLeft]);
+            //   }
+            // }
+            // if (state.pieces.some(p => p.position === diagRight && p.color !== piece.color && p.isCaptured === false)) {
+            //   if (piece.replaceMoves.includes(diagRight) === false) {
+            //     piece.replaceMoves = piece.replaceMoves.concat([diagRight]);
+            //   }
+            // }
+            piece.replaceMoves = [diagLeft, diagRight].filter(move => {
+              if (move[0] >= 'a' && move[0] <= 'h'
+                && move[1] >= '1' && move[1] <= '8') {
+                return move;
               }
-            }
-            if (state.pieces.some(p => p.position === diagRight && p.color !== piece.color && p.isCaptured === false)) {
-              if (piece.replaceMoves.includes(diagRight) === false) {
-                piece.replaceMoves = piece.replaceMoves.concat([diagRight]);
-              }
-            }
+            });
             // console.log("piece after setValidMoves:", piece);
             break;
           } case "knight": {
@@ -732,24 +755,34 @@ const chessBoardSlice = createSlice({
               String.fromCharCode(piece.position[0].charCodeAt(0) + 1) + String.fromCharCode(piece.position[1].charCodeAt(0) - 1) as ChessPosition,
             ].filter(pos => pos[0] >= 'a' && pos[0] <= 'h' && pos[1] >= '1' && pos[1] <= '8'); // filter out positions that are off the board
             //console.log("kingMoves:", kingMoves);
+            const allOpponentFreeMoves = state.pieces.filter(p => p.color !== piece.color && p.isCaptured === false).flatMap(p => p.validMoves);
+            const allOpponentReplaceMoves = state.pieces.filter(p => p.color !== piece.color && p.isCaptured === false).flatMap(p => p.replaceMoves);
+            //console.log("allFreeMoves by opponent pieces:", allFreeMoves);
+            //console.log("allReplaceMoves by opponent pieces:", allReplaceMoves);
             const freeMoves = kingMoves.filter(move => {
-              if (!state.pieces.some(p => p.position === move)) {
+              if (!state.pieces.some(p => p.position === move)
+                && allOpponentFreeMoves.includes(move) === false && allOpponentReplaceMoves.includes(move) === false) {
                 return move; // Can move to an empty square
               }
             });
             //console.log("freeMoves for king:", freeMoves);
             piece.validMoves = freeMoves;
-            piece.replaceMoves = kingMoves.filter(move => {
-              if (state.pieces.some(p => p.position === move && p.color !== piece.color && p.isCaptured === false)) {
+            const possibleReplaceMoves = kingMoves.filter(move => {
+              if (state.pieces.some(p => p.position === move && p.color !== piece.color && p.isCaptured === false)
+               && allOpponentReplaceMoves.includes(move) === false) {
                 return move; // Can move to a square occupied by a piece of the opposite color
               }
             });
+            piece.replaceMoves = possibleReplaceMoves;
+            // for (const move of possibleReplaceMoves) {
+            //   // Check if the target piece is protected by another opponent piece
+
+            // }
             //console.log("replaceMoves for king at", piece.position, ":", piece.replaceMoves);
             break;
           } default: break;
         }
       }
-
 
     },
     isKingInCheck: (state, action: { payload: { pos: ChessPosition, color: ChessColor } }) => {

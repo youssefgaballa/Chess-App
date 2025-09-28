@@ -1,5 +1,5 @@
 import {  useLayoutEffect, useState } from "react";
-import { type ChessPosition } from "./chessPiece";
+import { type ChessPieceType, type ChessPosition } from "./chessPiece";
 import { Pawn } from "./Pawn";
 import { Knight } from "./Knight";
 import { Bishop } from "./Bishop";
@@ -194,6 +194,7 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
                 return p.position === pos && p.isCaptured === false;
               });
               const selectedPiecePos = selectedPieceIndex !== null ? board.pieces[selectedPieceIndex]?.position : null; 
+              const selectedPiece = board.pieces[selectedPieceIndex!];
               const pieceAtPos = board.pieces.find(p => p.position === pos);
               const validMoves: ChessPosition[] = [];
               
@@ -215,7 +216,11 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
               const couldReplace = board.pieces.find(p => {
                 return p.position === selectedPiecePos && p.isCaptured === false;
               });
-              if (selectedPieceIndex && couldReplace && couldReplace.replaceMoves.includes(pos) && couldReplace.isCaptured === false) {
+              if (selectedPieceIndex && couldReplace && couldReplace.replaceMoves.includes(pos) && couldReplace.isCaptured === false
+                && !(selectedPiece.type == ('pawn' as ChessPieceType))) {
+                canReplace = true;
+              }
+              if (selectedPieceIndex && selectedPiece.type == ("pawn" as ChessPieceType) && couldReplace && couldReplace.replaceMoves.includes(pos) && pieceAtPos) {
                 canReplace = true;
               }
 
