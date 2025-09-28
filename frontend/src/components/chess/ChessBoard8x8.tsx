@@ -72,7 +72,6 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
     }
   }
 
-  const yourKing = board.pieces.find(p => p.type === 'king' && p.color === board.turn);
   useLayoutEffect(() => {
     console.log("----First UseLayoutEffect:");
     console.log("board:", board);
@@ -87,7 +86,7 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
     }
     const yourKing = board.pieces.find(p => p.type === 'king' && p.color === board.turn);
     const opponentKing = board.pieces.find(p => p.type === 'king' && p.color !== board.turn);
-
+    console.log("yourKing in useLayoutEffect:", yourKing);
     if (yourKing && opponentKing) {
       dispatch(isKingInCheck({ pos: yourKing.position, color: yourKing.color }));
       dispatch(isKingInCheck({ pos: opponentKing.position, color: opponentKing.color }));
@@ -99,16 +98,18 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
       setToggleKingInCheck(!toggleKingInCheck);
     } else if (board.lastMove) {
       dispatch(setTurn({ color: board.turn === "white" ? "black" : "white" }));
-
+      
     }
    
   }, [board.lastMove]);
 
-
+  const yourKing = board.pieces.find(p => p.type === 'king' && p.color === board.turn);
+  console.log("yourKing outside useLayoutEffect:", yourKing);
   useLayoutEffect(() => {
     console.log("----Second UseLayoutEffect:");
     console.log("board:", board);
-    
+  //  const yourKing = board.pieces.find(p => p.type === 'king' && p.color !== board.turn);
+    console.log("yourKing in second useLayoutEffect:", yourKing);
 
     //const opponentKing = board.pieces.find(p => p.type === 'king' && p.color === board.turn);
     // console.log("Your king in useLayoutEffect:", yourKing);
@@ -120,7 +121,7 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
       // console.log("sucessfully unchecked your king in useLayoutEffect:", yourKing);
       // console.log("board.turn in useLayoutEffect:", board.turn);
       dispatch(setTurn({ color: board.turn === "white" ? "black" : "white" }));
-    } else if (yourKing && yourKing.isChecked && board.isKingCheckedLastMove) {
+    } else if (yourKing && yourKing.isChecked) {
 
       // console.log("board.kingIsCheckedLastMove", board.isKingCheckedLastMove);
       //console.log("Your king is still in check in useLayoutEffect:", yourKing);
@@ -128,10 +129,36 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
       const lastMove = board.lastMove;
       // console.log("lastMove:", lastMove);
       dispatch(movePiece({ from: lastMove?.to!, fromIndex: lastMove?.toIndex!, to: lastMove?.from!, toIndex: lastMove?.fromIndex!, replace: lastMove?.replace!, undo: true }));
+      // if (yourKing.color !== board.turn) {
+      // dispatch(setTurn({ color: board.turn === "white" ? "black" : "white" }));
+      // }
       
     }
-  }, [yourKing?.isChecked, toggleKingInCheck]);
+  }, [board.pieces.find(p => p.type === 'king' && p.color !== board.turn)?.isChecked]);
+  
+  useLayoutEffect(() => {
+    console.log("----Third UseLayoutEffect:");
+    console.log("board:", board);
+    const yourKing = board.pieces.find(p => p.type === 'king' && p.color === board.turn);
+    console.log("yourKing in third useLayoutEffect:", yourKing);
 
+
+    if (yourKing && !yourKing.isChecked && board.lastMove) {
+      // console.log("sucessfully unchecked your king in useLayoutEffect:", yourKing);
+      // console.log("board.turn in useLayoutEffect:", board.turn);
+      dispatch(setTurn({ color: board.turn === "white" ? "black" : "white" }));
+    } else if (yourKing && yourKing.isChecked) {
+
+      // console.log("board.kingIsCheckedLastMove", board.isKingCheckedLastMove);
+      //console.log("Your king is still in check in useLayoutEffect:", yourKing);
+
+      const lastMove = board.lastMove;
+      // console.log("lastMove:", lastMove);
+      dispatch(movePiece({ from: lastMove?.to!, fromIndex: lastMove?.toIndex!, to: lastMove?.from!, toIndex: lastMove?.fromIndex!, replace: lastMove?.replace!, undo: true }));
+
+    }
+  }, [toggleKingInCheck]);
+  
 
 
 
