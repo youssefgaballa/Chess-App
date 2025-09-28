@@ -7,11 +7,11 @@ export type ChessBoardState = { // hasMoved is mostly relevant for pawns and cas
     type: ChessPieceType; color: ChessColor;
     position: ChessPosition, isCaptured: boolean, hasMoved: boolean,
     validMoves: ChessPosition[], replaceMoves: ChessPosition[], 
-    isChecked?: boolean,
+    isChecked?: boolean, isKingCheckedLastMove?: boolean
   }[];
   turn: ChessColor;
   lastMove?: { from: ChessPosition; fromIndex: number; to: ChessPosition; toIndex: number; replace: boolean };
-  isKingCheckedLastMove: boolean;
+
 };
 
 const initialState: ChessBoardState = {
@@ -66,7 +66,7 @@ const initialState: ChessBoardState = {
     },
     {
       type: "king", color: "white", position: "e1",
-      isCaptured: false, hasMoved: false, validMoves: [], replaceMoves: [], isChecked: false, 
+      isCaptured: false, hasMoved: false, validMoves: [], replaceMoves: [], isChecked: false, isKingCheckedLastMove: false
     },
     {
       type: "bishop", color: "white", position: "f1",
@@ -130,7 +130,7 @@ const initialState: ChessBoardState = {
     },
     {
       type: "king", color: "black", position: "e8",
-      isCaptured: false, hasMoved: false, validMoves: [], replaceMoves: [], isChecked: false, 
+      isCaptured: false, hasMoved: false, validMoves: [], replaceMoves: [], isChecked: false, isKingCheckedLastMove: false
     },
     {
       type: "bishop", color: "black", position: "f8",
@@ -146,7 +146,6 @@ const initialState: ChessBoardState = {
     },
   ],
   turn: "white",
-  isKingCheckedLastMove: false,
 };
 
 const chessBoardSlice = createSlice({
@@ -381,12 +380,12 @@ const chessBoardSlice = createSlice({
         // });
         //console.log("isInCheck:", isInCheck);
         //console.log("King is in check, cannot move other pieces until the check is resolved!");
-        state.isKingCheckedLastMove = true;
+        king.isKingCheckedLastMove = true;
         //console.log("state.isKingCheckedLastMove:", state.isKingCheckedLastMove);
         //state.turn = state.turn === "white" ? "black" : "white";
         //console.log("turn changed to:", state.turn);
       } else {
-        state.isKingCheckedLastMove = false;
+        king.isKingCheckedLastMove = false;
       }
         // Simulate the move to see if it puts the king in check
       // Move the piece
@@ -401,6 +400,7 @@ const chessBoardSlice = createSlice({
       }
       // Change turn
       fromPiece.hasMoved = true;
+      // the indeces are swapped so it works correclty when undoing a move
       state.lastMove = { from: from, fromIndex: toIndex, to: to, toIndex: fromIndex, replace };
       //state.turn = state.turn === "white" ? "black" : "white";
     },
