@@ -435,12 +435,12 @@ const chessBoardSlice = createSlice({
             }
             const diagLeft = String.fromCharCode(piece.position[0].charCodeAt(0) - 1) + (parseInt(piece.position[1]) + direction).toString() as ChessPosition;
             const diagRight = String.fromCharCode(piece.position[0].charCodeAt(0) + 1) + (parseInt(piece.position[1]) + direction).toString() as ChessPosition;
-            if (state.pieces.some(p => p.position === diagLeft && p.color !== piece.color)) {
+            if (state.pieces.some(p => p.position === diagLeft && p.color !== piece.color && p.isCaptured === false)) {
               if (piece.replaceMoves.includes(diagLeft) === false) {
                 piece.replaceMoves = piece.replaceMoves.concat([diagLeft]);
               }
             }
-            if (state.pieces.some(p => p.position === diagRight && p.color !== piece.color)) {
+            if (state.pieces.some(p => p.position === diagRight && p.color !== piece.color && p.isCaptured === false)) {
               if (piece.replaceMoves.includes(diagRight) === false) {
                 piece.replaceMoves = piece.replaceMoves.concat([diagRight]);
               }
@@ -472,7 +472,7 @@ const chessBoardSlice = createSlice({
               }
             });
             piece.replaceMoves = knightMoves.filter(move => {
-              if (state.pieces.some(p => p.position === move && p.color !== piece.color)) {
+              if (state.pieces.some(p => p.position === move && p.color !== piece.color && p.isCaptured === false)) {
                 return move; // Can move to a square occupied by a piece of the opposite color
               }
             });
@@ -521,7 +521,7 @@ const chessBoardSlice = createSlice({
             piece.validMoves = freeMoves;
             // console.log("Valid moves for bishop at", piece.position, ":", piece.validMoves);
             piece.replaceMoves = bishopMoves.filter(move => {
-              if (state.pieces.some(p => p.position === move && p.color !== piece.color)) {
+              if (state.pieces.some(p => p.position === move && p.color !== piece.color && p.isCaptured === false)) {
                 const fileDiff = piece.position[0].charCodeAt(0) - move[0].charCodeAt(0);
                 const rankDiff = piece.position[1].charCodeAt(0) - move[1].charCodeAt(0);
                 const stepX = Math.sign(fileDiff);
@@ -594,7 +594,7 @@ const chessBoardSlice = createSlice({
             piece.validMoves = freeMoves;
             // console.log("Valid moves for rook at", piece.position, ":", piece.validMoves);
             piece.replaceMoves = rookMoves.filter(move => {
-              if (state.pieces.some(p => p.position === move && p.color !== piece.color)) {
+              if (state.pieces.some(p => p.position === move && p.color !== piece.color && p.isCaptured === false)) {
                 const fileDiff = piece.position[0].charCodeAt(0) - move[0].charCodeAt(0);
                 const rankDiff = piece.position[1].charCodeAt(0) - move[1].charCodeAt(0);
                 const stepX = Math.sign(fileDiff);
@@ -698,7 +698,7 @@ const chessBoardSlice = createSlice({
             //console.log("Valid moves for queen at", piece.position, ":", piece.validMoves);
             piece.replaceMoves = [...bishopMoves, ...rookMoves].filter(move => {
               // Check if the move is a valid replacement
-              if (state.pieces.some(p => p.position === move && p.color !== piece.color)) {
+              if (state.pieces.some(p => p.position === move && p.color !== piece.color && p.isCaptured === false)) {
                 const fileDiff = piece.position[0].charCodeAt(0) - move[0].charCodeAt(0);
                 const rankDiff = piece.position[1].charCodeAt(0) - move[1].charCodeAt(0);
                 const stepX = Math.sign(fileDiff);
@@ -740,7 +740,7 @@ const chessBoardSlice = createSlice({
             //console.log("freeMoves for king:", freeMoves);
             piece.validMoves = freeMoves;
             piece.replaceMoves = kingMoves.filter(move => {
-              if (state.pieces.some(p => p.position === move && p.color !== piece.color)) {
+              if (state.pieces.some(p => p.position === move && p.color !== piece.color && p.isCaptured === false)) {
                 return move; // Can move to a square occupied by a piece of the opposite color
               }
             });
