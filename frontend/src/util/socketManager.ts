@@ -1,15 +1,16 @@
 import { useEffect } from "react";
 import {io} from "socket.io-client";
 
-const SOCKET_URL = `http://localhost:${import.meta.env.VITE_HTTP_PORT}`; // Replace with your server URL
+const SOCKET_URL = `http://localhost:${import.meta.env.VITE_HTTP_PORT}`; // Replace with your server URL that you specify in .env
 const socket = io(SOCKET_URL, { withCredentials: true });
 
+// Only needs to be used once (App.tsx)
 export const useSocket = () => {
   return useEffect(() => {
-    console.log("Connecting to socket...");
+    // console.log("Connecting to socket...");
     socket.connect();
     return () => {
-      console.log("Disconnecting from socket...");
+      // console.log("Disconnecting from socket...");
       socket.disconnect();
 
     };

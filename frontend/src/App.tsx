@@ -24,7 +24,7 @@ function App() {
 
   usePersistLogin();
   useEffect(() => {
-    console.log("location path changed: ", location.pathname);
+    // console.log("location path changed: ", location.pathname);
     queryClient.invalidateQueries({ queryKey: ["get-user-notes"] }).then(() => {
       console.log("invalidated get-user-notes query");
     });

@@ -1,12 +1,15 @@
 import { getNewAccessToken as getNewAccessToken } from "../util/RefreshToken";
 import { useEffect } from "react";
 import { customAxios } from "./customAxios";
-import { selectUser } from "../users/userSlice";
-import { useSelector } from "react-redux";
+import { clearUser, selectUser } from "../users/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router"
 
 
 export const axiosInterceptors = () => {
   const user = useSelector(selectUser);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   // Request interceptor to add the access token to headers
   useEffect(() => {
     const requestInterceptor = customAxios.interceptors.request.use(async (config: any) => {
@@ -33,7 +36,12 @@ export const axiosInterceptors = () => {
         const prevRequest = error?.config;
         if (error?.response?.status === 403 && !prevRequest?.sent) {
           prevRequest.sent = true;
-          const newAccessToken = await getNewAccessToken(user.username);
+          const newAccessToken = await getNewAccessToken(user.username).catch((err) => {
+            console.log("err from getNewAccessToken in axiosInterceptors: ", err);
+            dispatch(clearUser());
+            navigate("/Login");
+            return Promise.reject(error);
+          });
           console.log("newAccessToken from getRefreshToken: ", newAccessToken);
           prevRequest.headers["authorization"] = `bearer ${newAccessToken}`;
 

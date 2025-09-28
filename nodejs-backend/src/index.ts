@@ -38,6 +38,8 @@ app.use("/", notesRouter);//
   app.listen(process.env.BACKEND_PORT, () => {
     console.log(`Server is listening on port ${process.env.BACKEND_PORT}.`);
   });
+  console.log("process.env.ACCESS_TOKEN_EXPIRES_IN?.toString()", process.env.ACCESS_TOKEN_EXPIRES_IN?.toString());
+  console.log("process.env.REFRESH_TOKEN_EXPIRES_IN?.toString()", process.env.REFRESH_TOKEN_EXPIRES_IN?.toString());
   //console.log(client.connectionParameters);
   const users = await client
     .query("SELECT * FROM users")

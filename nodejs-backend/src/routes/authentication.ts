@@ -2,6 +2,7 @@ import express, { Router } from "express";
 import client from "../database/index.ts";
 import { compare, hash } from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import ms from 'ms';
 
 const {sign} = jwt;
 
@@ -34,11 +35,11 @@ authenticationRouter.post('/authentication', async (req, res) => {
 
   if (passwordMatch) {
     const accessToken = sign({ username: foundUser.username },
-      `${process.env.ACCESS_TOKEN_SECRET}`, { expiresIn: '25s' });
+      `${process.env.ACCESS_TOKEN_SECRET}`, { expiresIn: `${process.env.ACCESS_TOKEN_EXPIRES_IN?.toString() as ms.StringValue}` });
     const refreshToken = sign({ username: foundUser.username },
-      `${process.env.REFRESH_TOKEN_SECRET}`, { expiresIn: '24h' });
-    
-    
+      `${process.env.REFRESH_TOKEN_SECRET}`, { expiresIn: `${process.env.REFRESH_TOKEN_EXPIRES_IN?.toString() as ms.StringValue}` });
+
+
     const rolesResult = await client
       .query("SELECT user_role FROM users WHERE username = $1", [foundUser.username])
       .then((payload) => { 

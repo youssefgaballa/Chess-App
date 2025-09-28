@@ -1,6 +1,7 @@
 import express, { Router } from "express";
 import client from "../database/index.ts";
 import jwt from 'jsonwebtoken';
+import ms from 'ms';
 const { verify, sign } = jwt;
 
 //TODO, put stuff in controller
@@ -27,10 +28,10 @@ refreshRouter.post('/refresh', async (req, res) => {
     //console.log("decoded: ",decoded);
     if (err || username !== decoded.username) {
       //console.log("err from verify in /refresh: ", err);
-      return res.status(403).json({ 'Client Error': 'Invalid refresh token, please login again' });
+      return res.status(401).json({ 'Client Error': 'Invalid refresh token, please login again' });
     }
     const accessToken = sign({ username: decoded.username },
-      `${process.env.ACCESS_TOKEN_SECRET}`, { expiresIn: '25s' });
+      `${process.env.ACCESS_TOKEN_SECRET}`, { expiresIn: `${process.env.ACCESS_TOKEN_EXPIRES_IN?.toString() as ms.StringValue}`  });
     console.log("new access token: ", accessToken);
     res.json({ accessToken });
   });

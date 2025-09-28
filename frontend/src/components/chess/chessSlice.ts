@@ -814,7 +814,7 @@ const chessBoardSlice = createSlice({
     setTurn: (state, action: { payload: { color: ChessColor } }) => {
       const { color } = action.payload;
       state.turn = color;
-      console.log("Turn set to:", state.turn);
+      //console.log("Turn set to:", state.turn);
     },
     clearBoard: (state) => {
       state.pieces = [];
