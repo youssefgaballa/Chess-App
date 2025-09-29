@@ -27,7 +27,6 @@ BACKEND_PORT=
 HTTP_PORT=  
 POSTGRES_PORT=  
 FRONTEND_PORT=  
-
 POSTGRES_USER=  
 POSTGRES_PASSWORD=  
 POSTGRES_HOST=  
@@ -37,5 +36,9 @@ ACCESS_TOKEN_SECRET=
 REFRESH_TOKEN_SECRET=  
 ACCESS_TOKEN_EXPIRES_IN=  
 REFRESH_TOKEN_EXPIRES_IN=  
-
 VITE_HTTP_PORT=  
+
+For the jwt token secrets, you can supply 64 random bytes in hexadecimal format  
+You can create some on the command-line (with node.js) by running the following commands:  
+\$ node  
+\$ require('crypto').randomBytes(64).toString('hex')  
