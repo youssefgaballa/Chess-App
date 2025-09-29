@@ -48,7 +48,7 @@ app.use("/", notesRouter);//
     .then((payload) => {
       return payload.rows;
     });
-  console.log("users:", users);
+  //console.log("users:", users);
   const notes = await client
     .query("SELECT * FROM notes")
     .then((payload) => {
@@ -58,6 +58,15 @@ app.use("/", notesRouter);//
       throw new Error("Query failed");
     });
   //console.log("notes:", notes);
+  const chatRooms = await client
+    .query("SELECT * FROM chat_rooms")
+    .then((payload) => {
+      return payload.rows;
+    })
+    .catch(() => {
+      throw new Error("Query failed");
+    });
+  console.log("chatRooms:", chatRooms);
 
   
 })().catch((e) => { console.error(e); });
@@ -79,15 +88,27 @@ const io = new Server(httpServer, {
 io.on("connection", (socket) => {
   console.log("Socket connection established:", socket.id);
  
+  socket.on("create room", (roomID) => {
+    socket.join(roomID);
+    console.log(`Socket ${socket.id} created room ${roomID}`);
+    socket.to(roomID).emit("chat message", `User ${socket.id} has created the room.`);
+  });
+
   socket.on("join room", (roomID) => {
     socket.join(roomID);
     console.log(`Socket ${socket.id} joined room ${roomID}`);
-    socket.to(roomID).emit("chat message", `User ${socket.id} has joined the room.`);
   });
 
-  socket.on("chat message", (msg) => {
+  socket.on("send message", (msg) => {
     console.log("chat message received:", msg);
   });
+
+  socket.on("leave room", (roomID) => {
+    socket.leave(roomID);
+    console.log(`Socket ${socket.id} left room ${roomID}`);
+    socket.to(roomID).emit("chat message", `User ${socket.id} has left the room.`);
+  });
+
 
   socket.on("disconnect", () => {
     console.log("a user disconnected:", socket.id);

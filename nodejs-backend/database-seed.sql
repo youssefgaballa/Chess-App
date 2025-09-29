@@ -42,6 +42,7 @@ CREATE TABLE IF NOT EXISTS chat_rooms
     room_id serial,
     owner_username text UNIQUE,
     users text[],
-    CONSTRAINT chat_rooms_pkey PRIMARY KEY (room_id),
-    CONSTRAINT fk_owner_username FOREIGN KEY(owner_username) REFERENCES users(username) ON DELETE CASCADE
+    CONSTRAINT chat_rooms_pkey PRIMARY KEY (room_id)--,
+  --  CONSTRAINT fk_owner_username FOREIGN KEY(owner_username) REFERENCES users(username) ON DELETE CASCADE
+  -- Uncomment above if you want to enforce foreign key constraint on owner_username and disallow guest users
 );

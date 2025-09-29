@@ -1,0 +1,6 @@
+###
+# GET all rooms
+
+GET http://localhost:5000/chat/all
+
+### 

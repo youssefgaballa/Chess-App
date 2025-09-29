@@ -14,25 +14,42 @@ export const ChatRoom = () => {
   const username = user?.username || "Guest";
   const [roomID, setRoomID] = useState<number | null>(null);
 
+
   const createRoom = () => {
-    const response = axios.post('http://localhost:5000/chat/create-room', { users: [username] },
+    console.log("Creating room for user:", username);
+    const response = axios.post(`http://localhost:${import.meta.env.VITE_BACKEND_PORT}/chat`, { users: username },
       { withCredentials: true, headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${user.accessToken}` } }
     )
       .then((response) => {
-      if (response?.data?.room_id) {
-        setRoomID(response.data.room_id);
-        console.log("Room created with ID:", response.data.room_id);
-        // Logic to create/join room can be added here
-        socket.emit("join room", response.data.room_id);
-      }
-    }).catch((error) => {
-      console.log("error", error);
-      return;
-    });
+        if (response?.data?.room_id) {
+          setRoomID(response.data.room_id);
+          console.log("Room created with ID:", response.data.room_id);
+          // Logic to create/join room can be added here
+          socket.emit("create room", response.data.room_id);
+        }
+      }).catch((error) => {
+        console.log("error", error);
+        return;
+      });
+  };
 
+  const deleteRoom = () => {
+    if (roomID) {
+      const response = axios.delete(`http://localhost:${import.meta.env.VITE_BACKEND_PORT}/chat`,
+        { data: { roomID: roomID, username: username }, withCredentials: true, 
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${user.accessToken}` } }
+      )
+        .then((response) => {
+          socket.emit("leave room", roomID);
+          setRoomID(null);
+          console.log("Left room with ID:", roomID);
+        }).catch((error) => {
+          console.log("error", error);
+          return;
+        });
+    }
+  };
 
-
-  }
   const onSendMessage = () => {
     // Logic to send message
     console.log("Message sent!");
@@ -57,11 +74,15 @@ export const ChatRoom = () => {
               Send
             </button>
             {!roomID && <button className="mt-2 bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
-            onClick={() => createRoom()}>
+              onClick={() => createRoom()}>
               Create Room
             </button>}
+            {roomID && <button className="mt-2 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
+              onClick={() => deleteRoom()}>
+              Delete Room
+            </button>}
           </div>
-          
+
         </div>
       </div>
     </>
