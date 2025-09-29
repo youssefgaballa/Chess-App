@@ -8,7 +8,7 @@ export const useGetAllUsersQuery = (accessToken: string | null) => {
     queryKey: ["get-all-users"],
     queryFn: async () => {
       console.log("--useGetAllUsersQuery--");
-      const { data } = await customAxios.get("http://localhost:5000/users", {
+      const { data } = await customAxios.get(`http://localhost:${import.meta.env.VITE_BACKEND_PORT}/users`, {
         withCredentials: true
       });
       console.log("data from useGetAllUsersQuery: ", data);
@@ -23,7 +23,7 @@ export const useDeleteUserMutation = ( ) => {
     mutationKey: ["delete-user"],
     mutationFn: async (username: string) => {
       console.log("--useDeleteUserMutation--");
-      const { data } = await customAxios.delete(`http://localhost:5000/users/${username}`, {
+      const { data } = await customAxios.delete(`http://localhost:${import.meta.env.VITE_BACKEND_PORT}/users/${username}`, {
         withCredentials: true
       });
       return data;
@@ -37,7 +37,7 @@ export const useGetUserQuery = (username: string, accessToken: string) => {
     queryFn: async () => {
       console.log("--useGetUserQuery--");
       console.log("userAuth in useGetUserQuery: ", username);
-      const { data } = await customAxios.get(`http://localhost:5000/users/${username}`, {
+      const { data } = await customAxios.get(`http://localhost:${import.meta.env.VITE_BACKEND_PORT}/users/${username}`, {
         withCredentials: true
       });
       return data;

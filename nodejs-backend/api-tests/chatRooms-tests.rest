@@ -1,6 +1,8 @@
+@port = 5001
+
 ###
 # GET all rooms
 
-GET http://localhost:5000/chat/all
+GET http://localhost:{{port}}/chat/all
 
 ### 

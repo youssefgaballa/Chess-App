@@ -25,7 +25,7 @@ export const RegisterUser = () => {
 
     const reqBody = userData;
     console.log(reqBody);
-    const response = await customAxios.post('http://localhost:5000/registration', reqBody).catch((error) => {
+    const response = await customAxios.post(`http://localhost:${import.meta.env.VITE_BACKEND_PORT}/registration`, reqBody).catch((error) => {
       console.log(error);
       if (!error?.response) {
         setErrorMessage("No response from server");

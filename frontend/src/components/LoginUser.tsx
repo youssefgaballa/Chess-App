@@ -35,7 +35,7 @@ export const LoginUser = () => {
       password: password
     };
 
-    const response = await axios.post('http://localhost:5000/authentication', reqBody,
+    const response = await axios.post(`http://localhost:${import.meta.env.VITE_BACKEND_PORT}/authentication`, reqBody,
       {withCredentials: true, headers: { 'Content-Type': 'application/json' } }
       ).catch((error) => {
       console.log("error", error);

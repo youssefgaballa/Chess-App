@@ -35,7 +35,7 @@ export const AppRoutes = () => {
           element={<LoginUser />} />
         <Route path="/Chess"
           element={<ChessBoardWrapper />} />
-
+        <Route path='/Chat' element={<ChatRoom />} />
         <Route element={<EditorRoutesWrapper />}>
           <Route path="/Notes" element={<Notes />} />
           <Route path="/Notes/Editor/:title"

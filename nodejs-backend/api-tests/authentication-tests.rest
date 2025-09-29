@@ -8,13 +8,13 @@
 # jgoldberg's password is 24325
 # bob's password is 252453
 # gamer's password is 442232
-
+@port = 5001
 ###
 # GET all users
-GET http://localhost:5000/users
+GET http://localhost:{{port}}/users
 
 ###
-POST http://localhost:5000/authentication
+POST http://localhost:{{port}}/authentication
 Content-Type: application/json
 
 {
@@ -23,7 +23,7 @@ Content-Type: application/json
 }
 ###
 
-POST http://localhost:5000/authentication
+POST http://localhost:{{port}}/authentication
 Content-Type: application/json
 
 {

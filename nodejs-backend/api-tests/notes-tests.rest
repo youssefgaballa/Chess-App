@@ -2,17 +2,17 @@
 # requires vs code REST Client extension
 # I perfer it over Postman cause of some bugs I'm experiencing with it
 # also it feels better to centralize api tests in a single file
-
+@port = 5001
 ###
 # GET a note
-GET http://localhost:5000/data/Example Title
+GET http://localhost:{{port}}/data/Example Title
 
 ###
 # GET all notes
-GET http://localhost:5000/data
+GET http://localhost:{{port}}/data
 
 ###
-POST http://localhost:5000/data/Example Title
+POST http://localhost:{{port}}/data/Example Title
 Content-Type: application/json
 
 {
@@ -21,7 +21,7 @@ Content-Type: application/json
 }
 
 ###
-PATCH http://localhost:5000/data/Example Title
+PATCH http://localhost:{{port}}/data/Example Title
 Content-Type: application/json
 
 {
@@ -32,6 +32,6 @@ Content-Type: application/json
 ###
 
 
-DELETE http://localhost:5000/data/Example Title
+DELETE http://localhost:{{port}}/data/Example Title
 
 ###

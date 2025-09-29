@@ -15,17 +15,18 @@ export const EditUser = ({ setShowModal, selectedUser }
   const dispatch = useDispatch();
   //const currentUser = useSelector(selectUser);
   axiosInterceptors();
-  // console.log("EditUser selectedUser: ", selectedUser);
+  console.log("EditUser selectedUser: ", selectedUser);
   const queryClient = useQueryClient();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>,
     userData: UserData): Promise<void> => {
     console.log("----handleSubmit()");
     event.preventDefault();
-    // console.log("selectedUser.username in handleSubmit: ", selectedUser?.username);
+    console.log("selectedUser.username in handleSubmit: ", selectedUser?.username);
     const reqBody = userData;
     // console.log(reqBody);
-    const response = await customAxios.patch(`http://localhost:5000/users/${selectedUser?.username}`, reqBody, {withCredentials: true}).catch((error) => {
+    const response = await customAxios.patch(`http://localhost:${import.meta.env.VITE_BACKEND_PORT}/users/${selectedUser?.username}`,
+      reqBody, { withCredentials: true }).catch((error) => {
       console.log(error);
       if (!error?.response) {
         setErrorMessage("No response from server");
@@ -42,6 +43,8 @@ export const EditUser = ({ setShowModal, selectedUser }
         queryClient.invalidateQueries({ queryKey: ["get-all-users"] });
 
       }
+    }).catch((error) => {
+      console.log(error);
     });
   // const newUser = response?.data;
   // console.log("newUser: ", newUser);

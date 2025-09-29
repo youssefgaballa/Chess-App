@@ -43,7 +43,7 @@ export const Admin = () => {
     deleteUser(username).then(() => {
       queryClient.invalidateQueries({ queryKey: ["get-all-users"] });
      });
-    setSelectedUser(null);
+    //setSelectedUser(null);
 
     // setSelectedUser(null);
     // setSelectedUserIndex(null);
@@ -92,11 +92,12 @@ export const Admin = () => {
                   className="m-[3%] p-[1%] w-[50%] border border-black rounded-lg hover:bg-red-500 hover:text-white">{isDeleting ? 'Deleting...' : 'Delete User'}</button>
                 <button onClick={(event) => {
                   event.stopPropagation();
-                  setShowModal(true);
+                  
                   setSelectedUser({
                     username: currentUser.username, email: currentUser.email,
                     firstname: currentUser.firstname, lastname: currentUser.lastname, role: currentUser.user_role
-                  })
+                  });
+                  setShowModal(true);
                 }} className=" w-[50%] border border-black rounded-lg hover:bg-blue-500 hover:text-white">
                   Update User
                 </button>

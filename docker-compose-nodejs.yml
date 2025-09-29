@@ -40,7 +40,7 @@ services:
       # our seed file to that directory so that it gets run
       - ./nodejs-backend/database-seed.sql:/docker-entrypoint-initdb.d/database-seed.sql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U root"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
       interval: 2s
       timeout: 5s
       retries: 5

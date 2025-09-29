@@ -11,7 +11,6 @@ import cookieParser from "cookie-parser";
 import verifyAccessTokenRouter from "./routes/verifyAccessToken.ts";
 import { Server } from "socket.io";
 import { createServer } from "http";
-import { create } from "domain";
 import chatRoomRouter from "./routes/chatRoom.ts";
 
 const app = express();
@@ -71,9 +70,7 @@ app.use("/", notesRouter);//
   
 })().catch((e) => { console.error(e); });
 
-// const httpServer = app.listen(4000, () => {
-//   console.log("HTTP Server running on port 4000");
-// }); 
+
 const httpServer = createServer(app);
 
 

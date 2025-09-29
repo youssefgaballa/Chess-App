@@ -54,7 +54,7 @@ usersRouter.patch("/users/:username", async (req, res) => {
   } = req.body;
   const hashedPwd = await hash(newPassword, 10);
   // console.log("req.body: ", req.body);
-  // console.log("newUsername: ", newUsername);
+   console.log("newUsername: ", newUsername);
   // console.log("newEmail: ", newEmail);
   // console.log("newFirstName: ", newFirstName);
   // console.log("newLastName: ", newLastName);

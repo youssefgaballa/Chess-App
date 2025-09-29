@@ -23,20 +23,23 @@ In a new terminal:
 If you want to test the app locally, you'll need to 
 create a .env file with the following variables:
 
-BACKEND_PORT=  
-HTTP_PORT=  
-POSTGRES_PORT=  
-FRONTEND_PORT=  
-POSTGRES_USER=  
-POSTGRES_PASSWORD=  
-POSTGRES_HOST=  
-POSTGRES_PORT=  
-POSTGRES_DB=  
-ACCESS_TOKEN_SECRET=  
-REFRESH_TOKEN_SECRET=  
-ACCESS_TOKEN_EXPIRES_IN=  
-REFRESH_TOKEN_EXPIRES_IN=  
-VITE_HTTP_PORT=  
+BACKEND_PORT=
+VITE_BACKEND_PORT=
+FRONTEND_PORT=
+VITE_FRONTEND_PORT=
+HTTP_PORT=
+VITE_HTTP_PORT=
+
+POSTGRES_USER=
+POSTGRES_PASSWORD=
+POSTGRES_HOST=
+POSTGRES_PORT=
+POSTGRES_DB=
+
+ACCESS_TOKEN_SECRET=
+REFRESH_TOKEN_SECRET=
+ACCESS_TOKEN_EXPIRES_IN=
+REFRESH_TOKEN_EXPIRES_IN=
 
 For the jwt token secrets, you can supply 64 random bytes in hexadecimal format  
 You can create some on the command-line (with node.js) by running the following commands:  
