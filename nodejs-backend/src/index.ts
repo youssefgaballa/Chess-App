@@ -12,6 +12,7 @@ import verifyAccessTokenRouter from "./routes/verifyAccessToken.ts";
 import { Server } from "socket.io";
 import { createServer } from "http";
 import { create } from "domain";
+import chatRoomRouter from "./routes/chatRoom.ts";
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.use(cookieParser());
 //   console.log(`${req.method} ${req.path}`);
 //   next();
 // });
+app.use('/', chatRoomRouter);
 app.use('/', registrationRouter);
 app.use('/', authenticationRouter);
 app.use('/', refreshRouter);
@@ -75,7 +77,13 @@ const io = new Server(httpServer, {
 });
 
 io.on("connection", (socket) => {
-  console.log("a user connected:", socket.id);
+  console.log("Socket connection established:", socket.id);
+ 
+  socket.on("join room", (roomID) => {
+    socket.join(roomID);
+    console.log(`Socket ${socket.id} joined room ${roomID}`);
+    socket.to(roomID).emit("chat message", `User ${socket.id} has joined the room.`);
+  });
 
   socket.on("chat message", (msg) => {
     console.log("chat message received:", msg);

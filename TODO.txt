@@ -18,17 +18,19 @@ the id of the piece and who it belonged to)
 - rename updatePiecePosition, validMoves
 - make sure setvalid moves is called only once per piece per move.
 - castling, upgrading pieces
+- create new action for changing last move and dispatch it after we set all the validmoves for each piece.
 
 - Integration with map: if another player attacks the territory of another,
 they can initiate a chess match (like bloons monkey city)
 
-!!! Setup Workful (github actions)
+!!! Setup Workflow (github actions)
 
 Backend: 
 -add serverside rendering
 - Authentication, Authorization, Message queues (RabbitMQ), kafka, streams, security,
 -fix api tests so that correct authorization headers are passed (as if logged in)
 - Replicate backend in .NET, spring boot, etc.
+-make sure when user is deleted the teardown of the socket.io room, chat_rooms table row,etc  happens
 
 General: 
 -Js-docs, tests, dev-environments, kubernetes  

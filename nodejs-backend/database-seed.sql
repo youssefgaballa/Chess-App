@@ -36,3 +36,12 @@ INSERT INTO notes(content, title, owner_id) VALUES
  ('jgoldberg Notes 1', 'Example 1 Notes', 3),
  ('gamer Notes 1', 'Example 1 Notes', 4),
  ('bob Notes 1', 'Example 1 Notes', 5);
+
+CREATE TABLE IF NOT EXISTS chat_rooms
+(
+    room_id serial,
+    owner_username text UNIQUE,
+    users text[],
+    CONSTRAINT chat_rooms_pkey PRIMARY KEY (room_id),
+    CONSTRAINT fk_owner_username FOREIGN KEY(owner_username) REFERENCES users(username) ON DELETE CASCADE
+);
