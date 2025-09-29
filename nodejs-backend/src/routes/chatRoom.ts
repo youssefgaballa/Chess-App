@@ -7,7 +7,6 @@ const chatRoomRouter: Router = express.Router();
 chatRoomRouter.post('/chat/create', async (req, res) => {
   const username = req.body.users;
   console.log("Creating chat room for user:", username);
-  console.log("username:", username);
   try {
     const result = await client.query(
       "INSERT INTO chat_rooms (owner_username) VALUES ($1) RETURNING room_id",
@@ -27,6 +26,7 @@ chatRoomRouter.post('/chat/join', async (req, res) => {
   const username = req.body.username;
   console.log("User:", username, "is attempting to join room with ID:", roomID);
   try {
+    let isError = false;
     const room = await client.query(
       "SELECT * FROM chat_rooms WHERE room_id = $1",
       [roomID]
@@ -36,20 +36,27 @@ chatRoomRouter.post('/chat/join', async (req, res) => {
         console.log("username", username);
         if (room.rowCount === 0) {
           res.status(404).json({ error: "Chat room not found" });
+          isError = true;
           return;
         } else if (room.rows[0].owner_username == username) {
           res.status(400).json({ error: "You're already in the chat room as a owner" });
+          isError = true;
           return;
         } else if (room.rows[0].users.includes(username)) {
           res.status(400).json({ error: "You're already in the chat room" });
+          isError = true;
           return;
         } 
+
       })
       .catch((error) => {
       console.log("error", error);
       return;
     });
-   
+    console.log("isError", isError);
+    if (isError) return;
+    console.log("continuing query");
+
     const result = await client.query(
       "UPDATE chat_rooms SET users = array_append(users, $2) WHERE room_id = $1 RETURNING *",
       [roomID, username]
@@ -63,6 +70,25 @@ chatRoomRouter.post('/chat/join', async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
+chatRoomRouter.patch('/chat/leave', async (req, res) => {
+  const roomID = req.body.roomID;
+  const username = req.body.username;
+  console.log("User:", username, "is attempting to leave room with ID:", roomID);
+  try {
+    const result = await client.query(
+      "UPDATE chat_rooms SET users = array_remove(users, $2) WHERE room_id = $1 RETURNING *",
+      [roomID, username]
+    );  
+    //console.log("result.rows[0]", result.rows[0]);
+    return res.status(200).json({ message: `User ${username} left room ${roomID}` });
+  } catch (error) {
+    console.error("Error leaving chat room:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+
+}
+);
 
 chatRoomRouter.get('/chat/all', async (req, res) => {
   try {

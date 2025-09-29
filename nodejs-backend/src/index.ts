@@ -94,18 +94,19 @@ io.on("connection", (socket) => {
   socket.on("join room", (roomID) => {
     socket.join(roomID);
     console.log(`Socket ${socket.id} joined room ${roomID}`);
+    socket.to(roomID).emit("receive room message", `User ${socket.id} has joined the room.`, socket.id, roomID);
   });
 
-  socket.on("send message", (msg) => {
-    console.log("chat message received:", msg);
-  });
-
-  socket.on("leave room", (roomID) => {
+  socket.on("leave room", (roomID, username) => {
     socket.leave(roomID);
     console.log(`Socket ${socket.id} left room ${roomID}`);
-    socket.to(roomID).emit("chat message", `User ${socket.id} has left the room.`);
+    socket.to(roomID).emit("receive room message", `User ${username} has left the room.`, username, roomID);
   });
 
+  socket.on("send room message", (msg, username, roomID) => {
+    socket.to(roomID).emit("receive room message", msg, username, roomID);
+    console.log(`Socket ${socket.id} sent message to room ${roomID}: ${msg}`);
+  });
 
   socket.on("disconnect", () => {
     console.log("a user disconnected:", socket.id);

@@ -46,3 +46,16 @@ CREATE TABLE IF NOT EXISTS chat_rooms
   --  CONSTRAINT fk_owner_username FOREIGN KEY(owner_username) REFERENCES users(username) ON DELETE CASCADE
   -- Uncomment above if you want to enforce foreign key constraint on owner_username and disallow guest users
 );
+
+CREATE TABLE IF NOT EXISTS messages
+(
+    message_id serial,
+    room_id integer,
+    sender_username text,
+    content text,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT messages_pkey PRIMARY KEY (message_id),
+    CONSTRAINT fk_room FOREIGN KEY(room_id) REFERENCES chat_rooms(room_id) ON DELETE CASCADE
+    -- CONSTRAINT fk_sender FOREIGN KEY(sender_username) REFERENCES users(username) ON DELETE SET NULL
+    -- Uncomment above if you want to enforce foreign key constraint on sender_username and disallow guest users
+);
