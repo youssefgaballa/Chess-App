@@ -70,7 +70,6 @@ const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
     origin: `http://localhost:${process.env.FRONTEND_PORT}`,
-    methods: ["GET", "POST"],
     credentials: true,
   },
 });

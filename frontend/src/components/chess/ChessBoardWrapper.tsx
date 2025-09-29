@@ -18,7 +18,14 @@ export const ChessBoardWrapper = () => {
   const colors = Colors['light/dark'];
 
   return (
-    <ChessBoard8x8 colors={colors} />
+    <>
+      <div className='flex items-center justify-center mt-4'>
+      <ChessBoard8x8 colors={colors} />
+        <button className="m-[3%] p-[1%] w-[20%] border border-black rounded-lg hover:bg-red-500 hover:text-white">
+          Create Room
+        </button>
+      </div>
+    </>
   );
 
 } 

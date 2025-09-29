@@ -11,7 +11,7 @@ import { selectBoardState, setInitialBoard, movePiece, setValidMoves, isKingInCh
 import { SelectedColors } from "./ChessBoardWrapper";
 
 
-const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
+const ChessBoard8x8: React.FC<{ colors: string[], roomID?: string }> = ({ colors, roomID }) => {
   const dispatch = useDispatch();
   const boardSize = 700; // 700px x 700px
   const tileSize = 75;
@@ -184,7 +184,7 @@ const ChessBoard8x8: React.FC<{ colors: string[] }> = ({ colors }) => {
   return (
     <>
       <div className='flex flex-col items-center mt-4'>
-        <span>Chess Board</span>
+        <span>{roomID ? <>{roomID}</> : <>Play Solo Chess</>}</span>
         <svg width={`${boardSize}`} height={`${boardSize }`} className="border border-black">
           <rect x={padding} y={padding} width={boardSize - 2 * padding} height={boardSize - 2 * padding} fill="white" />
           
