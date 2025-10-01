@@ -4,15 +4,12 @@ import { useState } from "react";
 import { UserForm } from "./UserForm";
 import { customAxios } from "../util/customAxios";
 import type { UserData } from "./RegisterUser";
-import { useDispatch, useSelector } from "react-redux";
-import { selectUser } from "../users/userSlice";
 import { axiosInterceptors } from "../util/axiosInterceptors";
 import { useQueryClient } from "@tanstack/react-query";
 
 export const EditUser = ({ setShowModal, selectedUser }
   : { setShowModal: (show: boolean) => void, selectedUser: currentUserType | null }) => {
   const [errorMessage, setErrorMessage] = useState<string>("");
-  const dispatch = useDispatch();
   //const currentUser = useSelector(selectUser);
   axiosInterceptors();
   console.log("EditUser selectedUser: ", selectedUser);
@@ -25,7 +22,7 @@ export const EditUser = ({ setShowModal, selectedUser }
     console.log("selectedUser.username in handleSubmit: ", selectedUser?.username);
     const reqBody = userData;
     // console.log(reqBody);
-    const response = await customAxios.patch(`http://localhost:${import.meta.env.VITE_BACKEND_PORT}/users/${selectedUser?.username}`,
+    await customAxios.patch(`http://localhost:${import.meta.env.VITE_BACKEND_PORT}/users/${selectedUser?.username}`,
       reqBody, { withCredentials: true }).catch((error) => {
       console.log(error);
       if (!error?.response) {

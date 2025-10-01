@@ -12,7 +12,7 @@ export const axiosInterceptors = () => {
   const navigate = useNavigate();
   // Request interceptor to add the access token to headers
   useEffect(() => {
-    const requestInterceptor = customAxios.interceptors.request.use(async (config: any) => {
+    const requestInterceptor = customAxios.interceptors.request.use(async (config) => {
       console.log("---requestInterceptor fulfilled called");
 
       //console.log("userAuth.accessToken", userAuth.accessToken);

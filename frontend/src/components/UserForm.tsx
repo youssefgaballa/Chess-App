@@ -1,5 +1,5 @@
 import { useState, useEffect, type ChangeEvent } from 'react';
-import { Link, useLocation, useNavigate } from "react-router";
+import { Link, useLocation } from "react-router";
 
 import { Error, Check, Visibility, VisibilityOff } from '@mui/icons-material'
 import type { UserData } from './RegisterUser';

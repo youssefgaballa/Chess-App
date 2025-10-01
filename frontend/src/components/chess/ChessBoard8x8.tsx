@@ -103,8 +103,10 @@ const ChessBoard8x8: React.FC<{ colors: string[], roomID?: string }> = ({ colors
       dispatch(setTurn({ color: board.turn === "white" ? "black" : "white" }));
       
     }
-    dispatch(isKingCheckMated({ color: yourKing?.color! }));
-    dispatch(isKingCheckMated({ color: opponentKing?.color! }));
+    if (yourKing && opponentKing) {
+      dispatch(isKingCheckMated({ color: yourKing.color }));
+      dispatch(isKingCheckMated({ color: opponentKing.color }));
+    }
   }, [board.lastMove]);
 
   const yourKing = board.pieces.find(p => p.type === 'king' && p.color === board.turn);
@@ -126,7 +128,9 @@ const ChessBoard8x8: React.FC<{ colors: string[], roomID?: string }> = ({ colors
 
       const lastMove = board.lastMove;
       // console.log("lastMove:", lastMove);
-      dispatch(movePiece({ from: lastMove?.to!, fromIndex: lastMove?.toIndex!, to: lastMove?.from!, toIndex: lastMove?.fromIndex!, replace: lastMove?.replace!, undo: true }));
+      if (lastMove) {
+        dispatch(movePiece({ from: lastMove.to, fromIndex: lastMove.toIndex!, to: lastMove.from!, toIndex: lastMove.fromIndex!, replace: lastMove.replace, undo: true }));
+      }
       // if (yourKing.color !== board.turn) {
       // dispatch(setTurn({ color: board.turn === "white" ? "black" : "white" }));
       // }
@@ -165,8 +169,9 @@ const ChessBoard8x8: React.FC<{ colors: string[], roomID?: string }> = ({ colors
 
       const lastMove = board.lastMove;
       // console.log("lastMove:", lastMove);
-      dispatch(movePiece({ from: lastMove?.to!, fromIndex: lastMove?.toIndex!, to: lastMove?.from!, toIndex: lastMove?.fromIndex!, replace: lastMove?.replace!, undo: true }));
-
+      if (lastMove) {
+        dispatch(movePiece({ from: lastMove.to, fromIndex: lastMove.toIndex!, to: lastMove.from!, toIndex: lastMove.fromIndex!, replace: lastMove.replace!, undo: true }));
+      }
     }
   }, [toggleKingInCheck]);
   

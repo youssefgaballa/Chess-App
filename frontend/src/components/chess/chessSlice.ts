@@ -543,7 +543,6 @@ const chessBoardSlice = createSlice({
                 // console.log("clearPath true for move:", move);
                 return move;
               }
-              state.lastMove = state.lastMove
             });
             //console.log("freeMoves:", freeMoves);
             piece.validMoves = freeMoves;
@@ -809,7 +808,7 @@ const chessBoardSlice = createSlice({
       if (!king) return;
    
       if (king.isChecked && king.validMoves.length === 0 && king.replaceMoves.length === 0) {
-        let piecesThatCheckKing = state.pieces.filter(p => {
+        const piecesThatCheckKing = state.pieces.filter(p => {
           return p.color !== color && p.replaceMoves.includes(king.position) && p.isCaptured === false;
         });
         // Check if any other piece of the same color can block the check or capture the checking piece
@@ -838,7 +837,7 @@ const chessBoardSlice = createSlice({
               const rankDiff = attacker.position[1].charCodeAt(0) - king.position[1].charCodeAt(0);
               const stepX = Math.sign(fileDiff);
               const stepY = Math.sign(rankDiff);
-              let blockingSquares: ChessPosition[] = [];
+              const blockingSquares: ChessPosition[] = [];
 
               for (let i = 1; i < Math.max(Math.abs(fileDiff), Math.abs(rankDiff)); i++) {
                 const blockingSquare = String.fromCharCode(king.position[0].charCodeAt(0) + i * stepX)

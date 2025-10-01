@@ -34,7 +34,7 @@ export const ChatRoom = () => {
 
   const createRoom = () => {
     console.log("Creating room for user:", username);
-    const response = axios.post(`http://localhost:${import.meta.env.VITE_BACKEND_PORT}/chat/create`, { users: username },
+    axios.post(`http://localhost:${import.meta.env.VITE_BACKEND_PORT}/chat/create`, { users: username },
       { withCredentials: true, headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${user.accessToken}` } }
     )
       .then((response) => {
@@ -53,11 +53,11 @@ export const ChatRoom = () => {
 
   const deleteRoom = () => {
     if (roomID) {
-      const response = axios.delete(`http://localhost:${import.meta.env.VITE_BACKEND_PORT}/chat`,
+      axios.delete(`http://localhost:${import.meta.env.VITE_BACKEND_PORT}/chat`,
         { data: { roomID: roomID, username: username }, withCredentials: true, 
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${user.accessToken}` } }
       )
-        .then((response) => {
+        .then(() => {
           socket.emit("leave room", roomID);
           setRoomID(null);
           console.log("Left room with ID:", roomID);
@@ -76,7 +76,7 @@ export const ChatRoom = () => {
         { roomID: roomId, username: username }, { withCredentials: true,
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${user.accessToken}` } }
       )
-        .then((response) => {
+        .then(() => {
           setRoomID(roomId);
           socket.emit("join room", roomId);
          
@@ -99,7 +99,7 @@ export const ChatRoom = () => {
         { roomID: roomID, username: username }, { withCredentials: true,
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${user.accessToken}` } }
       )
-        .then((response) => {
+        .then(() => {
           socket.emit("leave room", roomID, username);
           setRoomID(null);
           console.log("User:", username, "left room with ID:", roomID);
