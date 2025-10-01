@@ -19,9 +19,7 @@ jobs:
       VITE_HTTP_PORT: ${{ secrets.VITE_HTTP_PORT }}
     runs-on: windows-latest
     steps:
-      - run: | 
-          dir
-          echo "Test Frontend triggered by ${{github.event_name }} event"
+      - run: echo "Test Frontend triggered by ${{github.event_name }} event"
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Set up Node.js
@@ -29,7 +27,9 @@ jobs:
         with:
           node-version: '22.x'
       - name: Install dependencies
-        run: npm i
+        run: |
+          dir
+          npm i
       - name: Run tests
         run: npm run testOnce
         
