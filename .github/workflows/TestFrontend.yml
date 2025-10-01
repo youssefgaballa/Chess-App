@@ -7,7 +7,6 @@ on:
 
 defaults:
   run:
-    shell: cmd
     working-directory: frontend
 
 jobs:
@@ -18,7 +17,7 @@ jobs:
       VITE_FRONTEND_PORT: ${{ secrets.VITE_FRONTEND_PORT }}
       HTTP_PORT: ${{ secrets.HTTP_PORT }}
       VITE_HTTP_PORT: ${{ secrets.VITE_HTTP_PORT }}
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - run: echo "Test Frontend triggered by ${{github.event_name }} event"
       - name: Checkout repository
