@@ -1,0 +1,35 @@
+name: Test Frontend
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+
+
+jobs:
+  test-frontend:
+    environment: development
+    env:
+      FRONTEND_PORT: ${{ secrets.FRONTEND_PORT }}
+      VITE_FRONTEND_PORT: ${{ secrets.VITE_FRONTEND_PORT }}
+      HTTP_PORT: ${{ secrets.HTTP_PORT }}
+      VITE_HTTP_PORT: ${{ secrets.VITE_HTTP_PORT }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with: 
+          sparse-checkout: "./frontend"
+          sparse-checkout-cone-mode: false
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22.x'
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm ci
+      - name: Run tests
+        run: npm run testOnce
+        
