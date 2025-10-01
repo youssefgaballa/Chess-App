@@ -58,7 +58,7 @@ app.use("/", notesRouter);//
     });
   //console.log("notes:", notes);
   const chatRooms = await client
-    .query("SELECT * FROM chat_rooms")
+    .query("SELECT * FROM rooms")
     .then((payload) => {
       return payload.rows;
     })

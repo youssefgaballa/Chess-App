@@ -4,8 +4,8 @@
 # also it feels better to centralize api tests in a single file
 
 # root's password is 12432543234
-# jschlatt's password is 1242353453234
-# jgoldberg's password is 24325
+# jim's password is 1242353453234
+# bill's password is 24325
 # bob's password is 252453
 # gamer's password is 442232
 @port = 5001
@@ -27,7 +27,7 @@ POST http://localhost:{{port}}/authentication
 Content-Type: application/json
 
 {
-  "username": "jschlatt",
+  "username": "jim",
   "password": "1242353453234"
 }
 ###
