@@ -20,15 +20,14 @@ jobs:
       - run: echo "Test Frontend triggered by ${{github.event_name }} event"
       - name: Checkout repository
         uses: actions/checkout@v4
-        with: 
-          sparse-checkout: "./frontend"
-          sparse-checkout-cone-mode: false
       - name: Set up Node.js
         uses: actions/setup-node@v5
         with:
           node-version: '22.x'
       - name: Install dependencies
-        run: npm i
+        run: | 
+            dir
+            npm i
       - name: Run tests
         run: npm run testOnce
         
