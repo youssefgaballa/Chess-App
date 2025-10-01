@@ -8,7 +8,7 @@ on:
 defaults:
   run:
     shell: cmd
-    working-directory: ./frontend
+    working-directory: frontend
 
 jobs:
   test-frontend:
