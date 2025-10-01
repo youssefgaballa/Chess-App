@@ -803,11 +803,64 @@ const chessBoardSlice = createSlice({
       king.isChecked = isInCheck;
     }, 
     isKingCheckMated: (state, action: { payload: { color: ChessColor } }) => {
+      console.log("----isKingCheckMated called for color:", action.payload.color);
       const { color } = action.payload;
       const king = state.pieces.find(p => p.type === 'king' && p.color === color);
       if (!king) return;
+   
       if (king.isChecked && king.validMoves.length === 0 && king.replaceMoves.length === 0) {
-        state.players[color].isCheckmated = true;
+        let piecesThatCheckKing = state.pieces.filter(p => {
+          return p.color !== color && p.replaceMoves.includes(king.position) && p.isCaptured === false;
+        });
+        // Check if any other piece of the same color can block the check or capture the checking piece
+        const canCapture = state.pieces.some(p => {
+          if (p.color === color && p.isCaptured === false && p.type !== 'king') {
+            // Check if the piece can move to the square of the attacking piece
+            return p.replaceMoves.some(move => {
+              return piecesThatCheckKing.some(attacker => attacker.position === move);
+            });
+          }
+          return false;
+        });
+        //console.log("piecesThatCheckKing:", Array.from(piecesThatCheckKing));
+        console.log("canCapture:", canCapture);
+        if (canCapture) {
+          return; // Not checkmate if a piece can capture the checking piece
+        } else {
+          for (const attacker of piecesThatCheckKing) {
+            // Check if any piece can block the check
+            if (attacker.type === 'knight' || attacker.type === 'pawn') {
+              console.log("Knight or pawn is checking the king, cannot be blocked.");
+              state.players[color].isCheckmated = true;
+              return; // Knights and pawns cannot be blocked
+            } else if (attacker.type === 'bishop' || attacker.type === 'rook' || attacker.type === 'queen') {
+              const fileDiff = attacker.position[0].charCodeAt(0) - king.position[0].charCodeAt(0);
+              const rankDiff = attacker.position[1].charCodeAt(0) - king.position[1].charCodeAt(0);
+              const stepX = Math.sign(fileDiff);
+              const stepY = Math.sign(rankDiff);
+              let blockingSquares: ChessPosition[] = [];
+
+              for (let i = 1; i < Math.max(Math.abs(fileDiff), Math.abs(rankDiff)); i++) {
+                const blockingSquare = String.fromCharCode(king.position[0].charCodeAt(0) + i * stepX)
+                  + String.fromCharCode(king.position[1].charCodeAt(0) + i * stepY) as ChessPosition;
+                blockingSquares.push(blockingSquare);
+              }
+              console.log("blockingSquares:", blockingSquares);
+              for (const square of blockingSquares) {
+                const canBlock = state.pieces.some(p => {
+                  if (p.color === color && p.isCaptured === false && p.type !== 'king') {
+                    return p.validMoves.includes(square) || p.replaceMoves.includes(square);
+                  }
+                });
+                if (canBlock) {
+                  return; // Not checkmate if a piece can block the check
+                }
+              }
+              state.players[color].isCheckmated = true;
+            }
+          }
+        }
+        // state.players[color].isCheckmated = true;
         console.log(`${color} king is checkmated!`);
       }
     },

@@ -115,14 +115,6 @@ const ChessBoard8x8: React.FC<{ colors: string[], roomID?: string }> = ({ colors
     // console.log("----Second UseLayoutEffect:");
     // console.log("board:", board);
   //  const yourKing = board.pieces.find(p => p.type === 'king' && p.color !== board.turn);
-    // console.log("yourKing in second useLayoutEffect:", yourKing);
-    // console.log("yourKing.isCheckedLastMove in second useLayoutEffect:", yourKing?.isKingCheckedLastMove);
-    //const opponentKing = board.pieces.find(p => p.type === 'king' && p.color === board.turn);
-    // console.log("Your king in useLayoutEffect:", yourKing);
-    // console.log("board.turn in useLayoutEffect:", board.turn);
-    // console.log("yourKing king in useLayoutEffect:", yourKing);
-    // console.log("yourKing.isChecked in useLayoutEffect:", yourKing?.isChecked);
-    // console.log("board.lastMove in useLayoutEffect:", board.lastMove);
     if (yourKing && !yourKing.isChecked && board.lastMove) {
       // console.log("sucessfully unchecked your king in useLayoutEffect:", yourKing);
       // console.log("board.turn in useLayoutEffect:", board.turn);
@@ -196,7 +188,7 @@ const ChessBoard8x8: React.FC<{ colors: string[], roomID?: string }> = ({ colors
               });
               const selectedPiecePos = selectedPieceIndex !== null ? board.pieces[selectedPieceIndex]?.position : null; 
               const selectedPiece = board.pieces[selectedPieceIndex!];
-              const pieceAtPos = board.pieces.find(p => p.position === pos);
+              const pieceAtPos = board.pieces.find(p => p.position === pos && p.isCaptured === false);
               const validMoves: ChessPosition[] = [];
               
               for (let i = 0; i < board.pieces.length; i++) {
