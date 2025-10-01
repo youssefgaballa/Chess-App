@@ -5,13 +5,14 @@ on:
   pull_request:
   workflow_dispatch:
 
-defaults:
-  run:
-    shell: cmd
 
 jobs:
   test-frontend:
     environment: development
+    defaults:
+      run:
+        shell: cmd
+        working-directory: frontend
     env:
       FRONTEND_PORT: ${{ secrets.FRONTEND_PORT }}
       VITE_FRONTEND_PORT: ${{ secrets.VITE_FRONTEND_PORT }}
@@ -19,7 +20,9 @@ jobs:
       VITE_HTTP_PORT: ${{ secrets.VITE_HTTP_PORT }}
     runs-on: windows-latest
     steps:
-      - run: echo "Test Frontend triggered by ${{github.event_name }} event"
+      - run: | 
+           dir
+           echo "Test Frontend triggered by ${{github.event_name }} event"
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Set up Node.js
@@ -27,9 +30,7 @@ jobs:
         with:
           node-version: '22.x'
       - name: Install dependencies
-        run: |
-          dir
-          npm i
+        run: npm i
       - name: Run tests
         run: npm run testOnce
         
