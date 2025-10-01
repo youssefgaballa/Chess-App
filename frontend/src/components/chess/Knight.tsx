@@ -4,8 +4,9 @@ export const Knight = ({ index, color, position, onClick }: { index: number, col
 const knight = new ChessPiece("knight", color, position, 50, 600, 75);
 
   return (
-    <svg x={knight.boardPosition.x+5} y={knight.boardPosition.y+7}
+    <svg data-testid={`${index}`} x={knight.boardPosition.x+5} y={knight.boardPosition.y+7}
       width={knight.tileSize} height={knight.tileSize} style={{ overflow: 'visible' }} onClick={() => onClick(position, index)}>
+      <title>{`${knight.color} knight at ${position}`}</title>
       <g style={{
         stroke: 'black', fill: 'none', fillOpacity: '1', fillRule: 'evenodd', strokeWidth: '1.5', strokeLinecap: 'round',
         strokeLinejoin: 'round', strokeMiterlimit: '4', strokeDasharray: 'none', strokeOpacity: '1'

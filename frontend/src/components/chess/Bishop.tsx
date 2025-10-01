@@ -1,11 +1,12 @@
 import ChessPiece, { type ChessColor, type ChessPosition } from "./chessPiece";
 
 export const Bishop = ({ index, color, position, onClick }: { index: number, color: ChessColor, position: ChessPosition, onClick: (pos: ChessPosition, index: number) => void }) => {
-const bishop = new ChessPiece("bishop", color, position, 50, 600, 75);
+  const bishop = new ChessPiece("bishop", color, position, 50, 600, 75);
 
   return (
-    <svg x={bishop.boardPosition.x+7} y={bishop.boardPosition.y+9}
+    <svg data-testid={`${index}`} x={bishop.boardPosition.x+7} y={bishop.boardPosition.y+9}
       width={bishop.tileSize} height={bishop.tileSize} style={{ overflow: 'visible' }} onClick={() => onClick(position, index)}>
+      <title>{`${bishop.color} bishop at ${position}`}</title>
       <g style={{ fill: `${bishop.color}`, stroke: '#000000', strokeLinecap: 'butt' }} transform={`scale(${bishop.tileSize / 40})`}>
         <path d={bishop.pathData[0]} />
         <path d={bishop.pathData[1]} />

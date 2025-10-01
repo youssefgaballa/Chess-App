@@ -5,8 +5,9 @@ export const King = ({ index, color, position, onClick }: { index: number, color
 
 
   return (
-    <svg x={king.boardPosition.x + 8} y={king.boardPosition.y+8}
+    <svg data-testid={`${index}`} x={king.boardPosition.x + 8} y={king.boardPosition.y+8}
       width={king.tileSize} height={king.tileSize} style={{ overflow: 'visible' }} onClick={() => onClick(position, index)}>
+      <title>{`${king.color} king at ${position}`}</title>
       {king.color === 'black' ? 
         <g style={{
           fill: 'none', fillOpacity: '1', fillRule: 'evenodd',

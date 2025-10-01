@@ -5,8 +5,9 @@ export const Queen = ({ index, color, position, onClick }: { index: number, colo
 
 
   return (
-    <svg x={queen.boardPosition.x + 8} y={queen.boardPosition.y+8}
+    <svg data-testid={`${index}`} x={queen.boardPosition.x + 8} y={queen.boardPosition.y+8}
       width={queen.tileSize} height={queen.tileSize} style={{ overflow: 'visible' }} onClick={() => onClick(position, index)}>
+      <title>{`${queen.color} queen at ${position}`}</title>
       <g style={{ fill: `${queen.color}`, stroke: '#000000', strokeWidth: '1.5', strokeLinejoin: 'round', ...(queen.color === 'black' && { strokeLinecap: 'round' }) }}
         transform={`scale(${queen.tileSize / 40})`}>
         {queen.color === 'black' ?

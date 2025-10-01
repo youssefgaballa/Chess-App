@@ -1,4 +1,4 @@
-import {  useLayoutEffect, useState } from "react";
+import {  Fragment, useLayoutEffect, useState } from "react";
 import {  type ChessPosition } from "./chessPiece";
 import { Pawn } from "./Pawn";
 import { Knight } from "./Knight";
@@ -226,31 +226,31 @@ const ChessBoard8x8: React.FC<{ colors: string[], roomID?: string }> = ({ colors
               }
 
               return (
-              <>
-                  { row == 0 ? <text key={`col-${col}`} x={padding + col * tileSize + tileSize / 2} y={row * tileSize + tileSize / 2}
+              <Fragment key={`${row}-${col}`}>
+                  { row == 0 ? <text x={padding + col * tileSize + tileSize / 2} y={row * tileSize + tileSize / 2}
                     textAnchor="middle" dominantBaseline="middle">
                     {isCapital ? String.fromCharCode(65 + col) : String.fromCharCode(97 + col)}
                   </text> : null}
-                  { col == 0 ? <text key={`row-${row}`} x={col*tileSize+tileSize/2} y={padding + row * tileSize + tileSize / 2}
+                  { col == 0 ? <text  x={col*tileSize+tileSize/2} y={padding + row * tileSize + tileSize / 2}
                     textAnchor="middle" dominantBaseline="middle">
                     {8 - row}
                   </text> : null}
-                  <rect key={`${row}-${col}`} onClick={() => updatePiecePosition(pos, pieceIndex)}
+                  <rect  onClick={() => updatePiecePosition(pos, pieceIndex)}
                   x={padding + col * tileSize} y={padding + row * tileSize} width={tileSize} height={tileSize} overflow={'visible'}
                     fill={canReplace ? SelectedColors['green'] : fill} opacity={canReplace ? 0.8 : 1} />
                   {validMoves && validMoves.includes(pos) && (!pieceAtPos || pieceAtPos.isCaptured == true) &&
-                    <circle key={`circle-${row}-${col}`} cx={padding + col * tileSize + tileSize / 2} cy={padding + row * tileSize + tileSize / 2}
+                    <circle  cx={padding + col * tileSize + tileSize / 2} cy={padding + row * tileSize + tileSize / 2}
                       r={10} fill={SelectedColors['green']} opacity={0.8} onClick={() => updatePiecePosition(pos, pieceIndex)} />
                   }
                   {canReplace && pieceAtPos &&
                     <>
                     <defs>
                     <clipPath id={`clip-${row}-${col}`}>
-                      <circle key={`circle-${row}-${col}`} cx={padding + col * tileSize + tileSize / 2} cy={padding + row * tileSize + tileSize / 2}
+                      <circle cx={padding + col * tileSize + tileSize / 2} cy={padding + row * tileSize + tileSize / 2}
                           r={42} fill={fill} />
                       </clipPath>
                     </defs>
-                    <rect id={`rect-${row}-${col}`} key={`rect-container-${row}-${col}`}  x={padding + col * tileSize} y={padding + row * tileSize} width={tileSize} height={tileSize}
+                    <rect id={`rect-${row}-${col}`}   x={padding + col * tileSize} y={padding + row * tileSize} width={tileSize} height={tileSize}
                       fill={fill} overflow={'visible'} clipPath={`url(#clip-${row}-${col})`} onClick={() => updatePiecePosition(pos, pieceIndex)}/>
                     </>
                     
@@ -264,12 +264,12 @@ const ChessBoard8x8: React.FC<{ colors: string[], roomID?: string }> = ({ colors
                           <stop offset="100%" style={{ stopColor: SelectedColors['red'], stopOpacity: 0 }} />
                         </radialGradient>
                       </defs>
-                      <circle key={`check-circle-${row}-${col}`} cx={padding + col * tileSize + tileSize / 2} cy={padding + row * tileSize + tileSize / 2}
+                      <circle cx={padding + col * tileSize + tileSize / 2} cy={padding + row * tileSize + tileSize / 2}
                         r={tileSize / 2} fill={`url(#grad-${row}-${col})`} />
                     </>
                   }
 
-              </>
+              </Fragment>
             );
           });
           })}
@@ -289,8 +289,8 @@ const ChessBoard8x8: React.FC<{ colors: string[], roomID?: string }> = ({ colors
                   return (!p.isCaptured && <Queen key={index} index={index} color={p.color} position={p.position} onClick={onPieceClick} />);
                 case "king":
                   return (!p.isCaptured && <King key={index} index={index} color={p.color} position={p.position} onClick={onPieceClick} />);
-                default:
-                  return null;
+                  default:
+                    return null;
               }
             })
           }
