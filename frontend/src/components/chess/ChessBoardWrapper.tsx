@@ -11,7 +11,8 @@ export const SelectedColors = {
   'green': "#7d9568",
   'red': "#ff0000",
   'blue': "#0000ff",
-  'yellow': "#ffff00"
+  'yellow': "#ffff00",
+  'gray': "#808080"
 };
 
 export const ChessBoardWrapper = () => {

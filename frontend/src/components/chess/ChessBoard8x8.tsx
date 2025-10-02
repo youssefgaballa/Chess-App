@@ -229,6 +229,10 @@ const ChessBoard8x8: React.FC<{ colors: string[], roomID?: string }> = ({ colors
               if (pieceAtPos?.type === "king" && pieceAtPos.isChecked) {
                 isChecked = true;
               }
+              let isCheckmated = false;
+              if (pieceAtPos?.type === "king" && board.players[pieceAtPos.color].isCheckmated) {
+                isCheckmated = true;
+              }
 
               return (
               <Fragment key={`${row}-${col}`}>
@@ -261,7 +265,7 @@ const ChessBoard8x8: React.FC<{ colors: string[], roomID?: string }> = ({ colors
                     
                   }
                   {
-                    isChecked &&
+                    isChecked && !isCheckmated  &&
                     <>
                       <defs>
                         <radialGradient id={`grad-${row}-${col}`} cx="50%" cy="50%" r="70%" fx="50%" fy="50%">
@@ -270,6 +274,19 @@ const ChessBoard8x8: React.FC<{ colors: string[], roomID?: string }> = ({ colors
                         </radialGradient>
                       </defs>
                       <circle data-testid={`check-indicator`} id={`${pos}`} cx={padding + col * tileSize + tileSize / 2} cy={padding + row * tileSize + tileSize / 2}
+                        r={tileSize / 2} fill={`url(#grad-${row}-${col})`} />
+                    </>
+                  }
+                  {
+                    isCheckmated &&
+                    <>
+                      <defs>
+                        <radialGradient id={`grad-${row}-${col}`} cx="50%" cy="50%" r="70%" fx="50%" fy="50%">
+                          <stop offset="0%" style={{ stopColor: SelectedColors['gray'], stopOpacity: 0.8 }} />
+                          <stop offset="100%" style={{ stopColor: SelectedColors['gray'], stopOpacity: 0 }} />
+                        </radialGradient>
+                      </defs>
+                      <circle data-testid={`checkmate-indicator`} id={`${pos}`} cx={padding + col * tileSize + tileSize / 2} cy={padding + row * tileSize + tileSize / 2}
                         r={tileSize / 2} fill={`url(#grad-${row}-${col})`} />
                     </>
                   }

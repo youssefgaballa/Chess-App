@@ -240,19 +240,30 @@ describe("ChessBoard8x8 Check Tests", () => {
 
 });
 
-// describe("ChessBoard8x8 Checkmate Tests", () => {
+describe("ChessBoard8x8 Checkmate Tests", () => {
 
-//   it("4 move Checkmate with queen and bishop", async () => {
-//     await movePiece('e2', 'e4');
-//     await movePiece('e7', 'e5');
-//     await movePiece('f1', 'c4');
-//     await movePiece('a7', 'a6');
-//     await movePiece('d1', 'h5');
-//     await movePiece('a6', 'a5');
-//     await movePiece('h5', 'f7'); // checkmate
-//   });
+  it("4 move Checkmate with queen and bishop", async () => {
+    await movePiece('e2', 'e4');
+    await movePiece('e7', 'e5');
+    await movePiece('f1', 'c4');
+    await movePiece('a7', 'a6');
+    await movePiece('d1', 'h5');
+    await movePiece('a6', 'a5');
+    await movePiece('h5', 'f7'); // checkmate
+    const checkIndicator = screen.queryByTestId('check-indicator');
+    expect(checkIndicator).not.toBeInTheDocument();
+    let checkmateIndicator = screen.getByTestId('checkmate-indicator');
+    expect(checkmateIndicator).toBeInTheDocument();
+    expect(checkmateIndicator).toHaveAttribute('id', 'e8');
+    await movePiece('e8', 'e7', true);
+    await movePiece('h7', 'h6', true);
+    checkmateIndicator = screen.getByTestId('checkmate-indicator');
+    expect(checkmateIndicator).toBeInTheDocument();
+    expect(checkmateIndicator).toHaveAttribute('id', 'e8');
+    //screen.logTestingPlaygroundURL()
+  });
 
-// });
+});
 
 const movePiece = async (from: string, to: string, expectUndo?: boolean) => {
   const fromSquare = screen.getByTestId(`sq-${from}`);
@@ -267,5 +278,7 @@ const movePiece = async (from: string, to: string, expectUndo?: boolean) => {
   if (expectUndo == undefined || expectUndo === false) {
     //console.log("expectUndo is false");
     expect(fromPiece.dataset.testid).toBe(to);
+  } else if (expectUndo === true) {
+    expect(fromPiece.dataset.testid).toBe(from);
   }
 };
