@@ -4,7 +4,7 @@ export const Pawn = ({ index, color, position, onClick }: { index: number, color
   const pawn = new ChessPiece("pawn", color, position, 50, 600, 75);
 
   return (
-    <svg data-testid={`${index}`} x={pawn.boardPosition.x} y={pawn.boardPosition.y}
+    <svg id={pawn.position} data-testid={`${index}`} x={pawn.boardPosition.x} y={pawn.boardPosition.y}
       width={pawn.tileSize} height={pawn.tileSize} style={{ overflow: 'visible' }} onClick={() => onClick(position, index)}>
       <title>{`${pawn.color} pawn at ${position}`}</title>
       <path d={pawn.pathData[0]} fill={pawn.color}

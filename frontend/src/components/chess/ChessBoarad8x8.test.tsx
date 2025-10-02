@@ -2,9 +2,16 @@ import {describe, expect, it} from 'vitest';
 import '@testing-library/jest-dom/vitest';
 import { Colors } from './ChessBoardWrapper';
 import ChessBoard8x8 from './ChessBoard8x8';
-import { render, screen } from "@testing-library/react";
+import { render, screen, cleanup } from "@testing-library/react";
 import { Provider } from 'react-redux';
 import { store } from '../../util/reduxStore';
+import userEvent from "@testing-library/user-event";
+import { afterEach } from 'vitest'
+
+// afterEach(async ()  => {
+//    // clear testing data after each test run
+// });
+
 
 describe('Initial rendering of ChessBoard8x8 Component', () => {
   it('renders every piece in the correct initial position', () => {
@@ -108,3 +115,35 @@ describe('Initial rendering of ChessBoard8x8 Component', () => {
   });
   
 });
+
+// describe('ChessBoard8x8 Each Piece must be able to move', () => {
+//   it('moves a piece when clicked on a valid square', async () => {
+//     const colors = Colors['light/dark'];
+//     render(
+//       <Provider store={store}>
+//         <ChessBoard8x8 colors={colors} />
+//       </Provider>);
+//     const squareE4 = screen.getByTestId(`sq-e4`);
+//     const e2 = screen.getByTestId('e2');
+//     await userEvent.click(e2);
+//     await userEvent.click(squareE4);
+//     expect(e2).toBeInTheDocument();
+//     expect(e2.querySelector('title')?.textContent).toBe('white pawn at e4');
+//     expect(e2).toHaveAttribute('id', 'e4');
+//   });
+// });
+
+// describe("ChessBoard8x8 Check Tests", () => {
+//   it("renders the check indicator when in check", async () => {
+//     const colors = Colors['light/dark'];
+//     render(
+//       <Provider store={store}>
+//       <ChessBoard8x8 colors={colors}  />
+//       </Provider>);
+//     const squareE4 = screen.getByTestId(`sq-e4`);
+//     const e2 = screen.getByTestId('e2'); // White king at e1
+//     await userEvent.click(e2);
+//     await userEvent.click(squareE4);
+
+//   });
+// });

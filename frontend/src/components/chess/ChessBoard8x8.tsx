@@ -240,7 +240,7 @@ const ChessBoard8x8: React.FC<{ colors: string[], roomID?: string }> = ({ colors
                     textAnchor="middle" dominantBaseline="middle">
                     {8 - row}
                   </text> : null}
-                  <rect  onClick={() => updatePiecePosition(pos, pieceIndex)}
+                  <rect data-testid={`sq-${pos}`} onClick={() => updatePiecePosition(pos, pieceIndex)}
                   x={padding + col * tileSize} y={padding + row * tileSize} width={tileSize} height={tileSize} overflow={'visible'}
                     fill={canReplace ? SelectedColors['green'] : fill} opacity={canReplace ? 0.8 : 1} />
                   {validMoves && validMoves.includes(pos) && (!pieceAtPos || pieceAtPos.isCaptured == true) &&

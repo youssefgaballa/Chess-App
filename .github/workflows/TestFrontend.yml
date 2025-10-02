@@ -1,8 +1,8 @@
 name: Test Frontend
 # Commenting out push and pull_request because I want to trigger this workflow manually for now
 on:
-#  push:
-#  pull_request:
+  push:
+  pull_request:
   workflow_dispatch:
 
 
