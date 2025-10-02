@@ -790,6 +790,7 @@ const chessBoardSlice = createSlice({
 
     },
     isKingInCheck: (state, action: { payload: { pos: ChessPosition, color: ChessColor } }) => {
+      // console.log("----isKingInCheck called for pos:", action.payload.pos, "color:", action.payload.color);
       const { pos, color } = action.payload;
       const king = state.pieces.find(p => p.type === 'king' && p.position === pos);
       if (!king) return;
@@ -804,7 +805,7 @@ const chessBoardSlice = createSlice({
       state.players[color].isChecked = isInCheck;
     }, 
     isKingCheckMated: (state, action: { payload: { color: ChessColor } }) => {
-      //console.log("----isKingCheckMated called for color:", action.payload.color);
+      // console.log("----isKingCheckMated called for color:", action.payload.color);
       const { color } = action.payload;
       const king = state.pieces.find(p => p.type === 'king' && p.color === color);
       if (!king) return;
@@ -823,8 +824,8 @@ const chessBoardSlice = createSlice({
           }
           return false;
         });
-        //console.log("piecesThatCheckKing:", Array.from(piecesThatCheckKing));
-        // console.log("canCapture:", canCapture);
+        // console.log("piecesThatCheckKing:", Array.from(piecesThatCheckKing));
+        //  console.log("canCapture:", canCapture);
         if (canCapture) {
           return; // Not checkmate if a piece can capture the checking piece
         } else {

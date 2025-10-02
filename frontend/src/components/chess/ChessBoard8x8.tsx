@@ -50,6 +50,8 @@ const ChessBoard8x8: React.FC<{ colors: string[], side: ChessColor, roomID?: str
       } else {
         dispatch(movePiece({ from: fromPiece.position, fromIndex: selectedPieceIndex, to: to, toIndex: pieceIndex, replace: false }));
       }
+      dispatch(setValidMoves({ pieceIndex: selectedPieceIndex }));
+
 
 
     }
@@ -71,6 +73,7 @@ const ChessBoard8x8: React.FC<{ colors: string[], side: ChessColor, roomID?: str
         from: fromPiece.position, fromIndex: selectedPieceIndex,
         to: toPiece.position, toIndex: pieceIndex, replace: true
       }));
+      dispatch(setValidMoves({ pieceIndex: selectedPieceIndex }));
       setSelectedPieceIndex(null);
     }
   }
@@ -233,6 +236,7 @@ const ChessBoard8x8: React.FC<{ colors: string[], side: ChessColor, roomID?: str
               }
               let isCheckmated = false;
               if (pieceAtPos?.type === "king" && board.players[pieceAtPos.color].isCheckmated) {
+                //console.log("board.players[pieceAtPos.color].isCheckmated:", board.players[pieceAtPos.color].isCheckmated);
                 isCheckmated = true;
               }
 

@@ -1,6 +1,5 @@
 import { beforeEach, describe, expect, it} from 'vitest';
 import '@testing-library/jest-dom/vitest';
-import { ChessBoardWrapper } from './ChessBoardWrapper';
 import { render, screen, cleanup } from "@testing-library/react";
 import { Provider } from 'react-redux';
 import userEvent from "@testing-library/user-event";
@@ -8,27 +7,60 @@ import { afterEach } from 'vitest'
 import { configureStore } from '@reduxjs/toolkit';
 import chessBoardReducer from './chessSlice';
 import userReducer from '../../users/userSlice';
+import ChessBoard8x8 from './ChessBoard8x8';
+import {Colors} from './ChessBoardWrapper'
+import type { ChessColor } from './chessPiece';
 
-beforeEach(async () => {
-  const store = configureStore({
-    reducer: {
-      userDetails: userReducer,
-      chessBoard: chessBoardReducer,
-    },
+
+  describe('White Board Solo Tests', () => {
+    beforeEach(async () => {
+      const store = configureStore({
+        reducer: {
+          userDetails: userReducer,
+          chessBoard: chessBoardReducer,
+        },
+      });
+
+      await render(
+        <Provider store={store}>
+          <ChessBoard8x8 colors={Colors['light/dark']} side={'white'} />
+        </Provider>);
+    });
+
+    afterEach(async () => {
+      await cleanup();
+    });
+
+    BoardTests('white');
+
   });
-  await render(
-    <Provider store={store}>
-        <ChessBoardWrapper />
+
+describe('Black Board Solo Tests', () => {
+  beforeEach(async () => {
+    const store = configureStore({
+      reducer: {
+        userDetails: userReducer,
+        chessBoard: chessBoardReducer,
+      },
+    });
+
+    await render(
+      <Provider store={store}>
+        <ChessBoard8x8 colors={Colors['light/dark']} side={'black'} />
       </Provider>);
   });
 
   afterEach(async () => {
     await cleanup();
   });
-  describe('Initial rendering of ChessBoard8x8 Component', () => {
+
+  BoardTests('black');
+
+});
 
 
-  it('renders every piece in the correct initial position', async() => {
+const BoardTests = (side: ChessColor) => {
+  it('renders every piece in the correct initial position', async () => {
 
     // Check if all pieces are rendered in their initial positions
     for (let i = 0; i < 32; i++) {
@@ -131,139 +163,228 @@ beforeEach(async () => {
         default:
           throw new Error(`Unknown piece type: ${type}`);
       }
-     
+
     }
-    
+
   });
 
   it('moves a piece when clicked on a valid square and can take pieces', async () => {
+    if (side == 'white') {
+      const squareE4 = screen.getByTestId('sq-e4');
+      expect(squareE4).toBeInTheDocument();
+      const e2 = screen.getByTestId('e2'); // White pawns
+      expect(e2).toBeInTheDocument();
+      //console.log("e2.dataset.testid:", e2.dataset.testid);
+      expect(e2.dataset.testid).toBe('e2');
+      await movePiece('e2', 'e4');
+      expect(e2.dataset.testid).toBe('e4');
+      const d7 = screen.getByTestId('d7'); // Black pawns
+      await movePiece('d7', 'd5');
+      await movePiece('e4', 'd5'); //white takes black pawn
+      expect(d7).not.toBeInTheDocument();
+      expect(e2.dataset.testid).toBe('d5');
+      //console.log("e2.dataset.testid:", e2.dataset.testid);
+      //screen.logTestingPlaygroundURL()
+    } else if (side == 'black') {
+      await movePiece('e2', 'e4');
+      await movePiece('d7', 'd5');
+      await movePiece('d2', 'd3');
+      await movePiece('d5', 'e4'); //black takes white pawn
 
-
-    const squareE4 = screen.getByTestId('sq-e4');
-    expect(squareE4).toBeInTheDocument();
-    const e2 = screen.getByTestId('e2'); // White pawns
-    expect(e2).toBeInTheDocument();
-    //console.log("e2.dataset.testid:", e2.dataset.testid);
-    expect(e2.dataset.testid).toBe('e2');
-    await movePiece('e2', 'e4');
-    expect(e2.dataset.testid).toBe('e4');
-    const d7 = screen.getByTestId('d7'); // Black pawns
-    await movePiece('d7', 'd5');
-    await movePiece('e4', 'd5');
-    expect(d7).not.toBeInTheDocument();
-    expect(e2.dataset.testid).toBe('d5');
-    //console.log("e2.dataset.testid:", e2.dataset.testid);
-    //screen.logTestingPlaygroundURL()
+    }
 
   });
-});
-
-
-
-
-describe("ChessBoard8x8 Check Tests", () => {
 
   it("Renders the check indicator when in check", async () => {
-    await movePiece('e2', 'e4');
-    await movePiece('d7', 'd5');
-    await movePiece('f1', 'b5');
-    //screen.logTestingPlaygroundURL()
-    const checkIndicator = screen.getByTestId('check-indicator');
-    expect(checkIndicator).toBeInTheDocument();
-    expect(checkIndicator).toHaveAttribute('id', 'e8');
+    if (side == 'white') {
+      await movePiece('e2', 'e4');
+      await movePiece('d7', 'd5');
+      await movePiece('f1', 'b5');
+      //screen.logTestingPlaygroundURL()
+      const checkIndicator = screen.getByTestId('check-indicator');
+      expect(checkIndicator).toBeInTheDocument();
+      expect(checkIndicator).toHaveAttribute('id', 'e8');
+      
+    } else if (side == 'black') {
+      await movePiece('d2', 'd4');
+      await movePiece('e7', 'e5');
+      await movePiece('g1', 'f3');
+      await movePiece('f8', 'b4'); //black puts white in check
+      const checkIndicator = screen.getByTestId('check-indicator');
+      expect(checkIndicator).toBeInTheDocument();
+      expect(checkIndicator).toHaveAttribute('id', 'e1');
+      //screen.logTestingPlaygroundURL();
+    }
 
   });
 
   it("Undo move that doesnt block check and checks can be blocked", async () => {
-    await movePiece('e2', 'e4');
-    await movePiece('d7', 'd5');
-    await movePiece('f1', 'b5');
-    const e7 = screen.getByTestId('e7');
-    await movePiece('e7', 'e6', true);
-
-    const checkIndicator = screen.getByTestId('check-indicator');
-    expect(checkIndicator).toBeInTheDocument();
-    expect(checkIndicator).toHaveAttribute('id', 'e8');
-    expect(e7.dataset.testid).toBe('e7');
-    await movePiece('c7', 'c6');
-    expect(checkIndicator).not.toBeInTheDocument();    
+    if (side == 'white') {
+      //console.log("white tests");
+      await movePiece('e2', 'e4');
+      await movePiece('d7', 'd5');
+      await movePiece('f1', 'b5');
+      const e7 = screen.getByTestId('e7');
+      await movePiece('e7', 'e6', true);
+      await movePiece('d5', 'e4', true);
+      const checkIndicator = screen.getByTestId('check-indicator');
+      expect(checkIndicator).toBeInTheDocument();
+      expect(checkIndicator).toHaveAttribute('id', 'e8');
+      expect(e7.dataset.testid).toBe('e7');
+      await movePiece('c7', 'c6');
+      expect(checkIndicator).not.toBeInTheDocument();
+    } else if (side == 'black') {
+      console.log("black tests");
+      await movePiece('d2', 'd4');
+      await movePiece('e7', 'e5');
+      await movePiece('g1', 'f3');
+      await movePiece('f8', 'b4'); //black puts white in check
+      await movePiece('b2', 'b3', true);
+      await movePiece('d4', 'e5', true);
+      let checkIndicator = screen.getByTestId('check-indicator');
+      expect(checkIndicator).toBeInTheDocument();
+      expect(checkIndicator).toHaveAttribute('id', 'e1');
+      await movePiece('f3', 'd2');
+      //screen.logTestingPlaygroundURL();
+      expect(checkIndicator).not.toBeInTheDocument();
+    }
   });
 
   it("Undo moves that puts you in check", async () => {
-    await movePiece('e2', 'e4');
-    await movePiece('d7', 'd5');
-    await movePiece('f1', 'b5');
-    await movePiece('d8', 'd7'); 
-    await movePiece('h2', 'h3'); 
-    const d7 = screen.getByTestId('d7');
-    await movePiece('d7', 'e6', true);
-    const checkIndicator = screen.queryByTestId('check-indicator');
-    expect(checkIndicator).not.toBeInTheDocument();    
-    expect(d7.dataset.testid).toBe('d7');
+    if (side == 'white') {
+      await movePiece('e2', 'e4');
+      await movePiece('d7', 'd5');
+      await movePiece('f1', 'b5'); // white puts black in check
+      await movePiece('d8', 'd7');
+      await movePiece('h2', 'h3');
+      const d7 = screen.getByTestId('d7');
+      await movePiece('d7', 'e6', true);
+      const checkIndicator = screen.queryByTestId('check-indicator');
+      expect(checkIndicator).not.toBeInTheDocument();
+      expect(d7.dataset.testid).toBe('d7');
+    } else if (side == 'black') {
+      await movePiece('d2', 'd4');
+      await movePiece('e7', 'e5');
+      await movePiece('g1', 'f3');
+      await movePiece('f8', 'b4'); //black puts white in check
+     
+      await movePiece('d1', 'd2');
+      await movePiece('e5', 'd4');
+      await movePiece('d2', 'e3', true); // attempt to move pinned queen
+      //screen.logTestingPlaygroundURL();
+      const checkIndicator = screen.queryByTestId('check-indicator');
+      expect(checkIndicator).not.toBeInTheDocument();
+    }
   });
 
   it("Checked with discovered attack", async () => {
-    await movePiece('e2', 'e4');
-    await movePiece('d7', 'd5');
-    await movePiece('d2', 'd4');
-    await movePiece('e7', 'e5');
-    await movePiece('d1', 'e2');
-    await movePiece('e5', 'd4');
-    await movePiece('e4', 'd5');
-    const checkIndicator = screen.getByTestId('check-indicator');
-    expect(checkIndicator).toBeInTheDocument();
-    expect(checkIndicator).toHaveAttribute('id', 'e8');
-    //screen.logTestingPlaygroundURL()
+    if (side == 'white') {
+      await movePiece('e2', 'e4');
+      await movePiece('d7', 'd5');
+      await movePiece('d2', 'd4');
+      await movePiece('e7', 'e5');
+      await movePiece('d1', 'e2');
+      await movePiece('e5', 'd4');
+      await movePiece('e4', 'd5');
+      const checkIndicator = screen.getByTestId('check-indicator');
+      expect(checkIndicator).toBeInTheDocument();
+      expect(checkIndicator).toHaveAttribute('id', 'e8');
+      //screen.logTestingPlaygroundURL()
+    } else if (side == 'black') {
+      await movePiece('e2', 'e4');
+      await movePiece('d7', 'd5');
+      await movePiece('d2', 'd4');
+      await movePiece('e7', 'e5');
+      await movePiece('c1', 'g5');
+      await movePiece('d8', 'e7'); //move queen in position
+      await movePiece('e4', 'd5');
+      await movePiece('e5', 'd4'); // discovered check
+      const checkIndicator = screen.getByTestId('check-indicator');
+      expect(checkIndicator).toBeInTheDocument();
+      expect(checkIndicator).toHaveAttribute('id', 'e1');
+    }
   });
 
   it("Player in check moves piece to block check whilst checking other king", async () => {
-    await movePiece('e2', 'e4');
-    await movePiece('d7', 'd5');
-    await movePiece('e1', 'e2');
-    await movePiece('h7', 'h6');
-    await movePiece('e2', 'd3');
-    await movePiece('h6', 'h5');
-    await movePiece('d3', 'd4');
-    await movePiece('h5', 'h4');
-    await movePiece('f1', 'b5'); // puts black in check
-    let checkIndicator = screen.getByTestId('check-indicator');
-    expect(checkIndicator).toBeInTheDocument();
-    expect(checkIndicator).toHaveAttribute('id', 'e8');
-    //screen.logTestingPlaygroundURL()
-    await movePiece('b8', 'c6');
-    // screen.logTestingPlaygroundURL()
-    checkIndicator = screen.getByTestId('check-indicator');
-    expect(checkIndicator).toHaveAttribute('id', 'd4');
-    
+    if (side == 'white') {
+      await movePiece('e2', 'e4');
+      await movePiece('d7', 'd5');
+      await movePiece('e1', 'e2');
+      await movePiece('h7', 'h6');
+      await movePiece('e2', 'd3');
+      await movePiece('h6', 'h5');
+      await movePiece('d3', 'd4');
+      await movePiece('h5', 'h4');
+      await movePiece('f1', 'b5'); // puts black in check
+      let checkIndicator = screen.getByTestId('check-indicator');
+      expect(checkIndicator).toBeInTheDocument();
+      expect(checkIndicator).toHaveAttribute('id', 'e8');
+      //screen.logTestingPlaygroundURL()
+      await movePiece('b8', 'c6'); // counter checks white
+      // screen.logTestingPlaygroundURL()
+      checkIndicator = screen.getByTestId('check-indicator');
+      expect(checkIndicator).toHaveAttribute('id', 'd4');
+    } else if (side == 'black') {
+      await movePiece('d2', 'd4');
+      await movePiece('e7', 'e5');
+      await movePiece('h2', 'h3');
+      await movePiece('e8', 'e7');
+      await movePiece('h3', 'h4');
+      await movePiece('e7', 'd6');
+      await movePiece('h4', 'h5');
+      await movePiece('d6', 'd5');
+      await movePiece('h5', 'h6');
+      await movePiece('f8', 'b4'); // puts white in check
+      let checkIndicator = screen.getByTestId('check-indicator');
+      expect(checkIndicator).toBeInTheDocument();
+      expect(checkIndicator).toHaveAttribute('id', 'e1');
+      await movePiece('b1', 'c3'); // counter checks black
+      checkIndicator = screen.getByTestId('check-indicator');
+      expect(checkIndicator).toHaveAttribute('id', 'd5');
+    }
   });
-
-
-});
-
-describe("ChessBoard8x8 Checkmate Tests", () => {
-
   it("4 move Checkmate with queen and bishop", async () => {
-    await movePiece('e2', 'e4');
-    await movePiece('e7', 'e5');
-    await movePiece('f1', 'c4');
-    await movePiece('a7', 'a6');
-    await movePiece('d1', 'h5');
-    await movePiece('a6', 'a5');
-    await movePiece('h5', 'f7'); // checkmate
-    const checkIndicator = screen.queryByTestId('check-indicator');
-    expect(checkIndicator).not.toBeInTheDocument();
-    let checkmateIndicator = screen.getByTestId('checkmate-indicator');
-    expect(checkmateIndicator).toBeInTheDocument();
-    expect(checkmateIndicator).toHaveAttribute('id', 'e8');
-    await movePiece('e8', 'e7', true);
-    await movePiece('h7', 'h6', true);
-    checkmateIndicator = screen.getByTestId('checkmate-indicator');
-    expect(checkmateIndicator).toBeInTheDocument();
-    expect(checkmateIndicator).toHaveAttribute('id', 'e8');
-    //screen.logTestingPlaygroundURL()
+    if (side == 'white') {
+      await movePiece('e2', 'e4');
+      await movePiece('e7', 'e5');
+      await movePiece('f1', 'c4');
+      await movePiece('a7', 'a6');
+      await movePiece('d1', 'h5');
+      await movePiece('a6', 'a5');
+      await movePiece('h5', 'f7'); // checkmate
+      const checkIndicator = screen.queryByTestId('check-indicator');
+      expect(checkIndicator).not.toBeInTheDocument();
+      let checkmateIndicator = screen.getByTestId('checkmate-indicator');
+      expect(checkmateIndicator).toBeInTheDocument();
+      expect(checkmateIndicator).toHaveAttribute('id', 'e8');
+      await movePiece('e8', 'e7', true);
+      await movePiece('h7', 'h6', true);
+      checkmateIndicator = screen.getByTestId('checkmate-indicator');
+      expect(checkmateIndicator).toBeInTheDocument();
+      expect(checkmateIndicator).toHaveAttribute('id', 'e8');
+      //screen.logTestingPlaygroundURL()
+    } else if (side == 'black') {
+      await movePiece('e2', 'e4');
+      await movePiece('e7', 'e5');
+      await movePiece('h2', 'h3');
+      await movePiece('f8', 'c5');
+      await movePiece('h3', 'h4');
+      await movePiece('d8', 'h4');
+      await movePiece('b2', 'b4');
+      await movePiece('h4', 'f2'); // checkmate
+      const checkIndicator = screen.queryByTestId('check-indicator');
+      expect(checkIndicator).not.toBeInTheDocument();
+      let checkmateIndicator = screen.getByTestId('checkmate-indicator');
+      expect(checkmateIndicator).toBeInTheDocument();
+      expect(checkmateIndicator).toHaveAttribute('id', 'e1');
+      await movePiece('e1', 'e2', true);
+      await movePiece('d2', 'd3', true);
+      checkmateIndicator = screen.getByTestId('checkmate-indicator');
+      expect(checkmateIndicator).toBeInTheDocument();
+      expect(checkmateIndicator).toHaveAttribute('id', 'e1');
+    }
   });
-
-});
+};
 
 const movePiece = async (from: string, to: string, expectUndo?: boolean) => {
   const fromSquare = screen.getByTestId(`sq-${from}`);
