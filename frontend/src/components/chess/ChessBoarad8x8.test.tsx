@@ -136,7 +136,7 @@ beforeEach(async () => {
     
   });
 
-  it('moves a piece when clicked on a valid square', async () => {
+  it('moves a piece when clicked on a valid square and can take pieces', async () => {
 
 
     const squareE4 = screen.getByTestId('sq-e4');
@@ -147,7 +147,13 @@ beforeEach(async () => {
     expect(e2.dataset.testid).toBe('e2');
     await movePiece('e2', 'e4');
     expect(e2.dataset.testid).toBe('e4');
+    const d7 = screen.getByTestId('d7'); // Black pawns
+    await movePiece('d7', 'd5');
+    await movePiece('e4', 'd5');
+    expect(d7).not.toBeInTheDocument();
+    expect(e2.dataset.testid).toBe('d5');
     //console.log("e2.dataset.testid:", e2.dataset.testid);
+    //screen.logTestingPlaygroundURL()
 
   });
 });
@@ -157,23 +163,65 @@ beforeEach(async () => {
 
 describe("ChessBoard8x8 Check Tests", () => {
 
-  it("renders the check indicator when in check", async () => {
+  it("Renders the check indicator when in check", async () => {
     await movePiece('e2', 'e4');
     await movePiece('d7', 'd5');
     await movePiece('f1', 'b5');
-    // log entire document to testing-playground
     //screen.logTestingPlaygroundURL()
-
-    // const board = useSelector(selectBoardState);
-    // expect(board.players.white.isChecked).toBe(true);
     const checkIndicator = screen.getByTestId('check-indicator');
     expect(checkIndicator).toBeInTheDocument();
     expect(checkIndicator).toHaveAttribute('id', 'e8');
 
   });
+
+  it("Undo move that doesnt block check and checks can be blocked", async () => {
+    await movePiece('e2', 'e4');
+    await movePiece('d7', 'd5');
+    await movePiece('f1', 'b5');
+    const e7 = screen.getByTestId('e7');
+    await movePiece('e7', 'e6', true);
+
+    const checkIndicator = screen.getByTestId('check-indicator');
+    expect(checkIndicator).toBeInTheDocument();
+    expect(checkIndicator).toHaveAttribute('id', 'e8');
+    expect(e7.dataset.testid).toBe('e7');
+    await movePiece('c7', 'c6');
+    expect(checkIndicator).not.toBeInTheDocument();    
+  });
+
+  it("Undo moves that puts you in check", async () => {
+    await movePiece('e2', 'e4');
+    await movePiece('d7', 'd5');
+    await movePiece('f1', 'b5');
+    await movePiece('d8', 'd7'); 
+    await movePiece('h2', 'h3'); 
+    const d7 = screen.getByTestId('d7');
+    await movePiece('d7', 'e6', true);
+    const checkIndicator = screen.queryByTestId('check-indicator');
+    expect(checkIndicator).not.toBeInTheDocument();    
+    expect(d7.dataset.testid).toBe('d7');
+  });
+
+  it("Checked with discovered attack", async () => {
+    await movePiece('e2', 'e4');
+    await movePiece('d7', 'd5');
+    await movePiece('d2', 'd4');
+    await movePiece('e7', 'e5');
+    await movePiece('d1', 'e2');
+    await movePiece('e5', 'd4');
+    await movePiece('e4', 'd5');
+    const checkIndicator = screen.getByTestId('check-indicator');
+    expect(checkIndicator).toBeInTheDocument();
+    expect(checkIndicator).toHaveAttribute('id', 'e8');
+    //screen.logTestingPlaygroundURL()
+  });
+
+
+
+
 });
 
-const movePiece = async (from: string, to: string) => {
+const movePiece = async (from: string, to: string, expectUndo?: boolean) => {
   const fromSquare = screen.getByTestId(`sq-${from}`);
   const fromPiece = screen.getByTestId(from);
   expect(fromSquare).toBeInTheDocument();
@@ -183,5 +231,8 @@ const movePiece = async (from: string, to: string) => {
   await userEvent.click(toSquare);
   // expect(fromSquare).toBeInTheDocument();
   // expect(toSquare).toBeInTheDocument();
-  expect(fromPiece.dataset.testid).toBe(to);
+  if (expectUndo == undefined || expectUndo === false) {
+    //console.log("expectUndo is false");
+    expect(fromPiece.dataset.testid).toBe(to);
+  }
 };
