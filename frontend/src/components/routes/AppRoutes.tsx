@@ -15,8 +15,10 @@ import { AdminRoutesWrapper } from "./AdminRoutesWrapper"
 import { Admin } from "../Admin"
 import { selectUser } from "../../users/userSlice"
 import { useSelector } from "react-redux"
-import { ChessBoardWrapper } from "../chess/ChessBoardWrapper"
+import { ChessBoardSolo } from "../chess/ChessBoardSolo"
 import { ChatRoom } from "../ChatRoom"
+import { ChessNav } from "../chess/ChessNav"
+import { ChessDuels } from "../chess/ChessDuels"
 
 export const AppRoutes = () => {
   //console.log("AppRoutes mounted");
@@ -34,7 +36,11 @@ export const AppRoutes = () => {
         <Route path="/Login"
           element={<LoginUser />} />
         <Route path="/Chess"
-          element={<ChessBoardWrapper />} />
+          element={<ChessNav />} />
+        <Route path="/Chess/solo"
+          element={<ChessBoardSolo />} />
+        <Route path="/Chess/duels"
+          element={<ChessDuels />} />
         <Route path='/Chat' element={<ChatRoom />} />
         <Route element={<EditorRoutesWrapper />}>
           <Route path="/Notes" element={<Notes />} />
@@ -66,7 +72,9 @@ export const AppRoutes = () => {
         <Route path="/Login"
             element={<LoginUser />} />
         <Route path="/Chess"
-            element={<ChessBoardWrapper />} />
+            element={<ChessNav />} />
+          <Route path="/Chess/solo"
+            element={<ChessBoardSolo />} />
         <Route path='/Chat' element={<ChatRoom />} />
         <Route path="/Notes" element={<div></div>} />
         <Route path="/Notes/Editor/:title"

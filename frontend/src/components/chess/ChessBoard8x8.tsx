@@ -8,7 +8,7 @@ import { Queen } from "./Queen";
 import { King } from "./King";
 import { useDispatch, useSelector } from "react-redux";
 import { selectBoardState, setInitialBoard, movePiece, setValidMoves, isKingInCheck, setTurn, isKingCheckMated } from "./chessSlice";
-import { SelectedColors } from "./ChessBoardWrapper";
+import { SelectedColors } from "./ChessBoardSolo";
 
 
 const ChessBoard8x8: React.FC<{ colors: string[], side: ChessColor, roomID?: string }> = ({ colors, side, roomID }) => {

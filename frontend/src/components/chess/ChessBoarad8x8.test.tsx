@@ -8,7 +8,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import chessBoardReducer from './chessSlice';
 import userReducer from '../../users/userSlice';
 import ChessBoard8x8 from './ChessBoard8x8';
-import {Colors} from './ChessBoardWrapper'
+import {Colors} from './ChessBoardSolo'
 import type { ChessColor } from './chessPiece';
 
 
