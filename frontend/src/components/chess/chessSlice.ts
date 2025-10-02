@@ -1,6 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { ChessColor, ChessPieceType, ChessPosition } from "./chessPiece";
 
+export type PlayerType = {
+    isChecked?: boolean;
+    isCheckmated?: boolean;
+
+}
 
 export type ChessBoardState = { // hasMoved is mostly relevant for pawns and castling
   pieces: {
@@ -11,12 +16,8 @@ export type ChessBoardState = { // hasMoved is mostly relevant for pawns and cas
   }[];
   turn: ChessColor;
   players: {
-    white: {
-      isCheckmated?: boolean;
-    },
-    black: {
-      isCheckmated?: boolean;
-    }
+    white: PlayerType;
+    black: PlayerType;
   }
   lastMove?: { from: ChessPosition; fromIndex: number; to: ChessPosition; toIndex: number; replace: boolean };
   isStalemate?: boolean;
@@ -800,9 +801,10 @@ const chessBoardSlice = createSlice({
         return p.color !== color && p.replaceMoves.includes(king.position) && p.isCaptured === false;
       });
       king.isChecked = isInCheck;
+      state.players[color].isChecked = isInCheck;
     }, 
     isKingCheckMated: (state, action: { payload: { color: ChessColor } }) => {
-      console.log("----isKingCheckMated called for color:", action.payload.color);
+      //console.log("----isKingCheckMated called for color:", action.payload.color);
       const { color } = action.payload;
       const king = state.pieces.find(p => p.type === 'king' && p.color === color);
       if (!king) return;
@@ -822,14 +824,14 @@ const chessBoardSlice = createSlice({
           return false;
         });
         //console.log("piecesThatCheckKing:", Array.from(piecesThatCheckKing));
-        console.log("canCapture:", canCapture);
+        // console.log("canCapture:", canCapture);
         if (canCapture) {
           return; // Not checkmate if a piece can capture the checking piece
         } else {
           for (const attacker of piecesThatCheckKing) {
             // Check if any piece can block the check
             if (attacker.type === 'knight' || attacker.type === 'pawn') {
-              console.log("Knight or pawn is checking the king, cannot be blocked.");
+              //console.log("Knight or pawn is checking the king, cannot be blocked.");
               state.players[color].isCheckmated = true;
               return; // Knights and pawns cannot be blocked
             } else if (attacker.type === 'bishop' || attacker.type === 'rook' || attacker.type === 'queen') {
@@ -844,7 +846,7 @@ const chessBoardSlice = createSlice({
                   + String.fromCharCode(king.position[1].charCodeAt(0) + i * stepY) as ChessPosition;
                 blockingSquares.push(blockingSquare);
               }
-              console.log("blockingSquares:", blockingSquares);
+              //console.log("blockingSquares:", blockingSquares);
               for (const square of blockingSquares) {
                 const canBlock = state.pieces.some(p => {
                   if (p.color === color && p.isCaptured === false && p.type !== 'king') {
@@ -860,7 +862,7 @@ const chessBoardSlice = createSlice({
           }
         }
         // state.players[color].isCheckmated = true;
-        console.log(`${color} king is checkmated!`);
+       // console.log(`${color} king is checkmated!`);
       }
     },
     setTurn: (state, action: { payload: { color: ChessColor } }) => {

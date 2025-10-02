@@ -1,36 +1,34 @@
-import {afterAll, beforeAll, beforeEach, describe, expect, it} from 'vitest';
+import { beforeEach, describe, expect, it} from 'vitest';
 import '@testing-library/jest-dom/vitest';
-import { ChessBoardWrapper, Colors } from './ChessBoardWrapper';
-import ChessBoard8x8 from './ChessBoard8x8';
+import { ChessBoardWrapper } from './ChessBoardWrapper';
 import { render, screen, cleanup } from "@testing-library/react";
 import { Provider } from 'react-redux';
-import { store } from '../../util/reduxStore';
 import userEvent from "@testing-library/user-event";
 import { afterEach } from 'vitest'
+import { configureStore } from '@reduxjs/toolkit';
+import chessBoardReducer from './chessSlice';
+import userReducer from '../../users/userSlice';
 
-// afterEach(async ()  => {
-//    // clear testing data after each test run
-// });
+beforeEach(async () => {
+  const store = configureStore({
+    reducer: {
+      userDetails: userReducer,
+      chessBoard: chessBoardReducer,
+    },
+  });
+  await render(
+    <Provider store={store}>
+        <ChessBoardWrapper />
+      </Provider>);
+  });
 
-  // beforeEach(async () => {
-  //   const colors = Colors['light/dark'];
-
-  //   await render(
-  //     <Provider store={store}>
-  //       <ChessBoard8x8 colors={colors} />
-  //     </Provider>);
-  // });
-  // afterEach(async () => {
-  //   await cleanup();
-  // });
-describe('Initial rendering of ChessBoard8x8 Component', () => {
+  afterEach(async () => {
+    await cleanup();
+  });
+  describe('Initial rendering of ChessBoard8x8 Component', () => {
 
 
   it('renders every piece in the correct initial position', async() => {
-    await render(
-      <Provider store={store}>
-        <ChessBoardWrapper />
-      </Provider>);
 
     // Check if all pieces are rendered in their initial positions
     for (let i = 0; i < 32; i++) {
@@ -136,15 +134,11 @@ describe('Initial rendering of ChessBoard8x8 Component', () => {
      
     }
     
-    await cleanup();
   });
 
   it('moves a piece when clicked on a valid square', async () => {
 
-    await render(
-      <Provider store={store}>
-        <ChessBoardWrapper />
-      </Provider>);
+
     const squareE4 = screen.getByTestId('sq-e4');
     expect(squareE4).toBeInTheDocument();
     const e2 = screen.getByTestId('e2'); // White pawns
@@ -154,34 +148,40 @@ describe('Initial rendering of ChessBoard8x8 Component', () => {
     await movePiece('e2', 'e4');
     expect(e2.dataset.testid).toBe('e4');
     //console.log("e2.dataset.testid:", e2.dataset.testid);
-    await cleanup();
+
+  });
+});
+
+
+
+
+describe("ChessBoard8x8 Check Tests", () => {
+
+  it("renders the check indicator when in check", async () => {
+    await movePiece('e2', 'e4');
+    await movePiece('d7', 'd5');
+    await movePiece('f1', 'b5');
+    // log entire document to testing-playground
+    //screen.logTestingPlaygroundURL()
+
+    // const board = useSelector(selectBoardState);
+    // expect(board.players.white.isChecked).toBe(true);
+    const checkIndicator = screen.getByTestId('check-indicator');
+    expect(checkIndicator).toBeInTheDocument();
+    expect(checkIndicator).toHaveAttribute('id', 'e8');
 
   });
 });
 
 const movePiece = async (from: string, to: string) => {
   const fromSquare = screen.getByTestId(`sq-${from}`);
+  const fromPiece = screen.getByTestId(from);
+  expect(fromSquare).toBeInTheDocument();
+  expect(fromPiece.dataset.testid).toBe(from);
   const toSquare = screen.getByTestId(`sq-${to}`);
   await userEvent.click(fromSquare);
   await userEvent.click(toSquare);
-  expect(fromSquare).toBeInTheDocument();
-  expect(toSquare).toBeInTheDocument();
+  // expect(fromSquare).toBeInTheDocument();
+  // expect(toSquare).toBeInTheDocument();
+  expect(fromPiece.dataset.testid).toBe(to);
 };
-// describe('ChessBoard8x8 Each Piece must be able to move', () => {
-
-// });
-
-// describe("ChessBoard8x8 Check Tests", () => {
-//   it("renders the check indicator when in check", async () => {
-//     const colors = Colors['light/dark'];
-//     render(
-//       <Provider store={store}>
-//       <ChessBoard8x8 colors={colors}  />
-//       </Provider>);
-//     const squareE4 = screen.getByTestId(`sq-e4`);
-//     const e2 = screen.getByTestId('e2'); // White king at e1
-//     await userEvent.click(e2);
-//     await userEvent.click(squareE4);
-
-//   });
-// });

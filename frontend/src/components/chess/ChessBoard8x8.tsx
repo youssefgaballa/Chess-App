@@ -269,7 +269,7 @@ const ChessBoard8x8: React.FC<{ colors: string[], roomID?: string }> = ({ colors
                           <stop offset="100%" style={{ stopColor: SelectedColors['red'], stopOpacity: 0 }} />
                         </radialGradient>
                       </defs>
-                      <circle cx={padding + col * tileSize + tileSize / 2} cy={padding + row * tileSize + tileSize / 2}
+                      <circle data-testid={`check-indicator`} id={`${pos}`} cx={padding + col * tileSize + tileSize / 2} cy={padding + row * tileSize + tileSize / 2}
                         r={tileSize / 2} fill={`url(#grad-${row}-${col})`} />
                     </>
                   }
