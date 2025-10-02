@@ -16,7 +16,7 @@ export default class ChessPiece {
   tileSize: number;
   pathData: string[];
 
-  constructor(type: ChessPieceType, color: ChessColor, position: ChessPosition,
+  constructor(type: ChessPieceType, color: ChessColor, position: ChessPosition, side: ChessColor,
     padding: number, boardSize: number, tileSize: number
   ) {
     this.type = type;
@@ -29,8 +29,8 @@ export default class ChessPiece {
     this.boardSize = boardSize;
     this.tileSize = tileSize;
     this.boardPosition = {
-      x: (this.#effectivePosition[0]) * this.tileSize + this.tileSize/2 ,
-      y: (7 - this.#effectivePosition[1]) * this.tileSize + this.tileSize/2
+      x: (side == 'white' ? this.#effectivePosition[0] : 7 - this.#effectivePosition[0]) * this.tileSize + this.tileSize/2 ,
+      y: (side == 'white' ? 7 - this.#effectivePosition[1] : this.#effectivePosition[1]) * this.tileSize + this.tileSize/2
     }
     switch (this.type) {
       // pathData credit:

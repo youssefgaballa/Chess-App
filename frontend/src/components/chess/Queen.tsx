@@ -1,7 +1,8 @@
 import ChessPiece, { type ChessColor, type ChessPosition } from "./chessPiece";
 
-export const Queen = ({ index, color, position, onClick }: { index: number, color: ChessColor, position: ChessPosition, onClick: (pos: ChessPosition, index: number) => void }) => {
-  const queen = new ChessPiece("queen", color, position, 50, 600, 75);
+export const Queen = ({ index, color, position, onClick, side }
+  : { index: number, color: ChessColor, position: ChessPosition, onClick: (pos: ChessPosition, index: number) => void, side: ChessColor }) => {
+  const queen = new ChessPiece("queen", color, position,side, 50, 600, 75);
 
 
   return (

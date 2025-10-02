@@ -23,7 +23,7 @@ the id of the piece and who it belonged to)
 - Integration with map: if another player attacks the territory of another,
 they can initiate a chess match (like bloons monkey city)
 - add search bar, home page
-!!! Setup Workflow (github actions)
+- add ability to save board (for solo games) to profile. save multiplayer games.
 
 Backend: 
 -add serverside rendering

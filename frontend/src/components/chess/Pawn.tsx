@@ -1,7 +1,8 @@
 import ChessPiece, { type ChessColor, type ChessPosition } from "./chessPiece";
 
-export const Pawn = ({ index, color, position, onClick }: { index: number, color: ChessColor, position: ChessPosition, onClick: (pos: ChessPosition, index: number) => void }) => {
-  const pawn = new ChessPiece("pawn", color, position, 50, 600, 75);
+export const Pawn = ({ index, color, position, onClick, side }
+  : { index: number, color: ChessColor, position: ChessPosition, onClick: (pos: ChessPosition, index: number) => void, side: ChessColor }) => {
+  const pawn = new ChessPiece("pawn", color, position, side, 50, 600, 75);
 
   return (
     <svg id={`${index}`} data-testid={`${position}`} x={pawn.boardPosition.x} y={pawn.boardPosition.y}

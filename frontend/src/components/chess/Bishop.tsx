@@ -1,7 +1,8 @@
 import ChessPiece, { type ChessColor, type ChessPosition } from "./chessPiece";
 
-export const Bishop = ({ index, color, position, onClick }: { index: number, color: ChessColor, position: ChessPosition, onClick: (pos: ChessPosition, index: number) => void }) => {
-  const bishop = new ChessPiece("bishop", color, position, 50, 600, 75);
+export const Bishop = ({ index, color, position, onClick, side }
+  : { index: number, color: ChessColor, position: ChessPosition, onClick: (pos: ChessPosition, index: number) => void, side: ChessColor }) => {
+  const bishop = new ChessPiece("bishop", color, position, side, 50, 600, 75);
 
   return (
     <svg id={`${index}`} data-testid={`${position}`} x={bishop.boardPosition.x+7} y={bishop.boardPosition.y+9}
