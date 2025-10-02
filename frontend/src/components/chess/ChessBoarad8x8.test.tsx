@@ -1,6 +1,6 @@
-import {describe, expect, it} from 'vitest';
+import {afterAll, beforeAll, beforeEach, describe, expect, it} from 'vitest';
 import '@testing-library/jest-dom/vitest';
-import { Colors } from './ChessBoardWrapper';
+import { ChessBoardWrapper, Colors } from './ChessBoardWrapper';
 import ChessBoard8x8 from './ChessBoard8x8';
 import { render, screen, cleanup } from "@testing-library/react";
 import { Provider } from 'react-redux';
@@ -12,18 +12,42 @@ import { afterEach } from 'vitest'
 //    // clear testing data after each test run
 // });
 
+  // beforeEach(async () => {
+  //   const colors = Colors['light/dark'];
 
+  //   await render(
+  //     <Provider store={store}>
+  //       <ChessBoard8x8 colors={colors} />
+  //     </Provider>);
+  // });
+  // afterEach(async () => {
+  //   await cleanup();
+  // });
 describe('Initial rendering of ChessBoard8x8 Component', () => {
-  it('renders every piece in the correct initial position', () => {
-    const colors = Colors['light/dark'];
-    render(
+
+
+  it('renders every piece in the correct initial position', async() => {
+    await render(
       <Provider store={store}>
-      <ChessBoard8x8 colors={colors} />
+        <ChessBoardWrapper />
       </Provider>);
 
     // Check if all pieces are rendered in their initial positions
     for (let i = 0; i < 32; i++) {
-      const piece = screen.getByTestId(`${i}`);
+      let piece;
+      if (i >= 0 && i < 7) {
+        piece = screen.getByTestId(`${String.fromCharCode('a'.charCodeAt(0) + i)}2`); // White pawns
+      } else if (i >= 8 && i < 16) {
+        piece = screen.getByTestId(`${String.fromCharCode('a'.charCodeAt(0) + (i - 8))}1`); // White back rank
+      } else if (i >= 16 && i < 24) {
+        piece = screen.getByTestId(`${String.fromCharCode('a'.charCodeAt(0) + (i - 16))}7`); // Black pawns
+      } else if (i >= 24 && i < 32) {
+        piece = screen.getByTestId(`${String.fromCharCode('a'.charCodeAt(0) + (i - 24))}8`); // Black back rank
+      } else {
+        piece = null;
+      }
+      if (!piece) continue; //
+      //console.log(piece);
       expect(piece).toBeInTheDocument();
       expect(piece).toHaveAttribute('width', '75');
       expect(piece).toHaveAttribute('height', '75');
@@ -109,28 +133,42 @@ describe('Initial rendering of ChessBoard8x8 Component', () => {
         default:
           throw new Error(`Unknown piece type: ${type}`);
       }
+     
     }
     
+    await cleanup();
+  });
+
+  it('moves a piece when clicked on a valid square', async () => {
+
+    await render(
+      <Provider store={store}>
+        <ChessBoardWrapper />
+      </Provider>);
+    const squareE4 = screen.getByTestId('sq-e4');
+    expect(squareE4).toBeInTheDocument();
+    const e2 = screen.getByTestId('e2'); // White pawns
+    expect(e2).toBeInTheDocument();
+    //console.log("e2.dataset.testid:", e2.dataset.testid);
+    expect(e2.dataset.testid).toBe('e2');
+    await movePiece('e2', 'e4');
+    expect(e2.dataset.testid).toBe('e4');
+    //console.log("e2.dataset.testid:", e2.dataset.testid);
+    await cleanup();
 
   });
-  
 });
 
+const movePiece = async (from: string, to: string) => {
+  const fromSquare = screen.getByTestId(`sq-${from}`);
+  const toSquare = screen.getByTestId(`sq-${to}`);
+  await userEvent.click(fromSquare);
+  await userEvent.click(toSquare);
+  expect(fromSquare).toBeInTheDocument();
+  expect(toSquare).toBeInTheDocument();
+};
 // describe('ChessBoard8x8 Each Piece must be able to move', () => {
-//   it('moves a piece when clicked on a valid square', async () => {
-//     const colors = Colors['light/dark'];
-//     render(
-//       <Provider store={store}>
-//         <ChessBoard8x8 colors={colors} />
-//       </Provider>);
-//     const squareE4 = screen.getByTestId(`sq-e4`);
-//     const e2 = screen.getByTestId('e2');
-//     await userEvent.click(e2);
-//     await userEvent.click(squareE4);
-//     expect(e2).toBeInTheDocument();
-//     expect(e2.querySelector('title')?.textContent).toBe('white pawn at e4');
-//     expect(e2).toHaveAttribute('id', 'e4');
-//   });
+
 // });
 
 // describe("ChessBoard8x8 Check Tests", () => {

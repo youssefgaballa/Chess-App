@@ -4,7 +4,7 @@ export const Rook = ({ index, color, position, onClick }: { index: number, color
 const rook = new ChessPiece("rook", color, position, 50, 600, 75);
 
   return (
-    <svg data-testid={`${index}`} x={rook.boardPosition.x} y={rook.boardPosition.y}
+    <svg id={`${index}`} data-testid={`${position}`} x={rook.boardPosition.x} y={rook.boardPosition.y}
       width={rook.tileSize} height={rook.tileSize} style={{ overflow: 'visible' }} onClick={() => onClick(position, index)}>
       <title>{`${rook.color} rook at ${position}`}</title>
       <g style={{

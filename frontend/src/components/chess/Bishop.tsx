@@ -4,7 +4,7 @@ export const Bishop = ({ index, color, position, onClick }: { index: number, col
   const bishop = new ChessPiece("bishop", color, position, 50, 600, 75);
 
   return (
-    <svg data-testid={`${index}`} x={bishop.boardPosition.x+7} y={bishop.boardPosition.y+9}
+    <svg id={`${index}`} data-testid={`${position}`} x={bishop.boardPosition.x+7} y={bishop.boardPosition.y+9}
       width={bishop.tileSize} height={bishop.tileSize} style={{ overflow: 'visible' }} onClick={() => onClick(position, index)}>
       <title>{`${bishop.color} bishop at ${position}`}</title>
       <g style={{ fill: `${bishop.color}`, stroke: '#000000', strokeLinecap: 'butt' }} transform={`scale(${bishop.tileSize / 40})`}>

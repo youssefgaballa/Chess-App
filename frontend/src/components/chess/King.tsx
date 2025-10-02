@@ -5,7 +5,7 @@ export const King = ({ index, color, position, onClick }: { index: number, color
 
 
   return (
-    <svg data-testid={`${index}`} x={king.boardPosition.x + 8} y={king.boardPosition.y+8}
+    <svg id={`${index}`} data-testid={`${position}`} x={king.boardPosition.x + 8} y={king.boardPosition.y+8}
       width={king.tileSize} height={king.tileSize} style={{ overflow: 'visible' }} onClick={() => onClick(position, index)}>
       <title>{`${king.color} king at ${position}`}</title>
       {king.color === 'black' ? 
