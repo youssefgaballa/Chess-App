@@ -36,6 +36,9 @@ General:
 -Js-docs, tests, dev-environments, kubernetes  
 -dev and production environments
 
+Tests:
+- make sure every piece is able to move and replace pieces
+
 
 
 

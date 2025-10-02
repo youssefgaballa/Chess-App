@@ -1,4 +1,4 @@
-import {  Fragment, useLayoutEffect, useState } from "react";
+import {  Fragment, useEffect, useLayoutEffect, useState } from "react";
 import {  type ChessColor, type ChessPosition } from "./chessPiece";
 import { Pawn } from "./Pawn";
 import { Knight } from "./Knight";
@@ -25,10 +25,15 @@ const ChessBoard8x8: React.FC<{ colors: string[], side: ChessColor, roomID?: str
 
     dispatch(setInitialBoard());
   }
+
+  useEffect(() => {
+    console.log("selectedPieceIndex changed:", selectedPieceIndex);
+  }, [selectedPieceIndex]);
+
   const updatePiecePosition = (pos: ChessPosition, pieceIndex: number) => {
     //console.log("updatePiecePosition:", pos);
     //console.log("pieceIndex:", pieceIndex);
-    if (!selectedPieceIndex) {
+    if (selectedPieceIndex == null) {
       if (pieceIndex !== -1) {
         dispatch(setValidMoves({ pieceIndex }));
       }
@@ -60,7 +65,7 @@ const ChessBoard8x8: React.FC<{ colors: string[], side: ChessColor, roomID?: str
   const onPieceClick = (pos: ChessPosition, pieceIndex: number) => {
     //console.log("Piece clicked at position:", pos);
 
-    if (!selectedPieceIndex) {
+    if (selectedPieceIndex == null) {
       dispatch(setValidMoves({pieceIndex }));
       setSelectedPieceIndex(pieceIndex);
     } else {
