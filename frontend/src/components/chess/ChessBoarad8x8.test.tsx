@@ -216,10 +216,43 @@ describe("ChessBoard8x8 Check Tests", () => {
     //screen.logTestingPlaygroundURL()
   });
 
-
+  it("Player in check moves piece to block check whilst checking other king", async () => {
+    await movePiece('e2', 'e4');
+    await movePiece('d7', 'd5');
+    await movePiece('e1', 'e2');
+    await movePiece('h7', 'h6');
+    await movePiece('e2', 'd3');
+    await movePiece('h6', 'h5');
+    await movePiece('d3', 'd4');
+    await movePiece('h5', 'h4');
+    await movePiece('f1', 'b5'); // puts black in check
+    let checkIndicator = screen.getByTestId('check-indicator');
+    expect(checkIndicator).toBeInTheDocument();
+    expect(checkIndicator).toHaveAttribute('id', 'e8');
+    //screen.logTestingPlaygroundURL()
+    await movePiece('b8', 'c6');
+    // screen.logTestingPlaygroundURL()
+    checkIndicator = screen.getByTestId('check-indicator');
+    expect(checkIndicator).toHaveAttribute('id', 'd4');
+    
+  });
 
 
 });
+
+// describe("ChessBoard8x8 Checkmate Tests", () => {
+
+//   it("4 move Checkmate with queen and bishop", async () => {
+//     await movePiece('e2', 'e4');
+//     await movePiece('e7', 'e5');
+//     await movePiece('f1', 'c4');
+//     await movePiece('a7', 'a6');
+//     await movePiece('d1', 'h5');
+//     await movePiece('a6', 'a5');
+//     await movePiece('h5', 'f7'); // checkmate
+//   });
+
+// });
 
 const movePiece = async (from: string, to: string, expectUndo?: boolean) => {
   const fromSquare = screen.getByTestId(`sq-${from}`);
