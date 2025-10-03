@@ -41,7 +41,16 @@ REFRESH_TOKEN_SECRET=
 ACCESS_TOKEN_EXPIRES_IN=  
 REFRESH_TOKEN_EXPIRES_IN=  
 
+Three ports need to be exposed for the Backend, Frontend, and Socket.io server (which uses an HTTP server).  
+All three should be different, and the "VITE_" prefixed version of the same port should match the non-prefixed version.  
+The POSTGRES_HOST should match the postgres service name in the docker compose file. Currently the service name is postgres, so POSTGRES_HOST should be set to postgres.  
+If you want a different POSTGRES_HOST name, you'd also need to change both occurences of the previous service name in the docker compose file.  
+
 For the jwt token secrets, you can supply 64 random bytes in hexadecimal format  
 You can create some on the command-line (with node.js) by running the following commands:  
 \$ node  
 \$ require('crypto').randomBytes(64).toString('hex')  
+
+The "EXPIRES_IN" variables format is in vercel/ms:  
+Example values: "2 days", "10 h", "40s", and 60.  
+REFRESH_TOKEN_EXPIRES_IN should be longer than ACCESS_TOKEN_EXPIRES_IN.
