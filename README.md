@@ -1,4 +1,4 @@
-# Chess-Project
+# Chess-App
 ### Features:  
 User Registration, Authentication, Authorization.  
 Publish and update notes using a Lexical text editor.  
