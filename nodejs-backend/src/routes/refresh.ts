@@ -1,5 +1,5 @@
 import express, { Router } from "express";
-import client from "../database/index.ts";
+import client from "../database/database.ts";
 import jwt from 'jsonwebtoken';
 import ms from 'ms';
 const { verify, sign } = jwt;

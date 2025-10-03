@@ -1,5 +1,5 @@
 import express, { Router } from "express";
-import client from "../database/index.ts";
+import client from "../database/database.ts";
 import { compare, hash } from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import ms from 'ms';

@@ -1,5 +1,5 @@
 import express, { Router } from "express";
-import client from "../database/index.ts";
+import client from "../database/database.ts";
 
 
 const roomsRouter: Router = express.Router();
