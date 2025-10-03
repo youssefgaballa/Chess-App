@@ -1,5 +1,4 @@
 name: Test Frontend
-# Commenting out push and pull_request because I want to trigger this workflow manually for now
 on:
   push:
   pull_request:
@@ -27,6 +26,7 @@ jobs:
         with:
           node-version: '22.x'
       - run: echo "Test Frontend triggered by ${{github.event_name }} event"
+      - run: echo "This workflow is running on ${{ matrix.os }} using Node.js version ${{ matrix.node }} environment"
       - name: Install dependencies
         run: npm ci
       - name: Run tests
