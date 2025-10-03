@@ -26,7 +26,6 @@ jobs:
         with:
           node-version: '22.x'
       - run: echo "Test Frontend triggered by ${{github.event_name }} event"
-      - run: echo "This workflow is running on ${{ matrix.os }} using Node.js version ${{ matrix.node }} environment"
       - name: Install dependencies
         run: npm ci
       - name: Run tests

@@ -27,9 +27,9 @@ const ChessBoard8x8: React.FC<{ colors: string[], side: ChessColor, roomID?: num
     dispatch(setInitialBoard());
   }
 
-  useEffect(() => {
-    console.log("selectedPieceIndex changed:", selectedPieceIndex);
-  }, [selectedPieceIndex]);
+  // useEffect(() => {
+  //   console.log("selectedPieceIndex changed:", selectedPieceIndex);
+  // }, [selectedPieceIndex]);
 
   useEffect(() => {
     socket.on("piece moved", ({ fromIndex, toIndex, to }) => {
@@ -108,8 +108,8 @@ const ChessBoard8x8: React.FC<{ colors: string[], side: ChessColor, roomID?: num
   }
 
   useLayoutEffect(() => {
-    // console.log("----First UseLayoutEffect:");
-    // console.log("board:", board);
+    console.log("----First UseLayoutEffect:");
+    console.log("board:", board);
     // console.log("board.lastMove:", board.lastMove);
     for (let i = 0; i < board.pieces.length; i++) {
       const p = board.pieces[i];
@@ -188,17 +188,10 @@ const ChessBoard8x8: React.FC<{ colors: string[], side: ChessColor, roomID?: num
     // console.log("board:", board);
     const yourKing = board.pieces.find(p => p.type === 'king' && p.color === board.turn);
     // console.log("yourKing in third useLayoutEffect:", yourKing);
-
-
     if (yourKing && !yourKing.isChecked && board.lastMove) {
-      // console.log("sucessfully unchecked your king in useLayoutEffect:", yourKing);
-      // console.log("board.turn in useLayoutEffect:", board.turn);
+
       dispatch(setTurn({ color: board.turn === "white" ? "black" : "white" }));
     } else if (yourKing && yourKing.isChecked) {
-
-      // console.log("board.kingIsCheckedLastMove", board.isKingCheckedLastMove);
-      //console.log("Your king is still in check in useLayoutEffect:", yourKing);
-
       const lastMove = board.lastMove;
       // console.log("lastMove:", lastMove);
       if (lastMove) {
