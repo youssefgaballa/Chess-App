@@ -11,7 +11,7 @@ export type ChessBoardState = { // hasMoved is mostly relevant for pawns and cas
   pieces: {
     type: ChessPieceType; color: ChessColor;
     position: ChessPosition, isCaptured: boolean, hasMoved: boolean,
-    validMoves: ChessPosition[], replaceMoves: ChessPosition[], 
+    freeMoves: ChessPosition[], replaceMoves: ChessPosition[], 
     isChecked?: boolean, isKingCheckedLastMove?: boolean
   }[];
   turn: ChessColor;
@@ -28,131 +28,131 @@ const initialState: ChessBoardState = {
   pieces: [
     {
     type: "pawn", color: "white", position: "a2",
-      isCaptured: false, hasMoved: false, validMoves:['a3','a4'], replaceMoves:[], 
+      isCaptured: false, hasMoved: false, freeMoves:['a3','a4'], replaceMoves:[], 
     },
     {
       type: "pawn", color: "white", position: "b2",
-      isCaptured: false, hasMoved: false, validMoves:['b3','b4'], replaceMoves:[], 
+      isCaptured: false, hasMoved: false, freeMoves:['b3','b4'], replaceMoves:[], 
     },
     {
       type: "pawn", color: "white", position: "c2",
-      isCaptured: false, hasMoved: false, validMoves:['c3','c4'], replaceMoves:[], 
+      isCaptured: false, hasMoved: false, freeMoves:['c3','c4'], replaceMoves:[], 
     },
     {
       type: "pawn", color: "white", position: "d2",
-      isCaptured: false, hasMoved: false, validMoves: ['d3', 'd4'], replaceMoves: [], 
+      isCaptured: false, hasMoved: false, freeMoves: ['d3', 'd4'], replaceMoves: [], 
     },
     {
       type: "pawn", color: "white", position: "e2",
-      isCaptured: false, hasMoved: false, validMoves: ['e3', 'e4'], replaceMoves: [], 
+      isCaptured: false, hasMoved: false, freeMoves: ['e3', 'e4'], replaceMoves: [], 
     },
     {
       type: "pawn", color: "white", position: "f2",
-      isCaptured: false, hasMoved: false, validMoves: ['f3', 'f4'], replaceMoves: [], 
+      isCaptured: false, hasMoved: false, freeMoves: ['f3', 'f4'], replaceMoves: [], 
     },
     {
       type: "pawn", color: "white", position: "g2",
-      isCaptured: false, hasMoved: false, validMoves:['g3','g4'], replaceMoves: [], 
+      isCaptured: false, hasMoved: false, freeMoves:['g3','g4'], replaceMoves: [], 
     },
     {
       type: "pawn", color: "white", position: "h2",
-      isCaptured: false, hasMoved: false, validMoves: ['h3', 'h4'], replaceMoves: [], 
+      isCaptured: false, hasMoved: false, freeMoves: ['h3', 'h4'], replaceMoves: [], 
     },
     {
       type: "rook", color: "white", position: "a1",
-      isCaptured: false, hasMoved: false, validMoves: [], replaceMoves: [],
+      isCaptured: false, hasMoved: false, freeMoves: [], replaceMoves: [],
     },
     {
       type: "knight", color: "white", position: "b1",
-      isCaptured: false, hasMoved: false, validMoves:['a3','c3'], replaceMoves: [], 
+      isCaptured: false, hasMoved: false, freeMoves:['a3','c3'], replaceMoves: [], 
     },
     {
       type: "bishop", color: "white", position: "c1",
-      isCaptured: false, hasMoved: false, validMoves:[], replaceMoves: [],
+      isCaptured: false, hasMoved: false, freeMoves:[], replaceMoves: [],
     },
     {
       type: "queen", color: "white", position: "d1",
-      isCaptured: false, hasMoved: false, validMoves: [], replaceMoves: [],
+      isCaptured: false, hasMoved: false, freeMoves: [], replaceMoves: [],
     },
     {
       type: "king", color: "white", position: "e1",
-      isCaptured: false, hasMoved: false, validMoves: [], replaceMoves: [], isChecked: false, isKingCheckedLastMove: false
+      isCaptured: false, hasMoved: false, freeMoves: [], replaceMoves: [], isChecked: false, isKingCheckedLastMove: false
     },
     {
       type: "bishop", color: "white", position: "f1",
-      isCaptured: false, hasMoved: false, validMoves: [], replaceMoves: [],
+      isCaptured: false, hasMoved: false, freeMoves: [], replaceMoves: [],
     },
     {
       type: "knight", color: "white", position: "g1",
-      isCaptured: false, hasMoved: false, validMoves:['f3','h3'], replaceMoves:[], 
+      isCaptured: false, hasMoved: false, freeMoves:['f3','h3'], replaceMoves:[], 
     },
     {
       type: "rook", color: "white", position: "h1",
-      isCaptured: false, hasMoved: false, validMoves:[], replaceMoves: [],
+      isCaptured: false, hasMoved: false, freeMoves:[], replaceMoves: [],
     },
     {
       type: "pawn", color: "black", position: "a7",
-      isCaptured: false, hasMoved: false, validMoves:['a6','a5'], replaceMoves: [], 
+      isCaptured: false, hasMoved: false, freeMoves:['a6','a5'], replaceMoves: [], 
     },
     {
       type: "pawn", color: "black", position: "b7",
-      isCaptured: false, hasMoved: false, validMoves:['b6','b5'], replaceMoves: [], 
+      isCaptured: false, hasMoved: false, freeMoves:['b6','b5'], replaceMoves: [], 
     },
     {
       type: "pawn", color: "black", position: "c7",
-      isCaptured: false, hasMoved: false, validMoves:['c6','c5'], replaceMoves: [], 
+      isCaptured: false, hasMoved: false, freeMoves:['c6','c5'], replaceMoves: [], 
     },
     {
       type: "pawn", color: "black", position: "d7",
-      isCaptured: false, hasMoved: false, validMoves: ['d6', 'd5'], replaceMoves: [], 
+      isCaptured: false, hasMoved: false, freeMoves: ['d6', 'd5'], replaceMoves: [], 
     },
     {
       type: "pawn", color: "black", position: "e7",
-      isCaptured: false, hasMoved: false, validMoves: ['e6', 'e5'], replaceMoves: [], 
+      isCaptured: false, hasMoved: false, freeMoves: ['e6', 'e5'], replaceMoves: [], 
     },
     {
       type: "pawn", color: "black", position: "f7",
-      isCaptured: false, hasMoved: false, validMoves: ['f6', 'f5'], replaceMoves: [], 
+      isCaptured: false, hasMoved: false, freeMoves: ['f6', 'f5'], replaceMoves: [], 
     },
     {
       type: "pawn", color: "black", position: "g7",
-      isCaptured: false, hasMoved: false, validMoves:['g6','g5'], replaceMoves: [], 
+      isCaptured: false, hasMoved: false, freeMoves:['g6','g5'], replaceMoves: [], 
     },
     {
       type: "pawn", color: "black", position: "h7",
-      isCaptured: false, hasMoved: false, validMoves: ['h6', 'h5'], replaceMoves: [], 
+      isCaptured: false, hasMoved: false, freeMoves: ['h6', 'h5'], replaceMoves: [], 
     },
     {
       type: "rook", color: "black", position: "a8",
-      isCaptured: false, hasMoved: false, validMoves: [], replaceMoves: [],
+      isCaptured: false, hasMoved: false, freeMoves: [], replaceMoves: [],
     },
     {
       type: "knight", color: "black", position: "b8",
-      isCaptured: false, hasMoved: false, validMoves: ['a6', 'c6'], replaceMoves: [], 
+      isCaptured: false, hasMoved: false, freeMoves: ['a6', 'c6'], replaceMoves: [], 
     },
     {
       type: "bishop", color: "black", position: "c8",
-      isCaptured: false, hasMoved: false, validMoves: [], replaceMoves: [],
+      isCaptured: false, hasMoved: false, freeMoves: [], replaceMoves: [],
     },
     {
       type: "queen", color: "black", position: "d8",
-      isCaptured: false, hasMoved: false, validMoves: [], replaceMoves: [], 
+      isCaptured: false, hasMoved: false, freeMoves: [], replaceMoves: [], 
     },
     {
       type: "king", color: "black", position: "e8",
-      isCaptured: false, hasMoved: false, validMoves: [], replaceMoves: [], isChecked: false, isKingCheckedLastMove: false
+      isCaptured: false, hasMoved: false, freeMoves: [], replaceMoves: [], isChecked: false, isKingCheckedLastMove: false
     },
     {
       type: "bishop", color: "black", position: "f8",
-      isCaptured: false, hasMoved: false, validMoves: [], replaceMoves: [], 
+      isCaptured: false, hasMoved: false, freeMoves: [], replaceMoves: [], 
     },
     {
       type: "knight", color: "black", position: "g8",
-      isCaptured: false, hasMoved: false, validMoves: ['f6', 'h6'], replaceMoves: [], 
+      isCaptured: false, hasMoved: false, freeMoves: ['f6', 'h6'], replaceMoves: [], 
     },
     {
       type: "rook", color: "black", position: "h8",
-      isCaptured: false, hasMoved: false, validMoves: [], replaceMoves: [],
+      isCaptured: false, hasMoved: false, freeMoves: [], replaceMoves: [],
     },
   ],
   players: {
@@ -396,7 +396,7 @@ const chessBoardSlice = createSlice({
         // const isInCheck = state.pieces.some(p => {
         //   // console.log("p.position:", p.position);
         //   // console.log("p.color:", p.color);
-        //   // console.log("p.validMoves.includes(king.position):", p.replaceMoves.includes(king.position));
+        //   // console.log("p.freeMoves.includes(king.position):", p.replaceMoves.includes(king.position));
         //   return p.color !== fromPiece.color && p.replaceMoves.includes(king.position);
         // });
         //console.log("isInCheck:", isInCheck);
@@ -437,7 +437,7 @@ const chessBoardSlice = createSlice({
       // } 
       // console.log("piece for setValidMoves:", piece);
       if (pieceIndex !== -1) {
-        piece.validMoves = [];
+        piece.freeMoves = [];
         switch (piece.type) {
           case "pawn": {
             const direction = piece.color === "white" ? 1 : -1;
@@ -447,12 +447,12 @@ const chessBoardSlice = createSlice({
                 if (state.pieces.some(p => p.position === nextPos)) {
                   break; // Blocked by another piece
                 }
-                piece.validMoves = piece.validMoves.concat([nextPos]);
+                piece.freeMoves = piece.freeMoves.concat([nextPos]);
               }
             } else {
               const nextPos = piece.position[0] + (parseInt(piece.position[1]) + direction).toString() as ChessPosition;
               if (!state.pieces.some(p => p.position === nextPos)) {
-                piece.validMoves = piece.validMoves.concat([nextPos]);
+                piece.freeMoves = piece.freeMoves.concat([nextPos]);
               } 
             }
             const diagLeft = String.fromCharCode(piece.position[0].charCodeAt(0) - 1) + (parseInt(piece.position[1]) + direction).toString() as ChessPosition;
@@ -494,7 +494,7 @@ const chessBoardSlice = createSlice({
             ].filter(pos => pos[0] >= 'a' && pos[0] <= 'h' && pos[1] >= '1' && pos[1] <= '8'); // filter out positions that are off the board
             //  if (state.pieces.some(p => p.position === move && p.color === piece.color)) {
             // console.log("knightMoves:", knightMoves);
-            piece.validMoves = knightMoves.filter(move => {
+            piece.freeMoves = knightMoves.filter(move => {
               if (!state.pieces.some(p => p.position === move)) {
                 return move; // Can move to an empty square
               }
@@ -505,7 +505,7 @@ const chessBoardSlice = createSlice({
             //   }
             // });
             piece.replaceMoves = knightMoves;
-            // console.log("Valid moves for knight at", piece.position, ":", piece.validMoves);
+            // console.log("Free moves for knight at", piece.position, ":", piece.freeMoves);
             //  console.log("Replace moves for knight at", piece.position, ":", piece.replaceMoves);
             break;
           } case "bishop": {
@@ -550,8 +550,8 @@ const chessBoardSlice = createSlice({
               }
             });
             //console.log("freeMoves:", freeMoves);
-            piece.validMoves = freeMoves;
-            // console.log("Valid moves for bishop at", piece.position, ":", piece.validMoves);
+            piece.freeMoves = freeMoves;
+            // console.log("Valid moves for bishop at", piece.position, ":", piece.freeMoves);
             piece.replaceMoves = bishopMoves.filter(move => {
               if (state.pieces.some(p => p.position === move && p.isCaptured === false)) {
                 const fileDiff = piece.position[0].charCodeAt(0) - move[0].charCodeAt(0);
@@ -575,7 +575,7 @@ const chessBoardSlice = createSlice({
                   //console.log("intermediateMovePos == piece.position", intermediateMovePos, piece.position);
                 }
                 if ((!state.pieces.some(p => p.position === intermediateMovePos) || intermediateMovePos == piece.position)) {
-                  if (piece.validMoves.includes(intermediateMovePos) === true) {
+                  if (piece.freeMoves.includes(intermediateMovePos) === true) {
                     return move; // Can move to a square occupied by a piece of the opposite color
                   } else if (intermediateMovePos == piece.position) {
                     return move;
@@ -623,8 +623,8 @@ const chessBoardSlice = createSlice({
               }
             });
             //console.log("freeMoves:", freeMoves);
-            piece.validMoves = freeMoves;
-            // console.log("Valid moves for rook at", piece.position, ":", piece.validMoves);
+            piece.freeMoves = freeMoves;
+            // console.log("Valid moves for rook at", piece.position, ":", piece.freeMoves);
             piece.replaceMoves = rookMoves.filter(move => {
               if (state.pieces.some(p => p.position === move && p.isCaptured === false)) {
                 const fileDiff = piece.position[0].charCodeAt(0) - move[0].charCodeAt(0);
@@ -640,7 +640,7 @@ const chessBoardSlice = createSlice({
                 }
 
                 if ((!state.pieces.some(p => p.position === intermediateMovePos) || intermediateMovePos == piece.position)) {
-                  if (piece.validMoves.includes(intermediateMovePos) === true) {
+                  if (piece.freeMoves.includes(intermediateMovePos) === true) {
                     return move; // Can move to a square occupied by a piece of the opposite color
                   } else if (intermediateMovePos == piece.position) {
                     return move;
@@ -726,8 +726,8 @@ const chessBoardSlice = createSlice({
                 return move;
               }
             });
-            piece.validMoves = [...freeBishopMoves, ...freeRookMoves];
-            //console.log("Valid moves for queen at", piece.position, ":", piece.validMoves);
+            piece.freeMoves = [...freeBishopMoves, ...freeRookMoves];
+            //console.log("Valid moves for queen at", piece.position, ":", piece.freeMoves);
             piece.replaceMoves = [...bishopMoves, ...rookMoves].filter(move => {
               // Check if the move is a valid replacement
               if (state.pieces.some(p => p.position === move && p.isCaptured === false)) {
@@ -741,7 +741,7 @@ const chessBoardSlice = createSlice({
                 
 
                 if ((!state.pieces.some(p => p.position === intermediateMovePos) || intermediateMovePos == piece.position)) {
-                  if (piece.validMoves.includes(intermediateMovePos) === true) {
+                  if (piece.freeMoves.includes(intermediateMovePos) === true) {
                     return move; // Can move to a square occupied by a piece of the opposite color
                   } else if (intermediateMovePos == piece.position) {
                     return move;
@@ -764,10 +764,10 @@ const chessBoardSlice = createSlice({
               String.fromCharCode(piece.position[0].charCodeAt(0) + 1) + String.fromCharCode(piece.position[1].charCodeAt(0) - 1) as ChessPosition,
             ].filter(pos => pos[0] >= 'a' && pos[0] <= 'h' && pos[1] >= '1' && pos[1] <= '8'); // filter out positions that are off the board
             //console.log("kingMoves:", kingMoves);
-            const allOpponentFreeMovesExceptPawns = state.pieces.filter(p => p.color !== piece.color && p.isCaptured === false && p.type !== 'pawn').flatMap(p => p.validMoves);
-            //const allOpponentPawnFreeMoves = state.pieces.filter(p => p.color !== piece.color && p.isCaptured === false && p.type === 'pawn').flatMap(p => p.validMoves);
+            const allOpponentFreeMovesExceptPawns = state.pieces.filter(p => p.color !== piece.color && p.isCaptured === false && p.type !== 'pawn').flatMap(p => p.freeMoves);
+            //const allOpponentPawnFreeMoves = state.pieces.filter(p => p.color !== piece.color && p.isCaptured === false && p.type === 'pawn').flatMap(p => p.freeMoves);
             // console.log("----:", state.pieces.filter(p => p.color !== piece.color && p.isCaptured === false && (p.type !== "pawn")).
-            //   flatMap(p => p.position + " validMoves: " + p.validMoves));
+            //   flatMap(p => p.position + " freeMoves: " + p.freeMoves));
             // console.log("allOpponentFreeMovesExceptPawns:", allOpponentFreeMovesExceptPawns);
             const allOpponentReplaceMoves = state.pieces.filter(p => p.color !== piece.color && p.isCaptured === false).flatMap(p => p.replaceMoves);
             //console.log("allFreeMoves by opponent pieces:", allFreeMoves);
@@ -779,7 +779,7 @@ const chessBoardSlice = createSlice({
               }
             });
             //console.log("freeMoves for king:", freeMoves);
-            piece.validMoves = freeMoves;
+            piece.freeMoves = freeMoves;
             piece.replaceMoves = kingMoves.filter(move => {
               if (state.pieces.some(p => p.position === move && p.color !== piece.color && p.isCaptured === false)
                && allOpponentReplaceMoves.includes(move) === false) {
@@ -802,7 +802,7 @@ const chessBoardSlice = createSlice({
       const isInCheck = state.pieces.some(p => {
         // console.log("p.position:", p.position);
         // console.log("p.color:", p.color);
-        // console.log("p.validMoves.includes(king.position):", p.replaceMoves.includes(king.position));
+        // console.log("p.freeMoves.includes(king.position):", p.freeMoves.includes(king.position));
         return p.color !== color && p.replaceMoves.includes(king.position) && p.isCaptured === false;
       });
       king.isChecked = isInCheck;
@@ -814,7 +814,7 @@ const chessBoardSlice = createSlice({
       const king = state.pieces.find(p => p.type === 'king' && p.color === color);
       if (!king) return;
    
-      if (king.isChecked && king.validMoves.length === 0 && king.replaceMoves.length === 0) {
+      if (king.isChecked && king.freeMoves.length === 0 && king.replaceMoves.length === 0) {
         const piecesThatCheckKing = state.pieces.filter(p => {
           return p.color !== color && p.replaceMoves.includes(king.position) && p.isCaptured === false;
         });
@@ -855,7 +855,7 @@ const chessBoardSlice = createSlice({
               for (const square of blockingSquares) {
                 const canBlock = state.pieces.some(p => {
                   if (p.color === color && p.isCaptured === false && p.type !== 'king') {
-                    return p.validMoves.includes(square) || p.replaceMoves.includes(square);
+                    return p.freeMoves.includes(square) || p.replaceMoves.includes(square);
                   }
                 });
                 if (canBlock) {

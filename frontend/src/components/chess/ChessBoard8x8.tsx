@@ -47,7 +47,7 @@ const ChessBoard8x8: React.FC<{ colors: string[], side: ChessColor, roomID?: num
     }
   }, []);
 
-  const updatePiecePosition = (pos: ChessPosition, pieceIndex: number) => {
+  const onSquareClick = (pos: ChessPosition, pieceIndex: number) => {
     // console.log("updatePiecePosition:", pos);
     // console.log("pieceIndex:", pieceIndex);
     if (selectedPieceIndex == null) {
@@ -196,17 +196,17 @@ const ChessBoard8x8: React.FC<{ colors: string[], side: ChessColor, roomID?: num
               const selectedPiecePos = selectedPieceIndex !== null ? board.pieces[selectedPieceIndex]?.position : null; 
               const selectedPiece = board.pieces[selectedPieceIndex!];
               const pieceAtPos = board.pieces.find(p => p.position === pos && p.isCaptured === false);
-              const validMoves: ChessPosition[] = [];
+              const freeMoves: ChessPosition[] = [];
               
               for (let i = 0; i < board.pieces.length; i++) {
                 const piece = board.pieces[i];
                 if (piece.position === selectedPiecePos && piece.isCaptured === false) {
-                  validMoves.push(...piece.validMoves);
+                  freeMoves.push(...piece.freeMoves);
                 }
               }
               // if (selectedPiecePos == 'd5')
               // console.log("selectedPiecePos:", selectedPiecePos);
-              // console.log("validMoves for selected piece:", validMoves);
+              // console.log("freeMoves for selected piece:", freeMoves);
               let fill: string;
               
               
@@ -253,12 +253,12 @@ const ChessBoard8x8: React.FC<{ colors: string[], side: ChessColor, roomID?: num
                     textAnchor="middle" dominantBaseline="middle">
                     {side == 'white' ? 8 - row : 1 + row}
                   </text> : null}
-                  <rect data-testid={`sq-${pos}`} onClick={() => {  if (isTurn) updatePiecePosition(pos, pieceIndex)}}
+                  <rect data-testid={`sq-${pos}`} onClick={() => {  if (isTurn) onSquareClick(pos, pieceIndex)}}
                   x={padding + col * tileSize} y={padding + row * tileSize} width={tileSize} height={tileSize} overflow={'visible'}
                     fill={canReplace ? SelectedColors['green'] : fill} opacity={canReplace ? 0.8 : 1} />
-                  {validMoves && validMoves.includes(pos) && (!pieceAtPos || pieceAtPos.isCaptured == true) &&
+                  {freeMoves && freeMoves.includes(pos) && (!pieceAtPos || pieceAtPos.isCaptured == true) &&
                     <circle  cx={padding + col * tileSize + tileSize / 2} cy={padding + row * tileSize + tileSize / 2}
-                      r={10} fill={SelectedColors['green']} opacity={0.8} onClick={() => { if (isTurn) updatePiecePosition(pos, pieceIndex)} } />
+                      r={10} fill={SelectedColors['green']} opacity={0.8} onClick={() => { if (isTurn) onSquareClick(pos, pieceIndex)} } />
                   }
                   {canReplace && pieceAtPos && 
                     <>
@@ -269,7 +269,7 @@ const ChessBoard8x8: React.FC<{ colors: string[], side: ChessColor, roomID?: num
                       </clipPath>
                     </defs>
                     <rect id={`rect-${row}-${col}`}   x={padding + col * tileSize} y={padding + row * tileSize} width={tileSize} height={tileSize}
-                      fill={fill} overflow={'visible'} clipPath={`url(#clip-${row}-${col})`} onClick={() => updatePiecePosition(pos, pieceIndex)}/>
+                      fill={fill} overflow={'visible'} clipPath={`url(#clip-${row}-${col})`} onClick={() => onSquareClick(pos, pieceIndex)}/>
                     </>
                     
                   }
