@@ -1,13 +1,13 @@
 import ChessPiece, { type ChessColor, type ChessPosition } from "./chessPiece";
 
 export const King = ({ index, color, position, onClick, side }
-  : { index: number, color: ChessColor, position: ChessPosition, onClick: (pos: ChessPosition, index: number) => void, side: ChessColor }) => {
+  : { index: number, color: ChessColor, position: ChessPosition, onClick: (index: number) => void, side: ChessColor }) => {
   const king = new ChessPiece("king", color, position, side, 50, 600, 75);
 
 
   return (
     <svg id={`${index}`} data-testid={`${position}`} x={king.boardPosition.x + 8} y={king.boardPosition.y+8}
-      width={king.tileSize} height={king.tileSize} style={{ overflow: 'visible' }} onClick={() => onClick(position, index)}>
+      width={king.tileSize} height={king.tileSize} style={{ overflow: 'visible' }} onClick={() => onClick(index)}>
       <title>{`${king.color} king at ${position}`}</title>
       {king.color === 'black' ? 
         <g style={{

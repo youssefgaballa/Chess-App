@@ -21,6 +21,7 @@ export type ChessBoardState = { // hasMoved is mostly relevant for pawns and cas
   }
   lastMove?: { from: ChessPosition; fromIndex: number; to: ChessPosition; toIndex: number; replace: boolean };
   isStalemate?: boolean;
+  lastMoveFailed?: boolean;
 };
 
 const initialState: ChessBoardState = {
@@ -183,10 +184,11 @@ const chessBoardSlice = createSlice({
     movePiece: (state, action: { payload: { from: ChessPosition; fromIndex: number; to: ChessPosition; toIndex: number; replace: boolean; undo?: boolean } }) => {
       //console.log("------movePiece:");
       const { from, fromIndex, to, toIndex, replace, undo } = action.payload;
+      //console.log("from:", from, "fromIndex:", fromIndex, "to:", to,  "toIndex:", toIndex, "replace:", replace, "undo:", undo);
       // console.log("piece.type:", piece?.type);
-      
+      state.lastMoveFailed = true;
       if (undo !== undefined) {
-        // console.log("undo: ", undo);
+        // console.log("undo: ", undo);`
         // console.log("------from:", from, "to:", to);
 
         const fromPiece = state.pieces[fromIndex];
@@ -225,8 +227,9 @@ const chessBoardSlice = createSlice({
         // No piece at the source position
         return;
       }
+      //console.log("fromPiece.color:", fromPiece.color, "state.turn:", state.turn);
       if (fromPiece.color !== state.turn) {
-        // console.log("Not your turn!");
+        console.log("Not your turn!");
         return;
       }
       if (replace) {
@@ -236,7 +239,7 @@ const chessBoardSlice = createSlice({
           return;
         }
         if (fromPiece.color === toPiece.color) {
-          // console.log("Cannot take your own piece!");
+          console.log("Cannot take your own piece!");
           return;
         }
       }
@@ -418,8 +421,9 @@ const chessBoardSlice = createSlice({
       }
       // Change turn
       fromPiece.hasMoved = true;
+      state.lastMoveFailed = false;
       // the indeces are swapped so it works correclty when undoing a move
-      state.lastMove = { from: from, fromIndex: toIndex, to: to, toIndex: fromIndex, replace };
+      //state.lastMove = { from: from, fromIndex: toIndex, to: to, toIndex: fromIndex, replace };
       //state.turn = state.turn === "white" ? "black" : "white";
     },
     setValidMoves: (state, action: { payload: {pieceIndex: number} }) => {
@@ -866,6 +870,14 @@ const chessBoardSlice = createSlice({
        // console.log(`${color} king is checkmated!`);
       }
     },
+    setLastMove: (state, action: { payload: { from: ChessPosition, fromIndex: number, to: ChessPosition, toIndex: number, replace: boolean } }) => {
+      state.lastMove = {
+        from: action.payload.from, fromIndex: action.payload.toIndex,
+        to: action.payload.to, toIndex: action.payload.fromIndex,
+        replace: action.payload.replace
+      };
+
+    },
     setTurn: (state, action: { payload: { color: ChessColor } }) => {
       const { color } = action.payload;
       state.turn = color;
@@ -880,5 +892,5 @@ const chessBoardSlice = createSlice({
 });
 
 export const selectBoardState = (state: { chessBoard: typeof initialState }) => state.chessBoard;
-export const { setInitialBoard, clearBoard, movePiece, setValidMoves, isKingInCheck, isKingCheckMated, setTurn } = chessBoardSlice.actions;
+export const { setInitialBoard, clearBoard, movePiece, setValidMoves, isKingInCheck, isKingCheckMated, setTurn, setLastMove } = chessBoardSlice.actions;
 export default chessBoardSlice.reducer;

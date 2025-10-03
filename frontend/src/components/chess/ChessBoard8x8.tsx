@@ -7,7 +7,7 @@ import { Rook } from "./Rook";
 import { Queen } from "./Queen";
 import { King } from "./King";
 import { useDispatch, useSelector } from "react-redux";
-import { selectBoardState, setInitialBoard, movePiece, setValidMoves, isKingInCheck, setTurn, isKingCheckMated } from "./chessSlice";
+import { selectBoardState, setInitialBoard, movePiece, setValidMoves, isKingInCheck, setTurn, isKingCheckMated, setLastMove } from "./chessSlice";
 import { SelectedColors } from "./ChessBoardSolo";
 import socket from "../../util/socketManager";
 
@@ -20,10 +20,8 @@ const ChessBoard8x8: React.FC<{ colors: string[], side: ChessColor, roomID?: num
   const isCapital = true; // Change to true if you want capital letters for columns
   const [selectedPieceIndex, setSelectedPieceIndex] = useState<number | null>(null);
   const board = useSelector(selectBoardState);
-  const [toggleKingInCheck, setToggleKingInCheck] = useState(false);
   const resetGame = () => {
-    //console.log("Game started!");
-
+    //console.log("Game reset!");
     dispatch(setInitialBoard());
   }
 
@@ -50,8 +48,8 @@ const ChessBoard8x8: React.FC<{ colors: string[], side: ChessColor, roomID?: num
   }, []);
 
   const updatePiecePosition = (pos: ChessPosition, pieceIndex: number) => {
-    //console.log("updatePiecePosition:", pos);
-    //console.log("pieceIndex:", pieceIndex);
+    // console.log("updatePiecePosition:", pos);
+    // console.log("pieceIndex:", pieceIndex);
     if (selectedPieceIndex == null) {
       if (pieceIndex !== -1) {
         dispatch(setValidMoves({ pieceIndex }));
@@ -74,16 +72,31 @@ const ChessBoard8x8: React.FC<{ colors: string[], side: ChessColor, roomID?: num
       } else {
         dispatch(movePiece({ from: fromPiece.position, fromIndex: selectedPieceIndex, to: to, toIndex: pieceIndex, replace: false }));
       }
+      
       dispatch(setValidMoves({ pieceIndex: selectedPieceIndex }));
       if (roomID !== undefined) {
         socket.emit("move piece", { roomID, fromIndex: selectedPieceIndex, toIndex: pieceIndex, to: to});
       }
+      setBoardState();
 
+      
+      if (pieceIndex >= 0) {
+        dispatch(setLastMove({
+          from: fromPiece.position, fromIndex: selectedPieceIndex,
+          to: toPiece.position, toIndex: pieceIndex, replace: true
+        }));
+      } else {
+        dispatch(setLastMove({
+          from: fromPiece.position, fromIndex: selectedPieceIndex,
+          to: to, toIndex: pieceIndex, replace: false
+        }));
+      }
+      //console.log("board after move:", board);
 
     }
   }
 
-  const onPieceClick = (pos: ChessPosition, pieceIndex: number) => {
+  const onPieceClick = (pieceIndex: number) => {
     //console.log("Piece clicked at position:", pos);
 
     if (selectedPieceIndex == null) {
@@ -99,110 +112,73 @@ const ChessBoard8x8: React.FC<{ colors: string[], side: ChessColor, roomID?: num
         from: fromPiece.position, fromIndex: selectedPieceIndex,
         to: toPiece.position, toIndex: pieceIndex, replace: true
       }));
+      
       dispatch(setValidMoves({ pieceIndex: selectedPieceIndex }));
       setSelectedPieceIndex(null);
       if (roomID !== undefined) {
         socket.emit("move piece", { roomID, from: fromPiece, to: toPiece });
       }
+      setBoardState();
+
+      
+      dispatch(setLastMove({ from: fromPiece.position, fromIndex: selectedPieceIndex,
+        to: toPiece.position, toIndex: pieceIndex, replace: true }) );
     }
+    //console.log("board after move:", board);
   }
 
   useLayoutEffect(() => {
-    console.log("----First UseLayoutEffect:");
-    console.log("board:", board);
-    // console.log("board.lastMove:", board.lastMove);
+    //console.log("----First UseLayoutEffect:");
+    // console.log("board:", board);
+    //console.log("board.lastMove:", board.lastMove);
+    if (board.lastMove == undefined) { // first move of the game
+      return;
+    }
+    if (board.lastMoveFailed) {
+      //console.log("Move failed, not changing turn.");
+
+      return;
+    }
+    const yourKing = board.pieces.find(p => p.type === 'king' && p.color === board.turn);
+    const opponentKing = board.pieces.find(p => p.type === 'king' && p.color !== board.turn);
+    if (yourKing == undefined || opponentKing == undefined) {
+      return;
+    }
+  
+    if (!yourKing.isChecked && !opponentKing.isChecked) { // regular move with no checks
+      dispatch(setTurn({ color: board.turn === "white" ? "black" : "white" }));
+
+    } else if ( opponentKing.isChecked && board.turn === (yourKing.color) && !yourKing.isChecked) { // checked opponent king without checking your own king
+      dispatch(setTurn({ color: board.turn === "white" ? "black" : "white" }));
+    } else if (yourKing.isChecked && board.turn === (yourKing.color)) { // your king is in check and your move failed to get you out of check
+      const lastMove = board.lastMove;
+      dispatch(movePiece({ from: lastMove.to, fromIndex: lastMove.toIndex!, to: lastMove.from!, toIndex: lastMove.fromIndex!, replace: lastMove.replace!, undo: true }));
+      dispatch(setValidMoves({ pieceIndex: lastMove.fromIndex! }));
+      setBoardState();
+
+    }
+
+  }, [board.lastMove]);
+
+  const setBoardState = () => {
     for (let i = 0; i < board.pieces.length; i++) {
       const p = board.pieces[i];
-      // console.log("-------------Updating valid moves for piece at:", p.position);
-      // console.log("p type:", p.type);
       if (!p.isCaptured) {
-        dispatch(setValidMoves({pieceIndex: i }));
+        dispatch(setValidMoves({ pieceIndex: i }));
       }
     }
     const yourKing = board.pieces.find(p => p.type === 'king' && p.color === board.turn);
     const opponentKing = board.pieces.find(p => p.type === 'king' && p.color !== board.turn);
-    // console.log("yourKing in first useLayoutEffect:", yourKing);
+    // console.log("yourKing:", yourKing);
+    // console.log("opponentKing:", opponentKing);
     if (yourKing && opponentKing) {
       dispatch(isKingInCheck({ pos: yourKing.position, color: yourKing.color }));
       dispatch(isKingInCheck({ pos: opponentKing.position, color: opponentKing.color }));
-    }
-    if (yourKing && yourKing.isChecked) {
-      // console.log("Your king is in check in useLayoutEffect:", yourKing);
-       //console.log("King is still in check:", board);
-      // defer to next useLayoutEffect to handle
-      setToggleKingInCheck(!toggleKingInCheck);
-    } else if (board.lastMove) {
-      dispatch(setTurn({ color: board.turn === "white" ? "black" : "white" }));
-      
-    }
-    if (yourKing && opponentKing) {
       dispatch(isKingCheckMated({ color: yourKing.color }));
       dispatch(isKingCheckMated({ color: opponentKing.color }));
     }
-  }, [board.lastMove]);
-
-  const yourKing = board.pieces.find(p => p.type === 'king' && p.color === board.turn);
-  const opponentKing = board.pieces.find(p => p.type === 'king' && p.color !== board.turn);
-
-  //console.log("yourKing outside useLayoutEffect:", yourKing);
-  useLayoutEffect(() => {
-    // console.log("----Second UseLayoutEffect:");
-    // console.log("board:", board);
-  //  const yourKing = board.pieces.find(p => p.type === 'king' && p.color !== board.turn);
-    if (yourKing && !yourKing.isChecked && board.lastMove) {
-      // console.log("sucessfully unchecked your king in useLayoutEffect:", yourKing);
-      // console.log("board.turn in useLayoutEffect:", board.turn);
-      dispatch(setTurn({ color: board.turn === "white" ? "black" : "white" }));
-    } else if (yourKing && yourKing.isChecked && !(!opponentKing?.isChecked && opponentKing?.isKingCheckedLastMove)) {
-
-      // console.log("board.kingIsCheckedLastMove", board.isKingCheckedLastMove);
-      // console.log("Your king is still in check in useLayoutEffect:", yourKing);
-
-      const lastMove = board.lastMove;
-      // console.log("lastMove:", lastMove);
-      if (lastMove) {
-        dispatch(movePiece({ from: lastMove.to, fromIndex: lastMove.toIndex!, to: lastMove.from!, toIndex: lastMove.fromIndex!, replace: lastMove.replace, undo: true }));
-      }
-      // if (yourKing.color !== board.turn) {
-      // dispatch(setTurn({ color: board.turn === "white" ? "black" : "white" }));
-      // }
-      for (let i = 0; i < board.pieces.length; i++) {
-        const p = board.pieces[i];
-        // console.log("-------------Updating valid moves for piece at:", p.position);
-        // console.log("p type:", p.type);
-        if (!p.isCaptured) {
-          dispatch(setValidMoves({ pieceIndex: i }));
-        }
-      }
-      const opponentKing = board.pieces.find(p => p.type === 'king' && p.color !== board.turn);
-      if (yourKing && opponentKing) {
-        dispatch(isKingInCheck({ pos: yourKing.position, color: yourKing.color }));
-        dispatch(isKingInCheck({ pos: opponentKing.position, color: opponentKing.color }));
-      }
-      
-    }
-  }, [board.pieces.find(p => p.type === 'king' && p.color !== board.turn)?.isChecked]);
+  };
   
-  useLayoutEffect(() => {
-    // console.log("----Third UseLayoutEffect:");
-    // console.log("board:", board);
-    const yourKing = board.pieces.find(p => p.type === 'king' && p.color === board.turn);
-    // console.log("yourKing in third useLayoutEffect:", yourKing);
-    if (yourKing && !yourKing.isChecked && board.lastMove) {
-
-      dispatch(setTurn({ color: board.turn === "white" ? "black" : "white" }));
-    } else if (yourKing && yourKing.isChecked) {
-      const lastMove = board.lastMove;
-      // console.log("lastMove:", lastMove);
-      if (lastMove) {
-        dispatch(movePiece({ from: lastMove.to, fromIndex: lastMove.toIndex!, to: lastMove.from!, toIndex: lastMove.fromIndex!, replace: lastMove.replace!, undo: true }));
-      }
-    }
-  }, [toggleKingInCheck]);
-  
-
-
-
   return (
     <>
       <div className='flex flex-col items-center mt-4'>

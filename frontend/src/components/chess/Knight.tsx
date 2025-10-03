@@ -1,12 +1,12 @@
 import ChessPiece, { type ChessColor, type ChessPosition } from "./chessPiece";
 
 export const Knight = ({ index, color, position, onClick, side }
-  : { index: number, color: ChessColor, position: ChessPosition, onClick: (pos: ChessPosition, index: number) => void, side: ChessColor }) => {
+  : { index: number, color: ChessColor, position: ChessPosition, onClick: (index: number) => void, side: ChessColor }) => {
   const knight = new ChessPiece("knight", color, position, side, 50, 600, 75);
 
   return (
     <svg id={`${index}`} data-testid={`${position}`} x={knight.boardPosition.x+5} y={knight.boardPosition.y+7}
-      width={knight.tileSize} height={knight.tileSize} style={{ overflow: 'visible' }} onClick={() => onClick(position, index)}>
+      width={knight.tileSize} height={knight.tileSize} style={{ overflow: 'visible' }} onClick={() => onClick(index)}>
       <title>{`${knight.color} knight at ${position}`}</title>
       <g style={{
         stroke: 'black', fill: 'none', fillOpacity: '1', fillRule: 'evenodd', strokeWidth: '1.5', strokeLinecap: 'round',

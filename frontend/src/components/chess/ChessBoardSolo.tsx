@@ -21,7 +21,7 @@ export const ChessBoardSolo = () => {
   return (
     <>
       <div className='flex items-center justify-center mt-4'>
-      <ChessBoard8x8 colors={colors} side={'white'} />
+      <ChessBoard8x8 colors={colors} side={'black'} />
         {/* {<button className="m-[3%] p-[1%] w-[20%] border border-black rounded-lg hover:bg-red-500 hover:text-white">
           Create Room
         </button>} */}
