@@ -11,7 +11,7 @@ import cookieParser from "cookie-parser";
 import verifyAccessTokenRouter from "./routes/verifyAccessToken.ts";
 import { Server } from "socket.io";
 import { createServer } from "http";
-import chatRoomRouter from "./routes/chatRoom.ts";
+import roomsRouter from "./routes/rooms.ts";
 
 const app = express();
 
@@ -23,7 +23,7 @@ app.use(cookieParser());
 //   console.log(`${req.method} ${req.path}`);
 //   next();
 // });
-app.use('/', chatRoomRouter);
+app.use('/', roomsRouter);
 app.use('/', registrationRouter);
 app.use('/', authenticationRouter);
 app.use('/', refreshRouter);
@@ -91,10 +91,10 @@ io.on("connection", (socket) => {
     socket.to(roomID).emit("chat message", `User ${socket.id} has created the room.`);
   });
 
-  socket.on("join room", (roomID) => {
+  socket.on("join room", (roomID, username) => {
     socket.join(roomID);
     console.log(`Socket ${socket.id} joined room ${roomID}`);
-    socket.to(roomID).emit("receive room message", `User ${socket.id} has joined the room.`, socket.id, roomID);
+    socket.to(roomID).emit("receive room message", `User ${username} has joined the room ${roomID}`, username, roomID);
   });
 
   socket.on("leave room", (roomID, username) => {

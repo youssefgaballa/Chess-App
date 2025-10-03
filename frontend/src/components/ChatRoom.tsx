@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import socket from "../util/socketManager";
 import { selectUser } from "../users/userSlice";
 import { useSelector } from "react-redux";
-import axios from "axios";
 import { JoinRoomModal } from "./JoinRoomModal";
+import useRooms from "../util/useRooms";
 
 export const ChatRoom = () => {
   useEffect(() => {
@@ -11,9 +11,9 @@ export const ChatRoom = () => {
       console.log("Connected to socket with ID in Chatroom:", socket.id);
     });
 
-    socket.on("receive room message", (message: string, sender: string, roomID: number) => {
-      console.log(`Received message from ${sender} in room ${roomID}: ${message}`);
-      setMessages((prevMessages) => [...prevMessages, { message, sender }]);
+    socket.on("receive room message", (message: string, username: string, roomID: number) => {
+      console.log(`Received message from ${username} in room ${roomID}: ${message}`);
+      setMessages((prevMessages) => [...prevMessages, { message, sender: username }]);
     });
 
     return () => {
@@ -21,7 +21,6 @@ export const ChatRoom = () => {
       socket.off("receive room message");
     }
   }, []);
-
   const user = useSelector(selectUser);
   const username = user?.username || `Guest${Math.floor(Math.random() * 1000).toString()}`;
   const [roomID, setRoomID] = useState<number | null>(null);
@@ -31,86 +30,9 @@ export const ChatRoom = () => {
   const [message, setMessage] = useState<string>("");
   const [messages, setMessages] = useState<{ message: string, sender: string }[]>([]);
 
+  const { createRoom, deleteRoom, leaveRoom, onJoinRoom } = useRooms(username, user, roomID, setRoomID, setIsOwner, setShowModal, 'Chat');
 
-  const createRoom = () => {
-    console.log("Creating room for user:", username);
-    axios.post(`http://localhost:${import.meta.env.VITE_BACKEND_PORT}/chat/create`, { users: username },
-      { withCredentials: true, headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${user.accessToken}` } }
-    )
-      .then((response) => {
-        if (response?.data?.room_id) {
-          setRoomID(response.data.room_id);
-          setIsOwner(true);
-          console.log("Room created with ID:", response.data.room_id);
-          // Logic to create/join room can be added here
-          socket.emit("create room", response.data.room_id);
-        }
-      }).catch((error) => {
-        console.log("error", error);
-        return;
-      });
-  };
-
-  const deleteRoom = () => {
-    if (roomID) {
-      axios.delete(`http://localhost:${import.meta.env.VITE_BACKEND_PORT}/chat`,
-        { data: { roomID: roomID, username: username }, withCredentials: true, 
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${user.accessToken}` } }
-      )
-        .then(() => {
-          socket.emit("leave room", roomID);
-          setRoomID(null);
-          console.log("Left room with ID:", roomID);
-        }).catch((error) => {
-          console.log("error", error);
-          return;
-        });
-    }
-  };
-
-  const onJoinRoom = (roomId: number, setErrorMessage: (msg: string) => void) => {
-    // Logic to join room
-    if (roomId) {
-      console.log("Joining room with ID:", roomId, "for user:", username);
-      axios.post(`http://localhost:${import.meta.env.VITE_BACKEND_PORT}/chat/join`,
-        { roomID: roomId, username: username }, { withCredentials: true,
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${user.accessToken}` } }
-      )
-        .then(() => {
-          setRoomID(roomId);
-          socket.emit("join room", roomId);
-         
-          console.log("Joined room with ID:", roomId);
-          setShowModal(false);
-        })
-        .catch((error) => {
-          console.log("error", error);
-          setErrorMessage(error.response?.data?.error || "Error joining room");
-        return;
-      });
-
-    }
-    
-  };
-
-  const leaveRoom = async () => {
-    if (roomID) {
-      const response = await axios.patch(`http://localhost:${import.meta.env.VITE_BACKEND_PORT}/chat/leave`,
-        { roomID: roomID, username: username }, { withCredentials: true,
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${user.accessToken}` } }
-      )
-        .then(() => {
-          socket.emit("leave room", roomID, username);
-          setRoomID(null);
-          console.log("User:", username, "left room with ID:", roomID);
-        }).catch((error) => {
-          console.log("error", error);
-          return;
-        });
-      console.log("response from leaveRoom: ", response);
-    }
-  };
-
+  
   const onSendMessage = () => {
     // Logic to send message
     if (roomID && message.trim() !== "") {

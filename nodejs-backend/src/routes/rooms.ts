@@ -2,9 +2,9 @@ import express, { Router } from "express";
 import client from "../database/index.ts";
 
 
-const chatRoomRouter: Router = express.Router();
+const roomsRouter: Router = express.Router();
 
-chatRoomRouter.post('/chat/create', async (req, res) => {
+roomsRouter.post('/rooms/create', async (req, res) => {
   const username = req.body.users;
   console.log("Creating room for user:", username);
   try {
@@ -21,7 +21,7 @@ chatRoomRouter.post('/chat/create', async (req, res) => {
   }
 });
 
-chatRoomRouter.post('/chat/join', async (req, res) => {
+roomsRouter.post('/rooms/join', async (req, res) => {
   const roomID = req.body.roomID;
   const username = req.body.username;
   console.log("User:", username, "is attempting to join room with ID:", roomID);
@@ -71,7 +71,7 @@ chatRoomRouter.post('/chat/join', async (req, res) => {
   }
 });
 
-chatRoomRouter.patch('/chat/leave', async (req, res) => {
+roomsRouter.patch('/rooms/leave', async (req, res) => {
   const roomID = req.body.roomID;
   const username = req.body.username;
   console.log("User:", username, "is attempting to leave room with ID:", roomID);
@@ -90,7 +90,21 @@ chatRoomRouter.patch('/chat/leave', async (req, res) => {
 }
 );
 
-chatRoomRouter.get('/chat/all', async (req, res) => {
+roomsRouter.get('/rooms', async (req, res) => {
+  const roomID = req.query.roomID;
+  console.log("Fetching room with ID:", roomID);
+  try {
+    const result = await client.query("SELECT * FROM rooms WHERE room_id = $1", [roomID]);
+    console.log("result.rows[0]", result.rows[0]);
+    res.status(200).json(result.rows[0]);
+  } catch (error) {
+    console.error("Error fetching rooms:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+
+roomsRouter.get('/rooms/all', async (req, res) => {
   try {
     const result = await client.query("SELECT * FROM rooms"); 
     res.status(200).json(result.rows);
@@ -102,7 +116,8 @@ chatRoomRouter.get('/chat/all', async (req, res) => {
 
 
 
-chatRoomRouter.delete('/chat', async (req, res) => {
+
+roomsRouter.delete('/rooms', async (req, res) => {
   //const { roomID, username } = req.body;
   // console.log(req.body);
   const roomID = req.body.roomID;
@@ -127,4 +142,4 @@ chatRoomRouter.delete('/chat', async (req, res) => {
   }
 }); 
 
-export default chatRoomRouter;
+export default roomsRouter;
