@@ -15,7 +15,10 @@ INSERT into users (username, email, firstName, lastName, pwd, user_role) VALUES
 ('jim','Jim@domain.com', 'Jim', 'Guy', '$2b$10$IjANtci8587mKmgEp7eB8OiMZzHFv9GbMIe.fjidGf.sJxo5mR2k6', 'user'),
 ('bill', 'bill@domain.com', 'Bill', 'Billy', '$2b$10$edfjfT0vf.1yfEjTX9w70./Jc8gempURz4SMqPsfL6WMsgZmBnzQC', 'editor'),
 ('gamer', 'gamer@domain.com', 'Gamer', 'Games', '$2b$10$6eF4EftWRULGoJTdwJroV.IuVYx5n.T59/BgmssYiDN1LKpmT6D7i', 'gamer'),
-('bob', 'bob@domain.com', 'Bob', 'Builder', '$2b$10$phXIlRblLuToff58E9vT2ut6OE0tvOUOyj5DRYNBc65mTbyZUA/sW', 'spectator');
+('bob', 'bob@domain.com', 'Bob', 'Builder', '$2b$10$phXIlRblLuToff58E9vT2ut6OE0tvOUOyj5DRYNBc65mTbyZUA/sW', 'spectator'),
+('sylas', 'sylas@domain.com', 'Sylas', 'Khan', '$2b$10$BDdwqWMjNmW0qq6aYwznwuDvf9zpzDHPyRYGr0aSSqOVu7lI31hJC', 'gamer'),
+('kye', 'kye@domain.com', 'Kye', 'Vu', '$2b$10$BDdwqWMjNmW0qq6aYwznwuDvf9zpzDHPyRYGr0aSSqOVu7lI31hJC', 'gamer'),
+('seth', 'seth@domain.com', 'Seth', 'Boyer', '$2b$10$BDdwqWMjNmW0qq6aYwznwuDvf9zpzDHPyRYGr0aSSqOVu7lI31hJC', 'gamer');
 
 CREATE TABLE IF NOT EXISTS notes
 (
