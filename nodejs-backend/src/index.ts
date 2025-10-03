@@ -108,6 +108,11 @@ io.on("connection", (socket) => {
     console.log(`Socket ${socket.id} sent message to room ${roomID}: ${msg}`);
   });
 
+  socket.on("move piece", ({ roomID, fromIndex, toIndex, to }) => {
+    socket.to(roomID).emit("piece moved", { fromIndex, toIndex, to });
+    console.log(`Socket ${socket.id} moved piece in room ${roomID} from ${fromIndex} to ${toIndex}`);
+  });
+
   socket.on("disconnect", () => {
     console.log("a user disconnected:", socket.id);
   });

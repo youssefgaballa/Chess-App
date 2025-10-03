@@ -9,9 +9,10 @@ import { King } from "./King";
 import { useDispatch, useSelector } from "react-redux";
 import { selectBoardState, setInitialBoard, movePiece, setValidMoves, isKingInCheck, setTurn, isKingCheckMated } from "./chessSlice";
 import { SelectedColors } from "./ChessBoardSolo";
+import socket from "../../util/socketManager";
 
 
-const ChessBoard8x8: React.FC<{ colors: string[], side: ChessColor, roomID?: string }> = ({ colors, side, roomID }) => {
+const ChessBoard8x8: React.FC<{ colors: string[], side: ChessColor, roomID?: number }> = ({ colors, side, roomID }) => {
   const dispatch = useDispatch();
   const boardSize = 700; // 700px x 700px
   const tileSize = 75;
@@ -29,6 +30,24 @@ const ChessBoard8x8: React.FC<{ colors: string[], side: ChessColor, roomID?: str
   useEffect(() => {
     console.log("selectedPieceIndex changed:", selectedPieceIndex);
   }, [selectedPieceIndex]);
+
+  useEffect(() => {
+    socket.on("piece moved", ({ fromIndex, toIndex, to }) => {
+      console.log(`Received piece moved from ${fromIndex} to ${toIndex}`);
+      const fromPiece = board.pieces[fromIndex];
+      const toPiece = toIndex !== null ? board.pieces[toIndex] : null;
+      if (toIndex >= 0 && toPiece !== null) {
+        dispatch(movePiece({ from: fromPiece.position, fromIndex, to: toPiece?.position, toIndex, replace: true }));
+      } else {
+        dispatch(movePiece({ from: fromPiece.position, fromIndex, to: to, toIndex, replace: false }));
+      }
+      dispatch(setValidMoves({ pieceIndex: fromIndex }));
+
+    });
+    return () => {
+      socket.off("piece moved");
+    }
+  }, []);
 
   const updatePiecePosition = (pos: ChessPosition, pieceIndex: number) => {
     //console.log("updatePiecePosition:", pos);
@@ -56,7 +75,9 @@ const ChessBoard8x8: React.FC<{ colors: string[], side: ChessColor, roomID?: str
         dispatch(movePiece({ from: fromPiece.position, fromIndex: selectedPieceIndex, to: to, toIndex: pieceIndex, replace: false }));
       }
       dispatch(setValidMoves({ pieceIndex: selectedPieceIndex }));
-
+      if (roomID !== undefined) {
+        socket.emit("move piece", { roomID, fromIndex: selectedPieceIndex, toIndex: pieceIndex, to: to});
+      }
 
 
     }
@@ -80,6 +101,9 @@ const ChessBoard8x8: React.FC<{ colors: string[], side: ChessColor, roomID?: str
       }));
       dispatch(setValidMoves({ pieceIndex: selectedPieceIndex }));
       setSelectedPieceIndex(null);
+      if (roomID !== undefined) {
+        socket.emit("move piece", { roomID, from: fromPiece, to: toPiece });
+      }
     }
   }
 
@@ -189,7 +213,7 @@ const ChessBoard8x8: React.FC<{ colors: string[], side: ChessColor, roomID?: str
   return (
     <>
       <div className='flex flex-col items-center mt-4'>
-        <span>{roomID ? <>{roomID}</> : <>Play Solo Chess</>}</span>
+        <span>{!roomID && <>Play Solo Chess</>}</span>
         <svg width={`${boardSize}`} height={`${boardSize }`} className="border border-black">
           <rect x={padding} y={padding} width={boardSize - 2 * padding} height={boardSize - 2 * padding} fill="white" />
           
@@ -244,6 +268,10 @@ const ChessBoard8x8: React.FC<{ colors: string[], side: ChessColor, roomID?: str
                 //console.log("board.players[pieceAtPos.color].isCheckmated:", board.players[pieceAtPos.color].isCheckmated);
                 isCheckmated = true;
               }
+              let isTurn = true;
+              if (selectedPiece && selectedPiece.color !== side && roomID !== undefined) {
+                isTurn = false;
+              }
 
               return (
               <Fragment key={`${row}-${col}`}>
@@ -256,14 +284,14 @@ const ChessBoard8x8: React.FC<{ colors: string[], side: ChessColor, roomID?: str
                     textAnchor="middle" dominantBaseline="middle">
                     {side == 'white' ? 8 - row : 1 + row}
                   </text> : null}
-                  <rect data-testid={`sq-${pos}`} onClick={() => updatePiecePosition(pos, pieceIndex)}
+                  <rect data-testid={`sq-${pos}`} onClick={() => {  if (isTurn) updatePiecePosition(pos, pieceIndex)}}
                   x={padding + col * tileSize} y={padding + row * tileSize} width={tileSize} height={tileSize} overflow={'visible'}
                     fill={canReplace ? SelectedColors['green'] : fill} opacity={canReplace ? 0.8 : 1} />
                   {validMoves && validMoves.includes(pos) && (!pieceAtPos || pieceAtPos.isCaptured == true) &&
                     <circle  cx={padding + col * tileSize + tileSize / 2} cy={padding + row * tileSize + tileSize / 2}
-                      r={10} fill={SelectedColors['green']} opacity={0.8} onClick={() => updatePiecePosition(pos, pieceIndex)} />
+                      r={10} fill={SelectedColors['green']} opacity={0.8} onClick={() => { if (isTurn) updatePiecePosition(pos, pieceIndex)} } />
                   }
-                  {canReplace && pieceAtPos &&
+                  {canReplace && pieceAtPos && 
                     <>
                     <defs>
                     <clipPath id={`clip-${row}-${col}`}>

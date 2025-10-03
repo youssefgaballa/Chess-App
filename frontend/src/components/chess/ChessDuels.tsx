@@ -22,6 +22,7 @@ export const ChessDuels = () => {
         }
         return prevUsers;
       });
+      setOpponent(sender);
     });
 
     return () => {
@@ -36,13 +37,18 @@ export const ChessDuels = () => {
   const [roomID, setRoomID] = useState<number | null>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [isOwner, setIsOwner] = useState<boolean>(false);
+  const [opponent, setOpponent] = useState<string | null>(null);
+  const [spectators, setSpectators] = useState<string[]>([]);
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [usersInRoom, setUsersInRoom] = useState<string[]>([]);
   useEffect(() => {
     console.log("usersInRoom:", usersInRoom);
-  }, [usersInRoom]);
+    console.log("opponent:", opponent);
+    console.log("spectators:", spectators);
+  }, [usersInRoom, opponent, spectators]);
 
-  const { createRoom, deleteRoom, leaveRoom, onJoinRoom } = useRooms(username, user, roomID, setRoomID, setIsOwner, setShowModal, 'Chess', setUsersInRoom, usersInRoom);
+  const { createRoom, deleteRoom, leaveRoom, onJoinRoom } = useRooms(username, user, roomID, setRoomID, setIsOwner,
+    setShowModal, 'Chess', setUsersInRoom, usersInRoom, setOpponent, setSpectators);
 
 
   return (
@@ -60,12 +66,19 @@ export const ChessDuels = () => {
         </button>}
         {
           roomID && usersInRoom.length == 2 && isOwner && (
-            <ChessBoard8x8 colors={Colors['light/dark']} side={'white'} />
+            <> 
+              {opponent && <h3>Opponent: {opponent}</h3>}
+              <ChessBoard8x8 colors={Colors['light/dark']} side={'white'} roomID={roomID} />
+              {username && <h3>You are: {username}</h3>}
+            </>
           )
         }
         {
           roomID && usersInRoom.length == 2 && !isOwner && (
-            <ChessBoard8x8 colors={Colors['light/dark']} side={'black'} />
+            <> {opponent && <h3>Opponent: {opponent}</h3>}
+              <ChessBoard8x8 colors={Colors['light/dark']} side={'black'} roomID={roomID} />
+              {username && <h3>You are: {username}</h3>}
+            </>
           )
         }
         {roomID && isOwner && <button className="mt-2 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"

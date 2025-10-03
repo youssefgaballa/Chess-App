@@ -11,7 +11,7 @@ DELETE http://localhost:{{port}}/rooms
 Content-Type: application/json
 
 {
-  "roomID": 6,
+  "roomID": 16,
   "username": "root"
 }
 

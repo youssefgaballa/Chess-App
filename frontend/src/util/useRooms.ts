@@ -5,7 +5,8 @@ import axios from "axios";
 export type RoomType = 'Chat' | 'Chess' | 'Other';
 export default function useRooms(username: string | null, user: UserState, roomID: number | null,
   setRoomID: (id: number | null) => void, setIsOwner: (isOwner: boolean) => void, setShowModal: (show: boolean) => void, type: RoomType,
-  setUsersInRoom?: (value: React.SetStateAction<string[]>) => void, usersInRoom?: string[]) {
+  setUsersInRoom?: (value: React.SetStateAction<string[]>) => void, usersInRoom?: string[],
+  setOpponent?: (opponent: string | null) => void, setSpectators?: (spectators: string[]) => void) {
 
 
   const createRoom = () => {
@@ -65,19 +66,23 @@ export default function useRooms(username: string | null, user: UserState, roomI
       )
         .then(async () => {
           setRoomID(roomId);
-          socket.emit("join room", roomId, username);
           if (type === 'Chess' && setUsersInRoom && username) {
             if (usersInRoom && usersInRoom.length >= 2) {
               setErrorMessage("Room is full");
               return;
             }
-            const users = await getRoomUsers(roomId);
+            const { owner, users } = await getRoomUsers(roomId);
             console.log("users in room after joining:", users);
             setUsersInRoom((prevUsers) => {
-              return [...new Set([...prevUsers, ...users])];
+              return [...new Set([...prevUsers, ...users, owner])];
             });
+            if (setOpponent && setSpectators) {
+              setOpponent(owner === username ? (users[0] || null) : owner);
+              setSpectators(usersInRoom?.filter((user) => user !== username && user !== owner) || []);
+            }
             console.log("Updated usersInRoom:", usersInRoom);
           }
+          socket.emit("join room", roomId, username);
           console.log("Joined room with ID:", roomId);
           setShowModal(false);
         })
@@ -116,8 +121,8 @@ export default function useRooms(username: string | null, user: UserState, roomI
     }
   };
 
-  const getRoomUsers = async (roomId: number): Promise<string[]> => {
-    if (!roomId === null) return [];
+  const getRoomUsers = async (roomId: number): Promise<{ owner: string, users: string[] }> => {
+    if (!roomId === null) return { owner: "", users: [] };
     const response = await axios.get(`http://localhost:${import.meta.env.VITE_BACKEND_PORT}/rooms`,
       {
         params: { roomID: roomId },
@@ -127,7 +132,10 @@ export default function useRooms(username: string | null, user: UserState, roomI
     )
       .then((res) => {
         console.log("Fetched users in room:", res.data);
-        return [res.data.owner_username, ...(res.data.users || [])];
+        return {
+          owner: res.data.owner_username,
+          users: res.data.users || []
+        }
         //return [res.data.owner_username, ...(res.data.users || [])];
       })
       .catch((error) => {
@@ -135,7 +143,7 @@ export default function useRooms(username: string | null, user: UserState, roomI
         return null;
       });
     //console.log("response from getRoomUser: ", response);
-    if (response === null || response == undefined) return [];
+    if (response === null || response == undefined) return { owner: "", users: [] };
     return response;
 
   }
