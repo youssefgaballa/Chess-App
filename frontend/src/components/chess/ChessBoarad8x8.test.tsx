@@ -241,7 +241,7 @@ const BoardTests = (side: ChessColor) => {
       await movePiece('f8', 'b4'); //black puts white in check
       await movePiece('b2', 'b3', true);
       await movePiece('d4', 'e5', true);
-      let checkIndicator = screen.getByTestId('check-indicator');
+      const checkIndicator = screen.getByTestId('check-indicator');
       expect(checkIndicator).toBeInTheDocument();
       expect(checkIndicator).toHaveAttribute('id', 'e1');
       await movePiece('f3', 'd2');

@@ -1,4 +1,4 @@
-import { use, useState } from "react";
+import { useState } from "react";
 import  ChessBoard8x8  from "./ChessBoard8x8"
 import type { ChessColor } from "./chessPiece";
 

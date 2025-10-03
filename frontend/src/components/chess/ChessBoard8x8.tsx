@@ -79,7 +79,6 @@ const ChessBoard8x8: React.FC<{ colors: string[], side: ChessColor, roomID?: num
       }
       setBoardState();
 
-      
       if (pieceIndex >= 0) {
         dispatch(setLastMove({
           from: fromPiece.position, fromIndex: selectedPieceIndex,
@@ -92,13 +91,11 @@ const ChessBoard8x8: React.FC<{ colors: string[], side: ChessColor, roomID?: num
         }));
       }
       //console.log("board after move:", board);
-
     }
   }
 
   const onPieceClick = (pieceIndex: number) => {
     //console.log("Piece clicked at position:", pos);
-
     if (selectedPieceIndex == null) {
       dispatch(setValidMoves({pieceIndex }));
       setSelectedPieceIndex(pieceIndex);
@@ -119,8 +116,6 @@ const ChessBoard8x8: React.FC<{ colors: string[], side: ChessColor, roomID?: num
         socket.emit("move piece", { roomID, from: fromPiece, to: toPiece });
       }
       setBoardState();
-
-      
       dispatch(setLastMove({ from: fromPiece.position, fromIndex: selectedPieceIndex,
         to: toPiece.position, toIndex: pieceIndex, replace: true }) );
     }
@@ -211,9 +206,9 @@ const ChessBoard8x8: React.FC<{ colors: string[], side: ChessColor, roomID?: num
               
               
               if ((row + col) % 2 === 0) {
-                fill = (selectedPiecePos === pos ? SelectedColors['green'] : side == 'white' ? colors[0] : colors[1]);
+                fill = (selectedPiecePos === pos ? SelectedColors['green'] : colors[0]);
               } else {
-                fill = (selectedPiecePos === pos ? SelectedColors['green'] : side == 'white' ? colors[1] : colors[0]);
+                fill = (selectedPiecePos === pos ? SelectedColors['green'] : colors[1]);
               }
               
               let canReplace = false;

@@ -122,7 +122,7 @@ export default function useRooms(username: string | null, user: UserState, roomI
   };
 
   const getRoomUsers = async (roomId: number): Promise<{ owner: string, users: string[] }> => {
-    if (!roomId === null) return { owner: "", users: [] };
+    if (!(roomId === null)) return { owner: "", users: [] };
     const response = await axios.get(`http://localhost:${import.meta.env.VITE_BACKEND_PORT}/rooms`,
       {
         params: { roomID: roomId },
