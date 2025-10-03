@@ -21,7 +21,7 @@ const ChessBoard8x8: React.FC<{ colors: string[], side: ChessColor, roomID?: num
   const [selectedPieceIndex, setSelectedPieceIndex] = useState<number | null>(null);
   const board = useSelector(selectBoardState);
   const [toggleKingInCheck, setToggleKingInCheck] = useState(false);
-  const startGame = () => {
+  const resetGame = () => {
     //console.log("Game started!");
 
     dispatch(setInitialBoard());
@@ -351,7 +351,7 @@ const ChessBoard8x8: React.FC<{ colors: string[], side: ChessColor, roomID?: num
           }
           
       </svg>
-      <button onClick={startGame} className="mt-4 p-2 bg-blue-500 text-white rounded hover:bg-blue-600">Start Game</button>
+        {roomID == undefined && <button onClick={resetGame} className="mt-4 p-2 bg-blue-500 text-white rounded hover:bg-blue-600">Reset Board</button>}
         <div>Player turn: {board.turn}</div>
         <div>Last move: {board.lastMove ? `${board.lastMove.from} to ${board.lastMove.to}` : 'N/A'}</div>
         <div>{board.players['white'].isCheckmated ? 'White is checkmated!' : board.players['black'].isCheckmated ? 'Black is checkmated!' : ''}</div>
