@@ -12,7 +12,7 @@ export type ChessBoardState = { // hasMoved is mostly relevant for pawns and cas
     type: ChessPieceType; color: ChessColor;
     position: ChessPosition, isCaptured: boolean, hasMoved: boolean,
     freeMoves: ChessPosition[], replaceMoves: ChessPosition[], 
-    isChecked?: boolean, isKingCheckedLastMove?: boolean
+    isChecked?: boolean, 
   }[];
   turn: ChessColor;
   players: {
@@ -76,7 +76,7 @@ const initialState: ChessBoardState = {
     },
     {
       type: "king", color: "white", position: "e1",
-      isCaptured: false, hasMoved: false, freeMoves: [], replaceMoves: [], isChecked: false, isKingCheckedLastMove: false
+      isCaptured: false, hasMoved: false, freeMoves: [], replaceMoves: [], isChecked: false, 
     },
     {
       type: "bishop", color: "white", position: "f1",
@@ -140,7 +140,7 @@ const initialState: ChessBoardState = {
     },
     {
       type: "king", color: "black", position: "e8",
-      isCaptured: false, hasMoved: false, freeMoves: [], replaceMoves: [], isChecked: false, isKingCheckedLastMove: false
+      isCaptured: false, hasMoved: false, freeMoves: [], replaceMoves: [], isChecked: false, 
     },
     {
       type: "bishop", color: "black", position: "f8",
@@ -238,9 +238,13 @@ const chessBoardSlice = createSlice({
           // console.log("No piece at the source or destination position");
           return;
         }
-        if (fromPiece.color === toPiece.color) {
-          console.log("Cannot take your own piece!");
-          return;
+        if (fromPiece.color === toPiece.color ) { //cant take your own piece, except for castling
+          if (!(fromPiece.type === "king" && replace && toPiece.type === "rook"
+            && fromPiece.color === toPiece.color && fromPiece.hasMoved === false && toPiece.hasMoved === false)) {
+            //console.log("Cannot take your own piece!");
+            return;
+            }
+
         }
       }
       // console.log("from piece ", fromPiece, "to piece ", toPiece);
@@ -377,6 +381,52 @@ const chessBoardSlice = createSlice({
             const fileDiff = Math.abs(to[0].charCodeAt(0) - from[0].charCodeAt(0));
             const rankDiff = Math.abs(to[1].charCodeAt(0) - from[1].charCodeAt(0));
             // console.log("fileDiff:", fileDiff, "rankDiff:", rankDiff);
+            // Castling: king and rook must not have moved and there must be no pieces between them
+            // 4 places for castling.
+            if (fromPiece.type === "king" && replace && toPiece.type === "rook"
+              && fromPiece.color === toPiece.color && fromPiece.hasMoved === false && toPiece.hasMoved === false) {
+              //console.log("Attempting to castle");
+              
+              if (fromPiece.color === "white" && from === "e1" && to === "h1") { // white kingside castle
+                if (!state.pieces.some(p => p.position === "f1" || p.position === "g1")) {
+                  fromPiece.position = "g1";
+                  fromPiece.hasMoved = true;
+                  // Move rook
+                  toPiece.position = "f1";
+                  toPiece.hasMoved = true;
+                }
+              } else if (fromPiece.color === "white" && from === "e1" && to === "a1") { // white queenside castle
+                if (!state.pieces.some(p => p.position === "d1" || p.position === "c1" || p.position === "b1")) {
+                  fromPiece.position = "c1";
+                  fromPiece.hasMoved = true;
+                  // Move rook
+                  toPiece.position = "d1";
+                  toPiece.hasMoved = true;
+                }
+              } else if (fromPiece.color === "black" && from === "e8" && to === "h8") { // black kingside castle
+                if (!state.pieces.some(p => p.position === "f8" || p.position === "g8")) {
+                  fromPiece.position = "g8";
+                  fromPiece.hasMoved = true;
+                  // Move rook
+                  toPiece.position = "f8";
+                  toPiece.hasMoved = true;
+                }
+              } else if (fromPiece.color === "black" && from === "e8" && to === "a8") { // black queenside castle
+                if (!state.pieces.some(p => p.position === "d8" || p.position === "c8" || p.position === "b8")) {
+                  fromPiece.position = "c8";
+                  fromPiece.hasMoved = true;
+                  // Move rook
+                  toPiece.position = "d8";
+                  toPiece.hasMoved = true;
+                }
+              } else {
+                 console.log("Invalid move for king when castling!");
+                return;
+              }
+              state.lastMoveFailed = false;
+              return;
+            }
+
             if (fileDiff > 1 || rankDiff > 1) {
               // console.log("Invalid move for king!");
               return;
@@ -387,29 +437,7 @@ const chessBoardSlice = createSlice({
         
       }
       
-      const king = state.pieces.find(p => p.type === 'king' && p.color === fromPiece.color);
-      if (!king) {
-        // console.log("No king found for color:", fromPiece.color);
-        return;
-      }
-      if (king.isChecked) {
-        // const isInCheck = state.pieces.some(p => {
-        //   // console.log("p.position:", p.position);
-        //   // console.log("p.color:", p.color);
-        //   // console.log("p.freeMoves.includes(king.position):", p.replaceMoves.includes(king.position));
-        //   return p.color !== fromPiece.color && p.replaceMoves.includes(king.position);
-        // });
-        //console.log("isInCheck:", isInCheck);
-        //console.log("King is in check, cannot move other pieces until the check is resolved!");
-        king.isKingCheckedLastMove = true;
-        //console.log("state.isKingCheckedLastMove:", state.isKingCheckedLastMove);
-        //state.turn = state.turn === "white" ? "black" : "white";
-        //console.log("turn changed to:", state.turn);
-      } else {
-        king.isKingCheckedLastMove = false;
-      }
-        // Simulate the move to see if it puts the king in check
-      // Move the piece
+
       fromPiece.position = to;
       //fromPiece.position = to;
       if (replace) {
@@ -419,12 +447,9 @@ const chessBoardSlice = createSlice({
         toPiece.isCaptured = true;
         fromPiece.replaceMoves = fromPiece.replaceMoves.filter(pos => pos !== to);
       }
-      // Change turn
       fromPiece.hasMoved = true;
       state.lastMoveFailed = false;
-      // the indeces are swapped so it works correclty when undoing a move
-      //state.lastMove = { from: from, fromIndex: toIndex, to: to, toIndex: fromIndex, replace };
-      //state.turn = state.turn === "white" ? "black" : "white";
+
     },
     setValidMoves: (state, action: { payload: {pieceIndex: number} }) => {
       const { pieceIndex} = action.payload;
@@ -786,6 +811,25 @@ const chessBoardSlice = createSlice({
                 return move; // Can move to a square occupied by a piece of the opposite color
               }
             });
+            if (piece.hasMoved === false) { // potential castle
+              if (piece.color === "white") {
+                const kingsideRook = state.pieces.find(p => p.position === "h1" && p.type === "rook" && p.color === "white" && p.hasMoved === false && p.isCaptured === false);
+                const queensideRook = state.pieces.find(p => p.position === "a1" && p.type === "rook" && p.color === "white" && p.hasMoved === false && p.isCaptured === false);
+                if (kingsideRook && !state.pieces.some(p => p.position === "f1" || p.position === "g1")) { // white eligible for kingside castle
+                  piece.replaceMoves = piece.replaceMoves.concat(["h1"]);
+                } else if (queensideRook && !state.pieces.some(p => p.position === "d1" || p.position === "c1" || p.position === "b1")) { //white eligible for queenside castle
+                  piece.replaceMoves = piece.replaceMoves.concat(["a1"]);
+                }
+              } else if (piece.color === "black") {
+                const kingsideRook = state.pieces.find(p => p.position === "h8" && p.type === "rook" && p.color === "black" && p.hasMoved === false && p.isCaptured === false);
+                const queensideRook = state.pieces.find(p => p.position === "a8" && p.type === "rook" && p.color === "black" && p.hasMoved === false && p.isCaptured === false);
+                if (kingsideRook && !state.pieces.some(p => p.position === "f8" || p.position === "g8")) { // black eligible for kingside castle
+                  piece.replaceMoves = piece.replaceMoves.concat(["h8"]);
+                } else if (queensideRook && !state.pieces.some(p => p.position === "d8" || p.position === "c8" || p.position === "b8")) { //black eligible for queenside castle
+                  piece.replaceMoves = piece.replaceMoves.concat(["a8"]);
+                }
+              }
+            }
 
             break;
           } default: break;
@@ -871,6 +915,9 @@ const chessBoardSlice = createSlice({
       }
     },
     setLastMove: (state, action: { payload: { from: ChessPosition, fromIndex: number, to: ChessPosition, toIndex: number, replace: boolean } }) => {
+      if (state.lastMoveFailed) {
+        return;
+      }
       state.lastMove = {
         from: action.payload.from, fromIndex: action.payload.toIndex,
         to: action.payload.to, toIndex: action.payload.fromIndex,

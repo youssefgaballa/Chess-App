@@ -17,11 +17,15 @@ the id of the piece and who it belonged to)
 - fix duplicate logic in chessSlice.ts
 - rename updatePiecePosition, validMoves
 - make sure setvalid moves is called only once per piece per move.
-- castling, upgrading pieces
+- castling, upgrading pieces, stalemates
 - create new action for changing last move and dispatch it after we set all the validmoves for each piece.
 - time limits
 - delete chat/chess rooms on other users ends when owner/admin deletes it
 - add types to rooms, user roles (spectator, gamer, admin)
+- gradient background based on team colors
+- replay mode
+- piece move transitions
+- loading indicator while reducers are running. (relevant for slow machines)
 
 - Integration with map: if another player attacks the territory of another,
 they can initiate a chess match (like bloons monkey city)
@@ -41,6 +45,8 @@ General:
 
 Tests:
 - make sure every piece is able to move and replace pieces
+- make sure last move and turn isnt changed if invalid move is played
+
 
 
 

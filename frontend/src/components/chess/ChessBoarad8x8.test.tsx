@@ -9,7 +9,7 @@ import chessBoardReducer from './chessSlice';
 import userReducer from '../../users/userSlice';
 import ChessBoard8x8 from './ChessBoard8x8';
 import {Colors} from './ChessBoardSolo'
-import type { ChessColor } from './chessPiece';
+import type { ChessColor, ChessPosition } from './chessPiece';
 
 
   describe('White Board Solo Tests', () => {
@@ -167,6 +167,81 @@ const BoardTests = (side: ChessColor) => {
     }
 
   });
+
+  it("Kingside castle", async () => {
+    if (side == 'white') {
+      await movePiece('g2', 'g4');
+      await movePiece('a7', 'a6');
+      await movePiece('f1', 'h3');
+      await movePiece('a6', 'a5');
+      await movePiece('g1', 'f3');
+      await movePiece('a5', 'a4');
+      //screen.logTestingPlaygroundURL()
+      // make sure replace indicator for rook appears when king is clicked
+      const kingSquare = screen.getByTestId(`sq-e1`); 
+      await userEvent.click(kingSquare);
+      const replaceRookIndicator = screen.getByTestId(`replace-h1`);
+      expect(replaceRookIndicator).toBeInTheDocument();
+      await userEvent.click(kingSquare); // unselect the king so movePiece works correctly
+      await movePiece('e1', 'h1', undefined, true); //castle move
+      //screen.logTestingPlaygroundURL()
+    } else if (side == 'black') {
+      await movePiece('a2', 'a3');
+      await movePiece('g7', 'g5');
+      await movePiece('a3', 'a4');
+      await movePiece('f8', 'h6');
+      await movePiece('a4', 'a5');
+      await movePiece('g8', 'f6');
+      await movePiece('a5', 'a6');
+      const kingSquare = screen.getByTestId(`sq-e8`);
+      await userEvent.click(kingSquare);
+      const replaceRookIndicator = screen.getByTestId(`replace-h8`);
+      expect(replaceRookIndicator).toBeInTheDocument();
+      await userEvent.click(kingSquare); // unselect the king so movePiece works correctly
+      await movePiece('e8', 'h8', undefined, true); //castle move
+    }
+  });
+  it("Queenside castle", async () => {
+    if (side == 'white') {
+      await movePiece('d2', 'd4');
+      await movePiece('h7', 'h6');
+      await movePiece('c1', 'e3');
+      await movePiece('h6', 'h5');
+      await movePiece('b1', 'a3');
+      await movePiece('h5', 'h4');
+      await movePiece('d1', 'd3');
+      await movePiece('h4', 'h3');
+      
+      //screen.logTestingPlaygroundURL()
+      // make sure replace indicator for rook appears when king is clicked
+      const kingSquare = screen.getByTestId(`sq-e1`);
+      await userEvent.click(kingSquare);
+      const replaceRookIndicator = screen.getByTestId(`replace-a1`);
+      expect(replaceRookIndicator).toBeInTheDocument();
+      await userEvent.click(kingSquare); // unselect the king so movePiece works correctly
+      await movePiece('e1', 'a1', undefined, true); //castle move
+    } else if (side == 'black') {
+      await movePiece('h2', 'h3');
+      await movePiece('d7', 'd5');
+      await movePiece('h1', 'h2');
+      await movePiece('c8', 'h3');
+      await movePiece('g2', 'h3');
+      await movePiece('d8', 'd6');
+      await movePiece('h3', 'h4');
+      await movePiece('b8', 'c6');
+      await movePiece('h4', 'h5');//ready to castle
+
+      const kingSquare = screen.getByTestId(`sq-e8`);
+      await userEvent.click(kingSquare);
+      const replaceRookIndicator = screen.getByTestId(`replace-a8`);
+      expect(replaceRookIndicator).toBeInTheDocument();
+      await userEvent.click(kingSquare); // unselect the king so movePiece works correctly
+
+      await movePiece('e8', 'a8', undefined, true); //castle move
+
+    }
+  });
+
 
   it('moves a piece when clicked on a valid square and can take pieces', async () => {
     if (side == 'white') {
@@ -386,16 +461,40 @@ const BoardTests = (side: ChessColor) => {
   });
 };
 
-const movePiece = async (from: string, to: string, expectUndo?: boolean) => {
+const movePiece = async (from: string, to: string, expectUndo?: boolean, isCastling?: boolean) => {
   const fromSquare = screen.getByTestId(`sq-${from}`);
   const fromPiece = screen.getByTestId(from);
   expect(fromSquare).toBeInTheDocument();
   expect(fromPiece.dataset.testid).toBe(from);
   const toSquare = screen.getByTestId(`sq-${to}`);
+  expect(toSquare).toBeInTheDocument();
   await userEvent.click(fromSquare);
   await userEvent.click(toSquare);
   // expect(fromSquare).toBeInTheDocument();
   // expect(toSquare).toBeInTheDocument();
+  if (isCastling) {
+    let newKingPos: ChessPosition;
+    let newRookPos: ChessPosition;
+    if (to[0] === 'h' && to[1] === '1') { //White Kingside castle
+      newKingPos = 'g1';
+      newRookPos = 'f1';
+    } else if (to[0] === 'a' && to[1] === '1') { //White Queenside castle
+      newKingPos = 'c1';
+      newRookPos = 'd1';
+    } else if (to[0] === 'h' && to[1] === '8') { //Black Kingside castle
+      newKingPos = 'g8';
+      newRookPos = 'f8';
+    } else if (to[0] === 'a' && to[1] === '8') { //Black Queenside castle
+      newKingPos = 'c8';
+      newRookPos = 'd8';
+    } else {
+      throw new Error("Invalid castle move");
+    }
+    expect(fromPiece.dataset.testid).toBe(newKingPos); //king should not have moved
+    const rook = screen.getByTestId(newRookPos);
+    expect(rook).toBeInTheDocument();
+    return;
+  }
   if (expectUndo == undefined || expectUndo === false) {
     //console.log("expectUndo is false");
     expect(fromPiece.dataset.testid).toBe(to);

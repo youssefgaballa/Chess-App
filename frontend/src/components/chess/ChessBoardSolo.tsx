@@ -20,14 +20,15 @@ export const SelectedColors = {
 export const ChessBoardSolo = () => {
   const colors = Colors['light/dark'];
   const [side, setSide] = useState<ChessColor>("white");
-  const swapSide = () => {
-    setSide(prevSide => prevSide === 'white' ? 'black' : 'white');
-  }
+  const [gradient, setGradient] = useState<boolean>(false);
+
   return (
     <>
-      <div className='flex-col text-center items-center justify-center mt-4'>
+      <div className={`flex-col text-center items-center justify-center mt-4 ${gradient ? side == 'white' ? 'bg-gradient-to-b from-black to-white' : 'bg-gradient-to-b from-white to-black' : ''}`}>
       <ChessBoard8x8 colors={colors} side={side} />
-      <button className="border border-black rounded-lg p-2" onClick={swapSide}>Flip Board</button>
+        <button className="border border-black rounded-lg p-2"
+          onClick={() => setSide(prevSide => prevSide === 'white' ? 'black' : 'white')}>Flip Board</button>
+        <button className="border border-black rounded-lg p-2" onClick={() => setGradient(prev => !prev)}>Toggle Gradient</button>
       </div>
     </>
   );

@@ -131,7 +131,6 @@ const ChessBoard8x8: React.FC<{ colors: string[], side: ChessColor, roomID?: num
     }
     if (board.lastMoveFailed) {
       //console.log("Move failed, not changing turn.");
-
       return;
     }
     const yourKing = board.pieces.find(p => p.type === 'king' && p.color === board.turn);
@@ -219,6 +218,10 @@ const ChessBoard8x8: React.FC<{ colors: string[], side: ChessColor, roomID?: num
                 && pieceAtPos.isCaptured == false ) {
                 canReplace = true;
               }
+              if (selectedPiece && selectedPiece?.type === "king"  && selectedPiece.replaceMoves.includes(pos) && pieceAtPos
+                && pieceAtPos.type === "rook" && pieceAtPos.color === selectedPiece.color && pieceAtPos.isCaptured == false) {
+                canReplace = true;
+              }
               // if (selectedPieceIndex && selectedPiece.type == ("pawn" as ChessPieceType) && couldReplace && couldReplace.replaceMoves.includes(pos) && pieceAtPos) {
               //   canReplace = true;
               // }
@@ -263,7 +266,7 @@ const ChessBoard8x8: React.FC<{ colors: string[], side: ChessColor, roomID?: num
                           r={42} fill={fill} />
                       </clipPath>
                     </defs>
-                    <rect id={`rect-${row}-${col}`}   x={padding + col * tileSize} y={padding + row * tileSize} width={tileSize} height={tileSize}
+                    <rect id={`rect-${row}-${col}`} data-testid={`replace-${pos}`} x={padding + col * tileSize} y={padding + row * tileSize} width={tileSize} height={tileSize}
                       fill={fill} overflow={'visible'} clipPath={`url(#clip-${row}-${col})`} onClick={() => onSquareClick(pos, pieceIndex)}/>
                     </>
                     
