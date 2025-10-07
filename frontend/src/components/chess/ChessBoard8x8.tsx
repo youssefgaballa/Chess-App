@@ -149,8 +149,16 @@ const ChessBoard8x8: React.FC<{ colors: string[], side: ChessColor, roomID?: num
       dispatch(movePiece({ from: lastMove.to, fromIndex: lastMove.toIndex!, to: lastMove.from!, toIndex: lastMove.fromIndex!, replace: lastMove.replace!, undo: true }));
       dispatch(setValidMoves({ pieceIndex: lastMove.fromIndex! }));
       setBoardState();
-
     }
+    // case for pawn promotionnn
+    // const lastMove = board.lastMove;
+    // const fromPiece = board.pieces[lastMove.toIndex];
+    
+    // if (fromPiece && fromPiece.pendingPromotion) {
+    //   // Handle pawn promotion UI or logic here
+    //   console.log("Pawn promotion needed for piece at:", fromPiece.position);
+    // }
+
 
   }, [board.lastMove]);
 

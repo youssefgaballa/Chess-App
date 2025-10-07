@@ -12,7 +12,7 @@ export type ChessBoardState = { // hasMoved is mostly relevant for pawns and cas
     type: ChessPieceType; color: ChessColor;
     position: ChessPosition, isCaptured: boolean, hasMoved: boolean,
     freeMoves: ChessPosition[], replaceMoves: ChessPosition[], 
-    isChecked?: boolean, 
+    isChecked?: boolean, pendingPromotion?: boolean; // for pawns that reach the end of the board
   }[];
   turn: ChessColor;
   players: {
@@ -284,6 +284,15 @@ const chessBoardSlice = createSlice({
                 return;
               }
             }
+            if (to[1] === '8' && fromPiece.color === 'white') {
+              // White pawn reaches the last rank, set pendingPromotion to true
+              fromPiece.pendingPromotion = true;
+              console.log("White pawn reached last rank, pending promotion set to true");
+            } else if (to[1] === '1' && fromPiece.color === 'black') {
+              // Black pawn reaches the last rank, set pendingPromotion to true
+              fromPiece.pendingPromotion = true;
+              console.log("Black pawn reached last rank, pending promotion set to true");
+            }
             break;
           } case "knight": {
             const fileDiff = to[0].charCodeAt(0) - from[0].charCodeAt(0);
@@ -476,7 +485,7 @@ const chessBoardSlice = createSlice({
               }
             } else {
               const nextPos = piece.position[0] + (parseInt(piece.position[1]) + direction).toString() as ChessPosition;
-              if (!state.pieces.some(p => p.position === nextPos)) {
+              if (!state.pieces.some(p => p.position === nextPos) && nextPos[1] >= '1' && nextPos[1] <= '8') {
                 piece.freeMoves = piece.freeMoves.concat([nextPos]);
               } 
             }
