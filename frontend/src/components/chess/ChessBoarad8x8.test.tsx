@@ -168,6 +168,56 @@ const BoardTests = (side: ChessColor) => {
 
   });
 
+  it("king should be able to replace piece that checks it", async () => {
+    if (side == 'white') {
+      await movePiece('d2', 'd4');
+      await movePiece('e7', 'e5');
+      await movePiece('d4', 'e5');
+      await movePiece('d7', 'd5');
+      await movePiece('d1', 'd5');
+      await movePiece('a7', 'a6');
+      await movePiece('d5', 'd8'); // put black in check
+
+      await movePiece('e8', 'd8'); // black king takes queen to get out of check
+
+    } else if (side == 'black') {
+      await movePiece('e2', 'e4');
+      await movePiece('d7', 'd5');
+      await movePiece('e4', 'd5');
+      await movePiece('d8', 'd5');
+      await movePiece('d2', 'd4');
+      await movePiece('d5', 'd4');
+      await movePiece('a2', 'a3');
+      await movePiece('d4', 'd1'); // put white in check
+      await movePiece('e1', 'd1'); // white king takes queen to get out of check
+    }
+  });
+
+  it("king should be able to move to a free spot when in check", async () => {
+    if (side == 'white') {
+      await movePiece('g1', 'h3');
+      await movePiece('e7', 'e6');
+      await movePiece('h3', 'f4');
+      await movePiece('e6', 'e5');
+      await movePiece('f4', 'h5');
+      await movePiece('e5', 'e4');
+      await movePiece('h5', 'f6'); // put black in check
+      await movePiece('e8', 'e7'); // black king moves out of check
+    } else if (side == 'black') {
+      await movePiece('e2', 'e3');
+      await movePiece('g8', 'h6');
+      await movePiece('e3', 'e4');
+      await movePiece('h6', 'f5');
+      await movePiece('e4', 'e5');
+      await movePiece('f5', 'h4');
+      await movePiece('e5', 'e6');
+      await movePiece('h4', 'f3'); // put white in check
+      await movePiece('e1', 'e2'); // white king moves out of check
+    }
+  });
+
+
+
   it("Kingside castle", async () => {
     if (side == 'white') {
       await movePiece('g2', 'g4');
