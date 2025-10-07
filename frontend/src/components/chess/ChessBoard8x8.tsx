@@ -79,8 +79,8 @@ const ChessBoard8x8: React.FC<{ colors: string[], side: ChessColor, roomID?: num
         socket.emit("move piece", { roomID, fromIndex: selectedPieceIndex, toIndex: pieceIndex, to: to});
       }
       setBoardState();
-      if (fromPiece.type === "king" && fromPiece.isChecked == true && pieceIndex >= 0) {
-        dispatch(isKingInCheck({ pos: toPiece.position, color: fromPiece.color }));
+      if (fromPiece.type === "king" && fromPiece.isChecked == true) {
+        dispatch(isKingInCheck({ pos: pos, color: fromPiece.color }));
       }
       if (pieceIndex >= 0) {
         dispatch(setLastMove({
