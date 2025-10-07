@@ -451,7 +451,7 @@ const chessBoardSlice = createSlice({
       //fromPiece.position = to;
       if (replace) {
         // Remove the taken piece
-        // console.log("removing piece at toIndex:", toIndex);
+        //console.log("removing piece at toIndex:", toIndex);
         //state.pieces.splice(toIndex, 1);
         toPiece.isCaptured = true;
         fromPiece.replaceMoves = fromPiece.replaceMoves.filter(pos => pos !== to);
@@ -478,14 +478,14 @@ const chessBoardSlice = createSlice({
             if (!piece.hasMoved) {
               for (let i = 1; i <= 2; i++) {
                 const nextPos = piece.position[0] + (parseInt(piece.position[1]) + i * direction).toString() as ChessPosition;
-                if (state.pieces.some(p => p.position === nextPos)) {
+                if (state.pieces.some(p => p.position === nextPos && p.isCaptured === false)) {
                   break; // Blocked by another piece
                 }
                 piece.freeMoves = piece.freeMoves.concat([nextPos]);
               }
             } else {
               const nextPos = piece.position[0] + (parseInt(piece.position[1]) + direction).toString() as ChessPosition;
-              if (!state.pieces.some(p => p.position === nextPos) && nextPos[1] >= '1' && nextPos[1] <= '8') {
+              if (!state.pieces.some(p => p.position === nextPos && p.isCaptured === false) && nextPos[1] >= '1' && nextPos[1] <= '8') {
                 piece.freeMoves = piece.freeMoves.concat([nextPos]);
               } 
             }
@@ -529,7 +529,7 @@ const chessBoardSlice = createSlice({
             //  if (state.pieces.some(p => p.position === move && p.color === piece.color)) {
             // console.log("knightMoves:", knightMoves);
             piece.freeMoves = knightMoves.filter(move => {
-              if (!state.pieces.some(p => p.position === move)) {
+              if (!state.pieces.some(p => p.position === move && p.isCaptured === false)) {
                 return move; // Can move to an empty square
               }
             });
@@ -567,7 +567,8 @@ const chessBoardSlice = createSlice({
               
               let clearPath = true;
               for (let j = 1; j <= Math.abs(fileDiff); j++) {
-                const currPos: ChessPosition = String.fromCharCode(piece.position[0].charCodeAt(0) + j * stepX) + String.fromCharCode(piece.position[1].charCodeAt(0) + j * stepY) as ChessPosition;
+                const currPos: ChessPosition = String.fromCharCode(piece.position[0].charCodeAt(0) + j * stepX) +
+                  String.fromCharCode(piece.position[1].charCodeAt(0) + j * stepY) as ChessPosition;
                 // console.log("--currPos for bishop move:", currPos);
                 if (state.pieces.some(p => {
 
@@ -596,19 +597,13 @@ const chessBoardSlice = createSlice({
                 const intermediateMovePos: ChessPosition = String.fromCharCode(move.charCodeAt(0) +  stepX)
                   + String.fromCharCode(move.charCodeAt(1) +  stepY) as ChessPosition;
                 
-                // if (move == 'g5') {
-                //   console.log("fileDiff:", fileDiff, "rankDiff:", rankDiff);
-                //   console.log("intermediateMovePos for bishop replace move g5:", intermediateMovePos);
-                // } else if (move == 'b8') {
-                //   console.log("fileDiff:", fileDiff, "rankDiff:", rankDiff);
-                //   console.log("intermediateMovePos for bishop replace move b8:", intermediateMovePos);
-                // }
                 //console.log("intermediateMovePos for bishop replace move:", intermediateMovePos);
                 // Ensure the path to the target piece is clear
                 if (intermediateMovePos == piece.position) {
                   //console.log("intermediateMovePos == piece.position", intermediateMovePos, piece.position);
                 }
-                if ((!state.pieces.some(p => p.position === intermediateMovePos) || intermediateMovePos == piece.position)) {
+                // if there is no piece at the intermediate position or the intermediate position is the current position of the piece
+                if ((!state.pieces.some(p => p.position === intermediateMovePos && p.isCaptured === false) || intermediateMovePos == piece.position)) {
                   if (piece.freeMoves.includes(intermediateMovePos) === true) {
                     return move; // Can move to a square occupied by a piece of the opposite color
                   } else if (intermediateMovePos == piece.position) {
@@ -647,7 +642,7 @@ const chessBoardSlice = createSlice({
               for (let j = 1; j <= Math.max(Math.abs(fileDiff), Math.abs(rankDiff)); j++) {
                 const currPos = String.fromCharCode(piece.position[0].charCodeAt(0) + j * stepX)
                   + String.fromCharCode(piece.position[1].charCodeAt(0) + j * stepY);
-                if (state.pieces.some(p => p.position === currPos)) {
+                if (state.pieces.some(p => p.position === currPos && p.isCaptured === false)) {
                   clearPath = false;
                   break;
                 }
@@ -668,12 +663,8 @@ const chessBoardSlice = createSlice({
 
                 const intermediateMovePos: ChessPosition = String.fromCharCode(move.charCodeAt(0) +  stepX)
                   + String.fromCharCode(move.charCodeAt(1) + stepY) as ChessPosition;
-                if (move == 'a8') {
-                  // console.log("fileDiff:", fileDiff, "rankDiff:", rankDiff);
-                  // console.log("intermediateMovePos for rook replace move a5:", intermediateMovePos);
-                }
 
-                if ((!state.pieces.some(p => p.position === intermediateMovePos) || intermediateMovePos == piece.position)) {
+                if ((!state.pieces.some(p => p.position === intermediateMovePos && p.isCaptured === false) || intermediateMovePos == piece.position)) {
                   if (piece.freeMoves.includes(intermediateMovePos) === true) {
                     return move; // Can move to a square occupied by a piece of the opposite color
                   } else if (intermediateMovePos == piece.position) {
@@ -696,7 +687,8 @@ const chessBoardSlice = createSlice({
                 String.fromCharCode(piece.position[0].charCodeAt(0) - i) + String.fromCharCode(piece.position[1].charCodeAt(0) - i) as ChessPosition,
               );
             }
-            bishopMoves = bishopMoves.filter(pos => pos[0] >= 'a' && pos[0] <= 'h' && pos[1] >= '1' && pos[1] <= '8'); // filter out positions that are off the board
+            // filter out positions that are off the board
+            bishopMoves = bishopMoves.filter(pos => pos[0] >= 'a' && pos[0] <= 'h' && pos[1] >= '1' && pos[1] <= '8'); 
             const freeBishopMoves = bishopMoves.filter(move => {
               // Check if the path to the move is clear
               const fileDiff = move[0].charCodeAt(0) - piece.position[0].charCodeAt(0);
@@ -713,7 +705,7 @@ const chessBoardSlice = createSlice({
               let clearPath = true;
               for (let j = 1; j <= Math.abs(fileDiff); j++) {
                 const currPos = String.fromCharCode(piece.position[0].charCodeAt(0) + j * stepX) + String.fromCharCode(piece.position[1].charCodeAt(0) + j * stepY);
-                if (state.pieces.some(p => p.position === currPos)) {
+                if (state.pieces.some(p => p.position === currPos && p.isCaptured === false)) {
                   clearPath = false;
                   break;
                 }
@@ -751,7 +743,7 @@ const chessBoardSlice = createSlice({
               for (let j = 1; j <= Math.max(Math.abs(fileDiff), Math.abs(rankDiff)); j++) {
                 const currPos = String.fromCharCode(piece.position[0].charCodeAt(0) + j * stepX)
                   + String.fromCharCode(piece.position[1].charCodeAt(0) + j * stepY);
-                if (state.pieces.some(p => p.position === currPos)) {
+                if (state.pieces.some(p => p.position === currPos && p.isCaptured === false)) {
                   clearPath = false;
                   break;
                 }
@@ -774,7 +766,7 @@ const chessBoardSlice = createSlice({
                   + String.fromCharCode(move.charCodeAt(1) + stepY) as ChessPosition;
                 
 
-                if ((!state.pieces.some(p => p.position === intermediateMovePos) || intermediateMovePos == piece.position)) {
+                if ((!state.pieces.some(p => p.position === intermediateMovePos && p.isCaptured === false) || intermediateMovePos == piece.position)) {
                   if (piece.freeMoves.includes(intermediateMovePos) === true) {
                     return move; // Can move to a square occupied by a piece of the opposite color
                   } else if (intermediateMovePos == piece.position) {
