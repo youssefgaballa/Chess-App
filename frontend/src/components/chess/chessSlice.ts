@@ -184,12 +184,11 @@ const chessBoardSlice = createSlice({
     movePiece: (state, action: { payload: { from: ChessPosition; fromIndex: number; to: ChessPosition; toIndex: number; replace: boolean; undo?: boolean } }) => {
       //console.log("------movePiece:");
       const { from, fromIndex, to, toIndex, replace, undo } = action.payload;
-      //console.log("from:", from, "fromIndex:", fromIndex, "to:", to,  "toIndex:", toIndex, "replace:", replace, "undo:", undo);
-      // console.log("piece.type:", piece?.type);
+      //console.log("from", from, "fromIndex:", fromIndex, "to:", to,  "toIndex:", toIndex, "replace:", replace, "undo:", undo);
       state.lastMoveFailed = true;
       if (undo !== undefined) {
-        // console.log("undo: ", undo);`
-        // console.log("------from:", from, "to:", to);
+        //  console.log("undo: ", undo);
+        //  console.log("------from:", from, "to:", to);
 
         const fromPiece = state.pieces[fromIndex];
 
@@ -316,7 +315,7 @@ const chessBoardSlice = createSlice({
               const intermediateSquare = String.fromCharCode(from[0].charCodeAt(0) + i * Math.sign(fileDiff))
                 + String.fromCharCode(from[1].charCodeAt(0) + i * Math.sign(rankDiff));
               // console.log(`intermediateSquare at iteration ${i}:`, intermediateSquare);
-              if (state.pieces.some(p => p.position === intermediateSquare)) {
+              if (state.pieces.some(p => p.position === intermediateSquare && p.isCaptured === false)) {
                 // console.log("Invalid move for bishop! intermediate square occupied:", intermediateSquare);
                 return;
               }
@@ -342,7 +341,7 @@ const chessBoardSlice = createSlice({
                 ? String.fromCharCode(from[0].charCodeAt(0) + i * step) + from[1]
                 : from[0] + String.fromCharCode(from[1].charCodeAt(0) + i * step);
               // console.log(`intermediateSquare at iteration ${i}:`, intermediateSquare);
-              if (state.pieces.some(p => p.position === intermediateSquare)) {
+              if (state.pieces.some(p => p.position === intermediateSquare && p.isCaptured === false)) {
                 // console.log("Invalid move for rook! intermediate square occupied:", intermediateSquare);
                 return;
               }
@@ -368,7 +367,7 @@ const chessBoardSlice = createSlice({
                   ? String.fromCharCode(from[0].charCodeAt(0) + i * step) + from[1]
                   : from[0] + String.fromCharCode(from[1].charCodeAt(0) + i * step);
                 // console.log(`intermediateSquare at iteration ${i}:`, intermediateSquare);
-                if (state.pieces.some(p => p.position === intermediateSquare)) {
+                if (state.pieces.some(p => p.position === intermediateSquare && p.isCaptured === false)) {
                   // console.log("Invalid move for Queen! intermediate square occupied:", intermediateSquare);
                   return;
                 }
@@ -378,7 +377,7 @@ const chessBoardSlice = createSlice({
                 const intermediateSquare = String.fromCharCode(from[0].charCodeAt(0) + i * Math.sign(fileDiff))
                   + String.fromCharCode(from[1].charCodeAt(0) + i * Math.sign(rankDiff));
                 // console.log(`intermediateSquare at iteration ${i}:`, intermediateSquare);
-                if (state.pieces.some(p => p.position === intermediateSquare)) {
+                if (state.pieces.some(p => p.position === intermediateSquare && p.isCaptured === false)) {
                   // console.log("Invalid move for Queen! intermediate square occupied:", intermediateSquare);
                   return;
                 }
@@ -397,7 +396,8 @@ const chessBoardSlice = createSlice({
               //console.log("Attempting to castle");
               
               if (fromPiece.color === "white" && from === "e1" && to === "h1") { // white kingside castle
-                if (!state.pieces.some(p => p.position === "f1" || p.position === "g1")) {
+                if (!state.pieces.some(p => (p.position === "f1" && p.isCaptured == false) 
+                  || (p.position === "g1" && p.isCaptured == false))) {
                   fromPiece.position = "g1";
                   fromPiece.hasMoved = true;
                   // Move rook
@@ -405,7 +405,9 @@ const chessBoardSlice = createSlice({
                   toPiece.hasMoved = true;
                 }
               } else if (fromPiece.color === "white" && from === "e1" && to === "a1") { // white queenside castle
-                if (!state.pieces.some(p => p.position === "d1" || p.position === "c1" || p.position === "b1")) {
+                if (!state.pieces.some(p => (p.position === "d1" && p.isCaptured == false)
+                  || (p.position === "c1" && p.isCaptured == false)
+                  || (p.position === "b1" && p.isCaptured == false))) {
                   fromPiece.position = "c1";
                   fromPiece.hasMoved = true;
                   // Move rook
@@ -413,7 +415,8 @@ const chessBoardSlice = createSlice({
                   toPiece.hasMoved = true;
                 }
               } else if (fromPiece.color === "black" && from === "e8" && to === "h8") { // black kingside castle
-                if (!state.pieces.some(p => p.position === "f8" || p.position === "g8")) {
+                if (!state.pieces.some(p => (p.position === "f8" && p.isCaptured == false)
+                  || (p.position === "g8" && p.isCaptured == false))) {
                   fromPiece.position = "g8";
                   fromPiece.hasMoved = true;
                   // Move rook
@@ -421,7 +424,9 @@ const chessBoardSlice = createSlice({
                   toPiece.hasMoved = true;
                 }
               } else if (fromPiece.color === "black" && from === "e8" && to === "a8") { // black queenside castle
-                if (!state.pieces.some(p => p.position === "d8" || p.position === "c8" || p.position === "b8")) {
+                if (!state.pieces.some(p => (p.position === "d8" && p.isCaptured == false)
+                  || (p.position === "c8" && p.isCaptured == false)
+                  || (p.position === "b8" && p.isCaptured == false))) {
                   fromPiece.position = "c8";
                   fromPiece.hasMoved = true;
                   // Move rook
@@ -799,9 +804,9 @@ const chessBoardSlice = createSlice({
             //console.log("allFreeMoves by opponent pieces:", allFreeMoves);
             //console.log("allReplaceMoves by opponent pieces:", allReplaceMoves);
             const freeMoves = kingMoves.filter(move => {
-              if (!state.pieces.some(p => p.position === move)
+              if (!state.pieces.some(p => p.position === move && p.isCaptured === false)
                 && allOpponentFreeMovesExceptPawns.includes(move) === false && allOpponentReplaceMoves.includes(move) === false) {
-                return move; // Can move to an empty square
+                return move; // Can move to an empty square that is not attacked
               }
             });
             //console.log("freeMoves for king:", freeMoves);
@@ -816,17 +821,23 @@ const chessBoardSlice = createSlice({
               if (piece.color === "white") {
                 const kingsideRook = state.pieces.find(p => p.position === "h1" && p.type === "rook" && p.color === "white" && p.hasMoved === false && p.isCaptured === false);
                 const queensideRook = state.pieces.find(p => p.position === "a1" && p.type === "rook" && p.color === "white" && p.hasMoved === false && p.isCaptured === false);
-                if (kingsideRook && !state.pieces.some(p => p.position === "f1" || p.position === "g1")) { // white eligible for kingside castle
+                if (kingsideRook && !state.pieces.some(p => (p.position === "f1" && p.isCaptured == false)
+                  || (p.position === "g1" && p.isCaptured == false))) { // white eligible for kingside castle
                   piece.replaceMoves = piece.replaceMoves.concat(["h1"]);
-                } else if (queensideRook && !state.pieces.some(p => p.position === "d1" || p.position === "c1" || p.position === "b1")) { //white eligible for queenside castle
+                } else if (queensideRook && !state.pieces.some(p => (p.position === "d1" && p.isCaptured == false)
+                  || (p.position === "c1" && p.isCaptured == false)
+                  || (p.position === "b1" && p.isCaptured == false))) { //white eligible for queenside castle
                   piece.replaceMoves = piece.replaceMoves.concat(["a1"]);
                 }
               } else if (piece.color === "black") {
                 const kingsideRook = state.pieces.find(p => p.position === "h8" && p.type === "rook" && p.color === "black" && p.hasMoved === false && p.isCaptured === false);
                 const queensideRook = state.pieces.find(p => p.position === "a8" && p.type === "rook" && p.color === "black" && p.hasMoved === false && p.isCaptured === false);
-                if (kingsideRook && !state.pieces.some(p => p.position === "f8" || p.position === "g8")) { // black eligible for kingside castle
+                if (kingsideRook && !state.pieces.some(p => (p.position === "f8" && p.isCaptured == false)
+                  || (p.position === "g8" && p.isCaptured == false))) { // black eligible for kingside castle
                   piece.replaceMoves = piece.replaceMoves.concat(["h8"]);
-                } else if (queensideRook && !state.pieces.some(p => p.position === "d8" || p.position === "c8" || p.position === "b8")) { //black eligible for queenside castle
+                } else if (queensideRook && !state.pieces.some(p => (p.position === "d8" && p.isCaptured == false)
+                  || (p.position === "c8" && p.isCaptured == false)
+                  || (p.position === "b8" && p.isCaptured == false))) { //black eligible for queenside castle
                   piece.replaceMoves = piece.replaceMoves.concat(["a8"]);
                 }
               }
