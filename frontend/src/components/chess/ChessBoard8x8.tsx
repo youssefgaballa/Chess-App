@@ -79,7 +79,9 @@ const ChessBoard8x8: React.FC<{ colors: string[], side: ChessColor, roomID?: num
         socket.emit("move piece", { roomID, fromIndex: selectedPieceIndex, toIndex: pieceIndex, to: to});
       }
       setBoardState();
-
+      if (fromPiece.type === "king" && fromPiece.isChecked == true && pieceIndex >= 0) {
+        dispatch(isKingInCheck({ pos: toPiece.position, color: fromPiece.color }));
+      }
       if (pieceIndex >= 0) {
         dispatch(setLastMove({
           from: fromPiece.position, fromIndex: selectedPieceIndex,
@@ -117,6 +119,9 @@ const ChessBoard8x8: React.FC<{ colors: string[], side: ChessColor, roomID?: num
         socket.emit("move piece", { roomID, from: fromPiece, to: toPiece });
       }
       setBoardState();
+      if (fromPiece.type === "king" && fromPiece.isChecked == true) {
+        dispatch(isKingInCheck({ pos: toPiece.position, color: fromPiece.color }));
+      }
       dispatch(setLastMove({ from: fromPiece.position, fromIndex: selectedPieceIndex,
         to: toPiece.position, toIndex: pieceIndex, replace: true }) );
     }
@@ -136,6 +141,7 @@ const ChessBoard8x8: React.FC<{ colors: string[], side: ChessColor, roomID?: num
     }
     const yourKing = board.pieces.find(p => p.type === 'king' && p.color === board.turn);
     const opponentKing = board.pieces.find(p => p.type === 'king' && p.color !== board.turn);
+    //console.log("yourKing.position:", yourKing?.position, "isChecked:", yourKing?.isChecked);
     if (yourKing == undefined || opponentKing == undefined) {
       return;
     }
@@ -143,14 +149,16 @@ const ChessBoard8x8: React.FC<{ colors: string[], side: ChessColor, roomID?: num
     //case for pawn promotionnn
     const lastMove = board.lastMove;
     const fromPiece = board.pieces[lastMove.toIndex];
-
     if (fromPiece && fromPiece.pendingPromotion) {  
       // Handle pawn promotion UI or logic here
-      console.log("Pawn promotion needed for piece at:", fromPiece.position);
+      //console.log("Pawn promotion needed for piece at:", fromPiece.position);
       setPendingPromotion({ index: lastMove.toIndex!, color: fromPiece.color });
       if (yourKing.isChecked && board.turn === (yourKing.color)) { // your king is in check and your move failed to get you out of check
         const lastMove = board.lastMove;
-        dispatch(movePiece({ from: lastMove.to, fromIndex: lastMove.toIndex!, to: lastMove.from!, toIndex: lastMove.fromIndex!, replace: lastMove.replace!, undo: true }));
+        dispatch(movePiece({
+          from: lastMove.to, fromIndex: lastMove.toIndex!, to: lastMove.from!, toIndex: lastMove.fromIndex!,
+          replace: lastMove.replace!, undo: true
+        }));
         dispatch(setValidMoves({ pieceIndex: lastMove.fromIndex! }));
         setBoardState();
       }
@@ -164,7 +172,10 @@ const ChessBoard8x8: React.FC<{ colors: string[], side: ChessColor, roomID?: num
       dispatch(setTurn({ color: board.turn === "white" ? "black" : "white" }));
     } else if (yourKing.isChecked && board.turn === (yourKing.color)) { // your king is in check and your move failed to get you out of check
       const lastMove = board.lastMove;
-      dispatch(movePiece({ from: lastMove.to, fromIndex: lastMove.toIndex!, to: lastMove.from!, toIndex: lastMove.fromIndex!, replace: lastMove.replace!, undo: true }));
+      dispatch(movePiece({
+        from: lastMove.to, fromIndex: lastMove.toIndex!, to: lastMove.from!, toIndex: lastMove.fromIndex!,
+        replace: lastMove.replace!, undo: true
+      }));
       dispatch(setValidMoves({ pieceIndex: lastMove.fromIndex! }));
       setBoardState();
     }

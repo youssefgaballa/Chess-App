@@ -182,13 +182,13 @@ const chessBoardSlice = createSlice({
       //window.localStorage.setItem('user', JSON.stringify({ ...state, accessToken: null }));
     },
     movePiece: (state, action: { payload: { from: ChessPosition; fromIndex: number; to: ChessPosition; toIndex: number; replace: boolean; undo?: boolean } }) => {
-      //console.log("------movePiece:");
+      // console.log("------movePiece:");
       const { from, fromIndex, to, toIndex, replace, undo } = action.payload;
-      //console.log("from", from, "fromIndex:", fromIndex, "to:", to,  "toIndex:", toIndex, "replace:", replace, "undo:", undo);
+      // console.log("from", from, "fromIndex:", fromIndex, "to:", to,  "toIndex:", toIndex, "replace:", replace, "undo:", undo);
       state.lastMoveFailed = true;
       if (undo !== undefined) {
         //  console.log("undo: ", undo);
-        //  console.log("------from:", from, "to:", to);
+          // console.log("------from:", from, "to:", to);
 
         const fromPiece = state.pieces[fromIndex];
 
@@ -442,7 +442,7 @@ const chessBoardSlice = createSlice({
             }
 
             if (fileDiff > 1 || rankDiff > 1) {
-              // console.log("Invalid move for king!");
+               console.log("Invalid move for king!");
               return;
             }
             break;
@@ -853,12 +853,17 @@ const chessBoardSlice = createSlice({
       // console.log("----isKingInCheck called for pos:", action.payload.pos, "color:", action.payload.color);
       const { pos, color } = action.payload;
       const king = state.pieces.find(p => p.type === 'king' && p.position === pos);
+      // console.log("king:", king, "king.position:", king?.position, "king.color:", king?.color);
+      // console.log("king.isChecked:", king?.isChecked);
       if (!king) return;
       // Check if the king is in check
       const isInCheck = state.pieces.some(p => {
         // console.log("p.position:", p.position);
         // console.log("p.color:", p.color);
         // console.log("p.freeMoves.includes(king.position):", p.freeMoves.includes(king.position));
+        if (p.color !== color && p.replaceMoves.includes(king.position) && p.isCaptured === false){
+          //console.log(`King at ${king.position} is in check by ${p.type} at ${p.position}`);
+        }
         return p.color !== color && p.replaceMoves.includes(king.position) && p.isCaptured === false;
       });
       king.isChecked = isInCheck;
