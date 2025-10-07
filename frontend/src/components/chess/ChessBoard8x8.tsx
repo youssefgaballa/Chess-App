@@ -1,5 +1,5 @@
 import {  Fragment, useEffect, useLayoutEffect, useState } from "react";
-import {  type ChessColor, type ChessPosition } from "./chessPiece";
+import {  type ChessColor, type ChessPieceType, type ChessPosition } from "./chessPiece";
 import { Pawn } from "./Pawn";
 import { Knight } from "./Knight";
 import { Bishop } from "./Bishop";
@@ -7,7 +7,7 @@ import { Rook } from "./Rook";
 import { Queen } from "./Queen";
 import { King } from "./King";
 import { useDispatch, useSelector } from "react-redux";
-import { selectBoardState, setInitialBoard, movePiece, setValidMoves, isKingInCheck, setTurn, isKingCheckMated, setLastMove } from "./chessSlice";
+import { selectBoardState, setInitialBoard, movePiece, setValidMoves, isKingInCheck, setTurn, isKingCheckMated, setLastMove, promotePawn } from "./chessSlice";
 import { SelectedColors } from "./ChessBoardSolo";
 import socket from "../../util/socketManager";
 
@@ -28,6 +28,7 @@ const ChessBoard8x8: React.FC<{ colors: string[], side: ChessColor, roomID?: num
   // useEffect(() => {
   //   console.log("selectedPieceIndex changed:", selectedPieceIndex);
   // }, [selectedPieceIndex]);
+  const [pendingPromotion, setPendingPromotion] = useState<{ index: number, color: ChessColor } | null>(null);
 
   useEffect(() => {
     socket.on("piece moved", ({ fromIndex, toIndex, to }) => {
@@ -139,6 +140,23 @@ const ChessBoard8x8: React.FC<{ colors: string[], side: ChessColor, roomID?: num
       return;
     }
   
+    //case for pawn promotionnn
+    const lastMove = board.lastMove;
+    const fromPiece = board.pieces[lastMove.toIndex];
+
+    if (fromPiece && fromPiece.pendingPromotion) {  
+      // Handle pawn promotion UI or logic here
+      console.log("Pawn promotion needed for piece at:", fromPiece.position);
+      setPendingPromotion({ index: lastMove.toIndex!, color: fromPiece.color });
+      if (yourKing.isChecked && board.turn === (yourKing.color)) { // your king is in check and your move failed to get you out of check
+        const lastMove = board.lastMove;
+        dispatch(movePiece({ from: lastMove.to, fromIndex: lastMove.toIndex!, to: lastMove.from!, toIndex: lastMove.fromIndex!, replace: lastMove.replace!, undo: true }));
+        dispatch(setValidMoves({ pieceIndex: lastMove.fromIndex! }));
+        setBoardState();
+      }
+      return;
+    }
+    //normal cases
     if (!yourKing.isChecked && !opponentKing.isChecked) { // regular move with no checks
       dispatch(setTurn({ color: board.turn === "white" ? "black" : "white" }));
 
@@ -150,17 +168,17 @@ const ChessBoard8x8: React.FC<{ colors: string[], side: ChessColor, roomID?: num
       dispatch(setValidMoves({ pieceIndex: lastMove.fromIndex! }));
       setBoardState();
     }
-    // case for pawn promotionnn
-    // const lastMove = board.lastMove;
-    // const fromPiece = board.pieces[lastMove.toIndex];
-    
-    // if (fromPiece && fromPiece.pendingPromotion) {
-    //   // Handle pawn promotion UI or logic here
-    //   console.log("Pawn promotion needed for piece at:", fromPiece.position);
-    // }
-
 
   }, [board.lastMove]);
+
+  const promotePiece = (type: Exclude<ChessPieceType, 'king' | 'pawn'>) => {
+    if (pendingPromotion) {
+      dispatch(promotePawn({ pieceIndex: pendingPromotion.index, newType: type }));
+      setPendingPromotion(null);
+      setBoardState();
+      dispatch(setTurn({ color: board.turn === "white" ? "black" : "white" }) );
+    }
+  };
 
   const setBoardState = () => {
     for (let i = 0; i < board.pieces.length; i++) {
@@ -183,8 +201,32 @@ const ChessBoard8x8: React.FC<{ colors: string[], side: ChessColor, roomID?: num
   
   return (
     <>
+      <div className="flex flex-row justify-center">
+        {pendingPromotion && (
+          <div className="mt-10">
+            Promotion of pawn on {board.pieces[pendingPromotion.index].position}:<br />
+            <button className="border border-black bg-white m-1 p-2 rounded-lg"
+              onClick={() => promotePiece("queen")}>
+              Promote to Queen
+            </button>
+            <button className="border border-black bg-white m-1 p-2 rounded-lg"
+              onClick={() => promotePiece("rook")}>
+              Promote to Rook
+            </button>
+            <button className="border border-black bg-white m-1 p-2 rounded-lg"
+              onClick={() => promotePiece("bishop")}>
+              Promote to Bishop
+            </button>
+            <button className="border border-black bg-white m-1 p-2 rounded-lg"
+              onClick={() => promotePiece("knight")}>
+              Promote to Knight
+            </button>
+          </div> 
+        )}
+        
       <div className='flex flex-col items-center mt-4'>
         <span>{!roomID && <>Play Solo Chess</>}</span>
+        
         <svg width={`${boardSize}`} height={`${boardSize }`} className="border border-black">
           <rect x={padding} y={padding} width={boardSize - 2 * padding} height={boardSize - 2 * padding} fill="white" />
           
@@ -339,7 +381,7 @@ const ChessBoard8x8: React.FC<{ colors: string[], side: ChessColor, roomID?: num
         <div>{board.players['white'].isCheckmated ? 'White is checkmated!' : board.players['black'].isCheckmated ? 'Black is checkmated!' : ''}</div>
 
       </div>
-
+      </div>
     </>
   )
 }

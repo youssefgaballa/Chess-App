@@ -46,8 +46,7 @@ General:
 Tests:
 - make sure every piece is able to move and replace pieces
 - make sure last move and turn isnt changed if invalid move is played
-
-
+- add tests for making sure pawn doesnt get out of bound moves
 
 
 

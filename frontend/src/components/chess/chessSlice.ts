@@ -934,6 +934,13 @@ const chessBoardSlice = createSlice({
       };
 
     },
+    promotePawn: (state, action: { payload: { pieceIndex: number, newType: Exclude<ChessPieceType, 'king' | 'pawn'> } }) => {
+      const { pieceIndex, newType } = action.payload;
+      const piece = state.pieces[pieceIndex];
+      //const pawnPos = piece.position;
+      piece.type = newType;
+      piece.pendingPromotion = false;
+    },
     setTurn: (state, action: { payload: { color: ChessColor } }) => {
       const { color } = action.payload;
       state.turn = color;
@@ -948,5 +955,5 @@ const chessBoardSlice = createSlice({
 });
 
 export const selectBoardState = (state: { chessBoard: typeof initialState }) => state.chessBoard;
-export const { setInitialBoard, clearBoard, movePiece, setValidMoves, isKingInCheck, isKingCheckMated, setTurn, setLastMove } = chessBoardSlice.actions;
+export const { setInitialBoard, clearBoard, movePiece, setValidMoves, isKingInCheck, isKingCheckMated, setTurn, setLastMove, promotePawn } = chessBoardSlice.actions;
 export default chessBoardSlice.reducer;
