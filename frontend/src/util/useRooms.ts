@@ -58,7 +58,7 @@ export default function useRooms(username: string | null, user: UserState, roomI
     }
   };
 
-  const onJoinRoom = (roomId: number, setErrorMessage: (msg: string) => void) => {
+  const onJoinRoom =  (roomId: number, setErrorMessage: (msg: string) => void) => {
     // Logic to join room
     if (roomId) {
       console.log("Joining room with ID:", roomId, "for user:", username);
@@ -153,7 +153,28 @@ export default function useRooms(username: string | null, user: UserState, roomI
 
   }
 
-  return { createRoom, deleteRoom, leaveRoom, onJoinRoom, getRoomUser: getRoomUsers };
+  const getRooms = async (username: string | null): Promise<{ room_id: number, owner_username: string, users: string[] }[]> => {
+    console.log("Fetching rooms for user:", username);
+
+    if (username === null) return [];
+    const response = await axios.get(`http://localhost:${import.meta.env.VITE_BACKEND_PORT}/rooms/${username}`,
+    {
+      withCredentials: true,
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${user.accessToken}` }
+    }
+  )
+    .then((res) => {
+        console.log("Fetched rooms:", res.data);
+        return res.data || [];
+      })
+      .catch((error) => {
+        console.log("error", error);
+        return [];
+      });
+    return response;
+  };
+
+  return { createRoom, deleteRoom, leaveRoom, onJoinRoom, getRoomUsers, getRooms };
 }
 
 

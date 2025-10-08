@@ -114,6 +114,19 @@ roomsRouter.get('/rooms/all', async (req, res) => {
   }
 });
 
+roomsRouter.get('/rooms/:username', async (req, res) => {
+  const username = req.params.username;
+  console.log("Fetching rooms for user:", username);
+  try {
+    const result = await client.query("SELECT * FROM rooms WHERE owner_username = $1 OR $1 = ANY(users)", [username]);
+    console.log("result.rows", result.rows);
+    res.status(200).json(result.rows);
+
+  } catch (error) {
+    console.error("Error fetching rooms:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 
 
 

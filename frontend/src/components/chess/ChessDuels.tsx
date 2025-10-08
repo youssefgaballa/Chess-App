@@ -9,27 +9,7 @@ import { Colors } from "./ChessBoardSolo";
 
 export const ChessDuels = () => {
 
-  useEffect(() => {
-    socket.on("connect", () => {
-      console.log("Connected to socket with ID in ChessDuels:", socket.id);
-    });
-    socket.on("receive room message", (message: string, sender: string, roomID: number) => {
-      console.log(`Received message from ${sender} in room ${roomID}: ${message}`);
-      //setMessages((prevMessages) => [...prevMessages, { message, sender }]);
-      setUsersInRoom((prevUsers) => {
-        if (!prevUsers.includes(sender)) {
-          return [...prevUsers, sender];
-        }
-        return prevUsers;
-      });
-      setOpponent(sender);
-    });
 
-    return () => {
-      socket.off("connect");
-      socket.off("receive room message");
-    }
-  }, []);
 
 
   const user: UserState = useSelector(selectUser);
@@ -46,10 +26,55 @@ export const ChessDuels = () => {
     console.log("opponent:", opponent);
     console.log("spectators:", spectators);
   }, [usersInRoom, opponent, spectators]);
-
-  const { createRoom, deleteRoom, leaveRoom, onJoinRoom } = useRooms(username, user, roomID, setRoomID, setIsOwner,
+  const { createRoom, deleteRoom, leaveRoom, onJoinRoom, getRooms } = useRooms(username, user, roomID, setRoomID, setIsOwner,
     setShowModal, 'Chess', setUsersInRoom, usersInRoom, setOpponent, setSpectators);
+  
+  useEffect(() => {
+    socket.on("connect", () => {
+      console.log("Connected to socket with ID in ChessDuels:", socket.id);
+    });
+    socket.on("receive room message", (message: string, sender: string, roomID: number) => {
+      console.log(`Received message from ${sender} in room ${roomID}: ${message}`);
+      //setMessages((prevMessages) => [...prevMessages, { message, sender }]);
+      setUsersInRoom((prevUsers) => {
+        if (!prevUsers.includes(sender)) {
+          return [...prevUsers, sender];
+        }
+        return prevUsers;
+      });
+      setOpponent(sender);
+    });
+    (async function fetchRooms() {
+      await getRooms(username).then((rooms) => {
+        console.log("Available rooms:", rooms);
+        console.log("rooms length:", rooms.length);
+        if (rooms.length > 0) {
+          // Auto-join the first available room for demo purposes
+          setRoomID(rooms[0].room_id);
+          let usersInRoom: string[] = [];
+          if (rooms[0].owner_username != undefined) {
+            usersInRoom = usersInRoom.concat(rooms[0].owner_username);
+          }
+          if (rooms[0].users != undefined) {
+            usersInRoom = usersInRoom.concat(rooms[0].users);
+          }
+          setUsersInRoom(usersInRoom);
+          if (username === rooms[0].owner_username) {
+            setIsOwner(true);
+          } else {
+            setIsOwner(false);
+          }
+          socket.emit("join room", roomID, username);
+        }
+      });
+    })();
+   
 
+    return () => {
+      socket.off("connect");
+      socket.off("receive room message");
+    }
+  }, []);
 
   return (
     <div className="flex-col items-center justify-center mt-4">
