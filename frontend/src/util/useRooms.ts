@@ -4,9 +4,13 @@ import axios from "axios";
 
 export type RoomType = 'Chat' | 'Chess' | 'Other';
 export default function useRooms(username: string | null, user: UserState, roomID: number | null,
-  setRoomID: (id: number | null) => void, setIsOwner: (isOwner: boolean) => void, setShowModal: (show: boolean) => void, type: RoomType,
-  setUsersInRoom?: (value: React.SetStateAction<string[]>) => void, usersInRoom?: string[],
-  setOpponent?: (opponent: string | null) => void, setSpectators?: (spectators: string[]) => void) {
+  setRoomID: (id: number | null) => void,
+  setIsOwner: (isOwner: boolean) => void,
+  setShowModal: (show: boolean) => void, type: RoomType,
+  setUsersInRoom?: (value: React.SetStateAction<string[]>) => void,
+  usersInRoom?: string[],
+  setOpponent?: (opponent: string | null) => void,
+  setSpectators?: (spectators: string[]) => void) {
 
 
   const createRoom = () => {
@@ -122,7 +126,8 @@ export default function useRooms(username: string | null, user: UserState, roomI
   };
 
   const getRoomUsers = async (roomId: number): Promise<{ owner: string, users: string[] }> => {
-    if (!(roomId === null)) return { owner: "", users: [] };
+    console.log("Fetching users in room with ID:", roomId);
+    if ((roomId === null)) return { owner: "", users: [] };
     const response = await axios.get(`http://localhost:${import.meta.env.VITE_BACKEND_PORT}/rooms`,
       {
         params: { roomID: roomId },

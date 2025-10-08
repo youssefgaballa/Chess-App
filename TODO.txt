@@ -26,7 +26,8 @@ the id of the piece and who it belonged to)
 - replay mode
 - piece move transitions
 - loading indicator while reducers are running. (relevant for slow machines)
-
+-profile edit, ability to add profile photo
+-customize chess pieces style
 - Integration with map: if another player attacks the territory of another,
 they can initiate a chess match (like bloons monkey city)
 - add search bar, home page
@@ -38,7 +39,7 @@ Backend:
 -fix api tests so that correct authorization headers are passed (as if logged in)
 - Replicate backend in .NET, spring boot, etc.
 -make sure when user is deleted the teardown of the socket.io room, rooms table row,etc  happens
-
+-crud ops on chessboard
 General: 
 -Js-docs, tests, dev-environments, kubernetes  
 -dev and production environments

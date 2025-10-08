@@ -32,15 +32,34 @@ const ChessBoard8x8: React.FC<{ colors: string[], side: ChessColor, roomID?: num
 
   useEffect(() => {
     socket.on("piece moved", ({ fromIndex, toIndex, to }) => {
-      console.log(`Received piece moved from ${fromIndex} to ${toIndex}`);
+      
       const fromPiece = board.pieces[fromIndex];
       const toPiece = toIndex !== null ? board.pieces[toIndex] : null;
+      console.log(`Received piece moved from ${fromPiece.position} to ${to}`);
       if (toIndex >= 0 && toPiece !== null) {
         dispatch(movePiece({ from: fromPiece.position, fromIndex, to: toPiece?.position, toIndex, replace: true }));
       } else {
         dispatch(movePiece({ from: fromPiece.position, fromIndex, to: to, toIndex, replace: false }));
       }
       dispatch(setValidMoves({ pieceIndex: fromIndex }));
+
+      setBoardState();
+      if (fromPiece.type === "king" && fromPiece.isChecked == true) {
+        dispatch(isKingInCheck({ pos: to, color: fromPiece.color }));
+      }
+      if (fromIndex !== null && toPiece !== null && toIndex) {
+        if (toIndex >= 0) {
+          dispatch(setLastMove({
+            from: fromPiece.position, fromIndex: fromIndex,
+            to: toPiece.position, toIndex: toIndex, replace: true
+          }));
+        } else {
+          dispatch(setLastMove({
+            from: fromPiece.position, fromIndex: fromIndex,
+            to: to, toIndex: toIndex, replace: false
+          }));
+        }
+      }
 
     });
     return () => {
