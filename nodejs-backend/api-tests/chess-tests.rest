@@ -1,0 +1,268 @@
+@port = 5003
+###
+# GET all boards
+GET http://localhost:{{port}}/chessboard/2
+
+
+
+
+
+###
+POST http://localhost:{{port}}/chessboard
+Content-Type: application/json
+
+{
+  "roomID": 2,
+
+  "board": {
+    "turn": "white",
+    "players": {
+      "white": "root",
+      "black": "sylas"
+    },
+    "pieces": [
+      {
+        "type": "pawn",
+        "color": "white",
+        "position": "a2",
+        "isCaptured": false,
+        "hasMoved": false,
+        "freeMoves": ["a3", "a4"]
+      },
+      {
+        "type": "pawn",
+        "color": "white",
+        "position": "b2",
+        "isCaptured": false,
+        "hasMoved": false,
+        "freeMoves": ["b3", "b4"]
+      },
+      {
+        "type": "pawn",
+        "color": "white",
+        "position": "c2",
+        "isCaptured": false,
+        "hasMoved": false,
+        "freeMoves": ["c3", "c4"]
+      },
+      {
+        "type": "pawn",
+        "color": "white",
+        "position": "d2",
+        "isCaptured": false,
+        "hasMoved": false,
+        "freeMoves": ["d3", "d4"]
+      },
+      {
+        "type": "pawn",
+        "color": "white",
+        "position": "e2",
+        "isCaptured": false,
+        "hasMoved": false,
+        "freeMoves": ["e3", "e4"]
+      },
+      {
+        "type": "pawn",
+        "color": "white",
+        "position": "f2",
+        "isCaptured": false,
+        "hasMoved": false,
+        "freeMoves": ["f3", "f4"]
+      },
+      {
+        "type": "pawn",
+        "color": "white",
+        "position": "g2",
+        "isCaptured": false,
+        "hasMoved": false,  
+        "freeMoves": ["g3", "g4"]
+      },
+      {
+        "type": "pawn",
+        "color": "white",
+        "position": "h2",
+        "isCaptured": false,
+        "hasMoved": false,
+        "freeMoves": ["h3", "h4"]
+      },
+      {
+        "type": "rook",
+        "color": "white",
+        "position": "a1",
+        "isCaptured": false,
+        "hasMoved": false
+      },
+      {
+        "type": "knight",
+        "color": "white",
+        "position": "b1",
+        "isCaptured": false,
+        "hasMoved": false
+      },
+      {
+        "type": "bishop",
+        "color": "white",
+        "position": "c1",
+        "isCaptured": false,
+        "hasMoved": false
+      },
+      {
+        "type": "queen",
+        "color": "white",
+        "position": "d1",
+        "isCaptured": false
+      },
+      {
+        "type": "king",
+        "color": "white",
+        "position": "e1",
+        "isCaptured": false,
+        "hasMoved": false
+      },
+      {
+        "type": "bishop",
+        "color": "white",
+        "position": "f1",
+        "isCaptured": false,
+        "hasMoved": false
+      },
+      {
+        "type": "knight",
+        "color": "white",
+        "position": "g1",
+        "isCaptured": false,
+        "hasMoved": false
+      },
+      {
+        "type": "rook",
+        "color": "white",
+        "position": "h1",
+        "isCaptured": false,
+        "hasMoved": false
+      },
+      {
+        "type": "pawn",
+        "color": "black",
+        "position": "a7",
+        "isCaptured": false,
+        "hasMoved": false,
+        "freeMoves": ["a6", "a5"]
+      },
+      {
+        "type": "pawn",
+        "color": "black",
+        "position": "b7",
+        "isCaptured": false,
+        "hasMoved": false,
+        "freeMoves": ["b6", "b5"]
+      },
+      {
+        "type": "pawn",
+        "color": "black",
+        "position": "c7",
+        "isCaptured": false,
+        "hasMoved": false,
+        "freeMoves": ["c6", "c5"]
+      },
+      {
+        "type": "pawn",
+        "color": "black",
+        "position": "d7",
+        "isCaptured": false,
+        "hasMoved": false,
+        "freeMoves": ["d6", "d5"]
+      },
+      {
+        "type": "pawn",
+        "color": "black",
+        "position": "e7",
+        "isCaptured": false,
+        "hasMoved": false,
+        "freeMoves": ["e6", "e5"]
+      },
+      {
+        "type": "pawn",
+        "color": "black",
+        "position": "f7",
+        "isCaptured": false,
+        "hasMoved": false,
+        "freeMoves": ["f6", "f5"]
+      },
+      {
+        "type": "pawn",
+        "color": "black",
+        "position": "g7",
+        "isCaptured": false,
+        "hasMoved": false,
+        "freeMoves": ["g6", "g5"]
+      },
+      {
+        "type": "pawn",
+        "color": "black",
+        "position": "h7",
+        "isCaptured": false,
+        "hasMoved": false,
+        "freeMoves": ["h6", "h5"]
+      },
+      {
+        "type": "rook",
+        "color": "black",
+        "position": "a8",
+        "isCaptured": false,
+        "hasMoved": false
+      },
+      {
+        "type": "knight",
+        "color": "black",
+        "position": "b8",
+        "isCaptured": false,
+        "hasMoved": false
+      },
+      {
+        "type": "bishop",
+        "color": "black",
+        "position": "c8",
+        "isCaptured": false,
+        "hasMoved": false
+      },
+      {
+        "type": "queen",
+        "color": "black",
+        "position": "d8",
+        "isCaptured": false
+      },
+      {
+        "type": "king",
+        "color": "black",
+        "position": "e8",
+        "isCaptured": false,
+        "hasMoved": false
+      },
+      {
+        "type": "bishop",
+        "color": "black",
+        "position": "f8",
+        "isCaptured": false,
+        "hasMoved": false
+      },
+      {
+        "type": "knight",
+        "color": "black",
+        "position": "g8",
+        "isCaptured": false,
+        "hasMoved": false
+      },
+      {
+        "type": "rook",
+        "color": "black",
+        "position": "h8",
+        "isCaptured": false,
+        "hasMoved": false
+      }
+    ]
+  }
+
+}
+
+
+###

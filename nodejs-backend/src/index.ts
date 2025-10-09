@@ -12,6 +12,7 @@ import verifyAccessTokenRouter from "./routes/verifyAccessToken.ts";
 import { Server } from "socket.io";
 import { createServer } from "http";
 import roomsRouter from "./routes/rooms.ts";
+import { chessRouter } from "./routes/chess.ts";
 
 const app = express();
 
@@ -24,6 +25,7 @@ app.use(cookieParser());
 //   next();
 // });
 app.use('/', roomsRouter);
+app.use('/', chessRouter);
 app.use('/', registrationRouter);
 app.use('/', authenticationRouter);
 app.use('/', refreshRouter);

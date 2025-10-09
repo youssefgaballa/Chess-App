@@ -62,3 +62,44 @@ CREATE TABLE IF NOT EXISTS messages
     -- CONSTRAINT fk_sender FOREIGN KEY(sender_username) REFERENCES users(username) ON DELETE SET NULL
     -- Uncomment above if you want to enforce foreign key constraint on sender_username and disallow guest users
 );
+
+-- Table for chess games
+-- Using an array of text to represent chess pieces and their positions
+-- Would be better in non-relation database but we'll put it in sql database for now
+CREATE TABLE IF NOT EXISTS chess_games
+(
+    game_id serial,
+    room_id integer UNIQUE,
+    pieces INTEGER[], --it would be nice to use a jsonb here but not all sql databases support it
+    -- also the pieces array references a piece id in chessPieces table, cant create a foreign key constraint on array elements
+    turn text, -- white | black
+    player_white text,
+    player_black text,
+    last_move text[], --last move
+
+    move_history text[], --array of moves in standard chess notation
+    winner text, -- white | black | draw | null (if game is ongoing)
+    CONSTRAINT chess_games_pkey PRIMARY KEY (game_id),
+    CONSTRAINT fk_room_chess FOREIGN KEY(room_id) REFERENCES rooms(room_id) ON DELETE CASCADE
+    -- CONSTRAINT fk_player_white FOREIGN KEY(player_white) REFERENCES users(username) ON DELETE SET NULL,
+    -- CONSTRAINT fk_player_black FOREIGN KEY(player_black) REFERENCES users(username) ON DELETE SET NULL
+    -- Uncomment above if you want to enforce foreign key constraint on players and disallow guest users
+);
+
+CREATE TABLE IF NOT EXISTS chess_pieces
+(
+    piece_id serial,
+    room_id integer,
+    
+    piece_type text,
+    color text,
+    position text,
+    is_captured boolean DEFAULT FALSE,
+    has_moved boolean DEFAULT FALSE,
+    free_moves text[], --array of positions the piece can move to, updated each turn
+    replace_moves text[], --array of positions the piece can move to capture another piece, updated each turn
+    is_checked boolean DEFAULT null, --only used for king to indicate if in check
+    pending_promotion boolean DEFAULT null, --only used for pawn to indicate if it reached the end of the board and needs to be promoted
+    CONSTRAINT chessPieces_pkey PRIMARY KEY (piece_id),
+    CONSTRAINT fk_game FOREIGN KEY(room_id) REFERENCES chess_games(room_id) ON DELETE CASCADE
+);

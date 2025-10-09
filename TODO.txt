@@ -43,6 +43,7 @@ Backend:
 General: 
 -Js-docs, tests, dev-environments, kubernetes  
 -dev and production environments
+- logging middleware
 
 Tests:
 - make sure every piece is able to move and replace pieces

@@ -60,8 +60,9 @@ const ChessBoard8x8: React.FC<{ colors: string[], side: ChessColor, roomID?: num
           }));
         }
       }
-
     });
+    console.log("board after move:", board);
+
     return () => {
       socket.off("piece moved");
     }

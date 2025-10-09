@@ -3,6 +3,7 @@
 # I perfer it over Postman cause of some bugs I'm experiencing with it
 # also it feels better to centralize api tests in a single file
 @port = 5001
+// would need to put in auth token in headers for protected routes
 ###
 # GET a note
 GET http://localhost:{{port}}/data/Example Title

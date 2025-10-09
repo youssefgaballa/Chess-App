@@ -7,20 +7,26 @@ export type PlayerType = {
 
 }
 
+export type ChessPiece = {
+    type: ChessPieceType;
+    color: ChessColor;
+    position: ChessPosition;
+    isCaptured: boolean;
+    hasMoved: boolean;
+    freeMoves: ChessPosition[];
+    replaceMoves: ChessPosition[];
+    isChecked?: boolean;
+    pendingPromotion?: boolean; // for pawns that reach the end of the board
+};
+
 export type ChessBoardState = { // hasMoved is mostly relevant for pawns and castling
-  pieces: {
-    type: ChessPieceType; color: ChessColor;
-    position: ChessPosition, isCaptured: boolean, hasMoved: boolean,
-    freeMoves: ChessPosition[], replaceMoves: ChessPosition[], 
-    isChecked?: boolean, pendingPromotion?: boolean; // for pawns that reach the end of the board
-  }[];
+  pieces: ChessPiece[];
   turn: ChessColor;
   players: {
     white: PlayerType;
     black: PlayerType;
   }
   lastMove?: { from: ChessPosition; fromIndex: number; to: ChessPosition; toIndex: number; replace: boolean };
-  isStalemate?: boolean;
   lastMoveFailed?: boolean;
 };
 
@@ -163,7 +169,6 @@ const initialState: ChessBoardState = {
       isCheckmated: false,
     },
   },
-  isStalemate: false,
   turn: "white",
 };
 

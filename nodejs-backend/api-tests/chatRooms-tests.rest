@@ -7,11 +7,19 @@ GET http://localhost:{{port}}/rooms/all
 
 ### 
 
+POST http://localhost:{{port}}/rooms/create
+Content-Type: application/json
+
+{
+  "users": "root"
+}
+###
+
 DELETE http://localhost:{{port}}/rooms
 Content-Type: application/json
 
 {
-  "roomID": 16,
+  "roomID": 1,
   "username": "root"
 }
 
