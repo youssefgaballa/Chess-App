@@ -57,7 +57,7 @@ export const LoginUser = () => {
         firstname: response.data.firstname,
         lastname: response.data.lastname,
         role: response.data.user_role,
-        accessToken: response.data.access_token
+        accessToken: response.data.access_token // stored in memory in redux store
       };
       console.log("userDetails: ", userDetails);
       dispatch(setUser(userDetails));

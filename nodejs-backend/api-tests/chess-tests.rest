@@ -1,18 +1,22 @@
 @port = 5003
 ###
+
+GET http://localhost:{{port}}/chessboard/1
+
+###
 # GET all boards
-GET http://localhost:{{port}}/chessboard/2
+GET http://localhost:{{port}}/chessboard
 
+###
 
-
-
+DELETE http://localhost:{{port}}/chessboard/1
 
 ###
 POST http://localhost:{{port}}/chessboard
 Content-Type: application/json
 
 {
-  "roomID": 2,
+  "roomID": 1,
 
   "board": {
     "turn": "white",

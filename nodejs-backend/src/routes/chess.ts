@@ -101,6 +101,35 @@ chessRouter.get("/chessboard/:roomID", async (req, res) => {
   }
 });
 
+chessRouter.get("/chessboard", async (req, res) => {
+  console.log(`----- GET  /chessboard/`);
+  try {
+    const gamesResult = await client.query("SELECT * FROM chess_games");
+    const piecesResult = await client.query("SELECT * FROM chess_pieces");
+    res.status(200).json({ games: gamesResult.rows, pieces: piecesResult.rows });
+  } catch (error) {
+    console.error("Error fetching chess boards:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+chessRouter.delete("/chessboard/:roomID", async (req, res) => {
+  const { roomID } = req.params;
+
+  if (!roomID) {
+    return res.status(400).json({ error: "Invalid request" });
+  }
+
+  try {
+    await client.query("DELETE FROM chess_pieces WHERE room_id = $1", [roomID]);
+    await client.query("DELETE FROM chess_games WHERE room_id = $1", [roomID]);
+    res.status(204).send();
+  } catch (error) {
+    console.error("Error deleting chess board:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 chessRouter.delete("/rooms", async (req, res) => {
   const { roomID, username } = req.body;
 

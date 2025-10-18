@@ -9,9 +9,6 @@ import { Colors } from "./ChessBoardSolo";
 
 export const ChessDuels = () => {
 
-
-
-
   const user: UserState = useSelector(selectUser);
   const username = user?.username;
   const [roomID, setRoomID] = useState<number | null>(null);
@@ -45,12 +42,15 @@ export const ChessDuels = () => {
       setOpponent(sender);
     });
     (async function fetchRooms() {
+      console.log("------fetchRooms()");
       await getRooms(username).then((rooms) => {
         console.log("Available rooms:", rooms);
         console.log("rooms length:", rooms.length);
         if (rooms.length > 0) {
           // Auto-join the first available room for demo purposes
+          console.log("rooms[0].room_id", rooms[0].room_id);
           setRoomID(rooms[0].room_id);
+          
           let usersInRoom: string[] = [];
           if (rooms[0].owner_username != undefined) {
             usersInRoom = usersInRoom.concat(rooms[0].owner_username);
@@ -65,16 +65,20 @@ export const ChessDuels = () => {
             setIsOwner(false);
           }
           socket.emit("join room", roomID, username);
+          
         }
       });
-    })();
-   
-
+    })();   
+    console.log("roomID:", roomID);
     return () => {
       socket.off("connect");
       socket.off("receive room message");
     }
   }, []);
+
+  useEffect(() => {
+    console.log("roomID changed:", roomID);
+  },[roomID]);
 
   return (
     <div className="flex-col items-center justify-center mt-4">

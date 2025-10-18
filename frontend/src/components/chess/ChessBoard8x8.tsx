@@ -7,9 +7,10 @@ import { Rook } from "./Rook";
 import { Queen } from "./Queen";
 import { King } from "./King";
 import { useDispatch, useSelector } from "react-redux";
-import { selectBoardState, setInitialBoard, movePiece, setValidMoves, isKingInCheck, setTurn, isKingCheckMated, setLastMove, promotePawn } from "./chessSlice";
+import { selectBoardState, setInitialBoard, movePiece, setValidMoves, isKingInCheck, setTurn, isKingCheckMated, setLastMove, promotePawn, setBoard } from "./chessSlice";
 import { SelectedColors } from "./ChessBoardSolo";
 import socket from "../../util/socketManager";
+import { loadBoard } from "./chessUtils";
 
 
 const ChessBoard8x8: React.FC<{ colors: string[], side: ChessColor, roomID?: number }> = ({ colors, side, roomID }) => {
@@ -19,6 +20,7 @@ const ChessBoard8x8: React.FC<{ colors: string[], side: ChessColor, roomID?: num
   const padding = 50;
   const isCapital = true; // Change to true if you want capital letters for columns
   const [selectedPieceIndex, setSelectedPieceIndex] = useState<number | null>(null);
+  const [hasLoaded, setHasLoaded] = useState<boolean>(false);
   const board = useSelector(selectBoardState);
   const resetGame = () => {
     //console.log("Game reset!");
@@ -61,6 +63,17 @@ const ChessBoard8x8: React.FC<{ colors: string[], side: ChessColor, roomID?: num
         }
       }
     });
+    if (roomID !== undefined && hasLoaded == false) {
+      (async function fetchBoard() {
+        console.log("fetchBoard for roomID:", roomID);
+        const savedBoard = await loadBoard(roomID);
+        if (savedBoard) {
+          dispatch(setBoard(savedBoard));
+          setHasLoaded(true);
+        }
+      })();
+    }
+
     console.log("board after move:", board);
 
     return () => {

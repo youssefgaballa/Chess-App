@@ -177,14 +177,18 @@ const chessBoardSlice = createSlice({
   initialState,
   reducers: {
     setInitialBoard: (state) => {
-      // for (const piece of state.pieces) {
-      //   console.log("piece ", piece);
-      //   // state.pieces.push({ ...piece }); // Create a shallow copy of each piece
-      // }
       state.pieces = [...initialState.pieces]
       //console.log("setInitialBoard:", state.pieces);
       state.turn = "white";
       //window.localStorage.setItem('user', JSON.stringify({ ...state, accessToken: null }));
+    },
+    setBoard: (state, action: { payload: any }) => {
+      state.pieces = action.payload.pieces;
+      state.turn = action.payload.turn;
+      state.players.white = action.payload.player_white;
+      state.players.black = action.payload.player_black;
+      state.lastMove = action.payload.last_move;
+      
     },
     movePiece: (state, action: { payload: { from: ChessPosition; fromIndex: number; to: ChessPosition; toIndex: number; replace: boolean; undo?: boolean } }) => {
       // console.log("------movePiece:");
@@ -937,6 +941,7 @@ const chessBoardSlice = createSlice({
       }
     },
     setLastMove: (state, action: { payload: { from: ChessPosition, fromIndex: number, to: ChessPosition, toIndex: number, replace: boolean } }) => {
+      console.log("----setLastMove called with payload:", action.payload);
       if (state.lastMoveFailed) {
         return;
       }
@@ -955,6 +960,7 @@ const chessBoardSlice = createSlice({
       piece.pendingPromotion = false;
     },
     setTurn: (state, action: { payload: { color: ChessColor } }) => {
+      console.log("----setTurn called with payload:", action.payload);
       const { color } = action.payload;
       state.turn = color;
       //console.log("Turn set to:", state.turn);
@@ -968,5 +974,6 @@ const chessBoardSlice = createSlice({
 });
 
 export const selectBoardState = (state: { chessBoard: typeof initialState }) => state.chessBoard;
-export const { setInitialBoard, clearBoard, movePiece, setValidMoves, isKingInCheck, isKingCheckMated, setTurn, setLastMove, promotePawn } = chessBoardSlice.actions;
+export const { setInitialBoard, clearBoard, movePiece, setValidMoves, isKingInCheck,
+  isKingCheckMated, setTurn, setLastMove, promotePawn, setBoard } = chessBoardSlice.actions;
 export default chessBoardSlice.reducer;
